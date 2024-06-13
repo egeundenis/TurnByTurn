@@ -14,7 +14,7 @@ public class Build {
 			{"Mugged", "Stolen Dreams", "Health Exchange", "Charge Trade"},					//Finn
 			{"Piercing Bullet", "Halving Burns", "Scaly Slam", "Courage"},				    //Timmy
 			{"The Beginning", "The End", "Fast Forward", "Slow Motion"},					//Kasse
-			{"Bullet", "with Love!", "Drowsy", "Caffeniated"},								//John
+			{"POW! or pew", "Love Salvo", "Bite The Bullet", "Spare Bullet"},				//John
 			{"Health Nut", "Anti-inflammatory", "Vitamin Gummies", "Healthy Hit"},			//Missy
 			{"Slimy", "Regroup!", "Sticky Investment", "Last Resort"},						//Zach
 			{"Magical Projectile", "aand... Iceball.", "Restocked", "Fire Spell"},			//Simon
@@ -35,7 +35,8 @@ public class Build {
 			{"Elemental Strike", "Queen of All!", "Change of Plans", "A Blessing"},			//Qirale
 			{"The Archer", "Vigilante Shit", "Delicate", "Midnight Rain"},					//Olea
 			{"Quake", "Summon: Beurc", "Paw Quake", "Purring Heal"},		 				//Itan
-			{"Grace Attack", "Won't Feel It!", "Self-Harm", "Eye For An Eye"} 				//Louis
+			{"Grace Attack", "Won't Feel It!", "Self-Harm", "Eye For An Eye"}, 				//Louis
+			{"Forced Bow", "Submit to Power", "Charge Swap", "Super Control"} 				//Pine		
 	};
 	 
 	public static String[] Potions = {

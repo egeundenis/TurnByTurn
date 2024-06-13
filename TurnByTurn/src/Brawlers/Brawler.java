@@ -8,6 +8,8 @@ import main.StatusManager;
 
 public abstract class Brawler {
 	
+	public static boolean isCallAllowed = false;
+	
 	public Build defaultBuild = new Build();
 	public static Brawler[] brawlers = {
 			new Todd(new Build()),
@@ -40,7 +42,8 @@ public abstract class Brawler {
 			new Qirale(new Build()),
 			new Olea(new Build()),
 			new Itan(new Build()),
-			new Louis(new Build())
+			new Louis(new Build()),
+			new Pine(new Build())
 	};
 
 	public String name;
@@ -80,7 +83,7 @@ public abstract class Brawler {
 
     public abstract void gadgetAbility(Brawler enemy);
     
-    public int brawlerSpecificActivity(Brawler enemy) {return 999;}
+    public boolean brawlerSpecificActivity(Brawler enemy) {return false;}
 
     public abstract Brawler newInstance();
 
@@ -169,11 +172,11 @@ public abstract class Brawler {
             case "Kasse":
                 changeHYPERCHARGE(8);
                 break;
-            case "Crow":
+            case "Raven":
                 changeHYPERCHARGE(5);
                 break;
             case "John":
-                changeHYPERCHARGE(5);
+                changeHYPERCHARGE(7);
                 break;
             default:
                 changeHYPERCHARGE(2);
@@ -233,6 +236,7 @@ public abstract class Brawler {
     	case "Olea": return new Olea(new Build());
     	case "Itan": return new Itan(new Build());
     	case "Louis": return new Louis(new Build());
+    	case "Pine": return new Pine(new Build());
     	
     	default: return new Todd(new Build());
     	
@@ -241,7 +245,9 @@ public abstract class Brawler {
     
     public static void brawlerCall(String braw) {
 
+    	if(isCallAllowed)    		
 		switch(braw) {
+		
     	case "lisa": SoundManager.lisa_call.play(); break;
     	case "mark": SoundManager.mark_call.play(); break;
     	case "susan": SoundManager.susan_call.play(); break;

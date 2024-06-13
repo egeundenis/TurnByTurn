@@ -52,7 +52,7 @@ public class Simon extends Brawler {
         if (damage > 14 && damage < 21)
             this.changeCHARGE(damage);
         if (damage > 20 && damage < 26)
-            this.changeREGEN((int) (damage * 0.1));
+            this.changeREGEN(1);
         if (damage > 25 && damage < 31)
             enemy.changeCHARGE((int) (damage / -3));
         if (damage > 31 && damage < 36)

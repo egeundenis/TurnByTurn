@@ -62,7 +62,7 @@ public class Louis extends Brawler {
         }
         
         if(this.passiveTurns > 0)
-	        if(new Random().nextInt(0,2) == 1) {
+	        if(new Random().nextInt(0,3) == 1) {
 	        	try { Thread.sleep(500);} catch (Exception e) {}
 	        	louis_normal.play();
 	        	this.changeHP(-this.AttackDamage*statper);
@@ -75,7 +75,7 @@ public class Louis extends Brawler {
 	public
     void superAbility(Brawler enemy) {
         
-        passiveTurns = 7;
+        passiveTurns = 6;
         louis_super.play();
 
     }

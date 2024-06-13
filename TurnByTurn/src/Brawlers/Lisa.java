@@ -53,8 +53,8 @@ public class Lisa extends Brawler {
 	public
     void superAbility(Brawler enemy) {
         lisa_super.play();
-        this.changeATK((int) (this.AttackDamage * 0.75));
-        this.changeREGEN((int) (this.regen * 0.75));
+        this.changeATK((int) (this.AttackDamage * (0.75 + (this.isHypercharged ? 0.25 : 0)) ));
+        this.changeREGEN((int) (this.regen * (0.75 + (this.isHypercharged ? 0.25 : 0)) ));
     }
     
     @Override

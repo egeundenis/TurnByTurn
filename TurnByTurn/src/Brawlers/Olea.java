@@ -61,7 +61,7 @@ public class Olea extends Brawler {
     @Override
 	public void superAbility(Brawler enemy) {
     	olea_super.play();
-    	this.superTurns += 5;
+    	this.superTurns += 5 + (this.isHypercharged ? 1 : 0);
         
     }
     

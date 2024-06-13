@@ -67,9 +67,16 @@ public class Timmy extends Brawler {
         timmy_super.play();
 
         int DamageAtimmy = (int) (enemy.HP * -0.35) - this.SuperDamage;
-        DamageAtimmy += 30;
         enemy.changeREGEN(enemy.regen / -2);
         enemy.changeHP(DamageAtimmy);
+        
+        if(this.isHypercharged) {
+        	try {Thread.sleep(400);} catch (InterruptedException e) {}
+        	timmy_passive.play();
+        	enemy.changeHP(-25);
+        }
+
+        
     }
     
     @Override

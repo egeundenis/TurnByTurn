@@ -69,7 +69,7 @@ public class Game {
 				
 		//version
 		versionPanel = new JPanel((LayoutManager) new FlowLayout(FlowLayout.LEADING,5, 5));
-		version = new JLabel("P-BETA 1.0", SwingConstants.LEFT);
+		version = new JLabel("P-BETA 1.1", SwingConstants.LEFT);
 		version.setHorizontalAlignment(SwingConstants.RIGHT);
 		versionPanel.setBackground(Color.DARK_GRAY);
 		versionPanel.setBounds(0,535,150,30);
@@ -224,7 +224,7 @@ public class Game {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				
-				//still nothing yet!!!!!
+				Brawler.isCallAllowed = true;
 				SoundManager.click.play();
 				
 			}
@@ -1114,7 +1114,6 @@ public class Game {
 		window.setIconImage(new ImageIcon("res/images/turnbyturn.png").getImage());
 		Container con = window.getContentPane();
 		
-		
 		//NAMES
 		Name1 = new JLabel(A.name.toUpperCase(Locale.US), JLabel.LEFT);
 		Name1.setBounds(55,0,200,60);
@@ -1505,8 +1504,10 @@ public class Game {
 		Specific1.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				A.brawlerSpecificActivity(B);					
-				enableOrDisable(A, B, P1buttons, P2buttons, "SPECIFIC");
+				if(A.brawlerSpecificActivity(B)) 	
+					enableOrDisable(A, B, P1buttons, P2buttons, "ALL");					
+				else
+					enableOrDisable(A, B, P1buttons, P2buttons, "SPECIFIC");
 				update(A, B, HP1, HP2, SG1, SG2, REG1, REG2, Potion1Amount, Potion2Amount, Gadget1Amount, Gadget2Amount, cd1,cd2, STATICON1, STATICON2, icons, hpbar1, hpbar2, shbar1, shbar2, scbar1, scbar2, hcbar1, hcbar2, TM, turn,Name1, Name2 ,abilityNamesArray, brawlerLabels, gamemode);					
 			}
 		});
@@ -1533,8 +1534,11 @@ public class Game {
 		Specific2.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				B.brawlerSpecificActivity(A);					
-				enableOrDisable(A, B, P1buttons, P2buttons, "SPECIFIC");
+				if(B.brawlerSpecificActivity(A)) 	
+					enableOrDisable(B, A, P2buttons, P1buttons, "ALL");					
+				else
+					enableOrDisable(B, A, P2buttons, P1buttons, "SPECIFIC");					
+
 				update(A, B, HP1, HP2, SG1, SG2, REG1, REG2, Potion1Amount, Potion2Amount, Gadget1Amount, Gadget2Amount, cd1,cd2, STATICON1, STATICON2, icons, hpbar1, hpbar2, shbar1, shbar2, scbar1, scbar2, hcbar1, hcbar2, TM, turn,Name1, Name2 ,abilityNamesArray, brawlerLabels, gamemode);					
 			}
 		});
@@ -1548,9 +1552,19 @@ public class Game {
 			Specific1.setIcon(new Qirale(new Build()).qirale_specific);
 		}
 		
+		if(A.name.equals("John")) {
+			SpePanel1.setVisible(true);		
+			Specific1.setIcon(new John(new Build()).john_specific);
+		}
+		
 		if(B.name.equals("Qirale")) {						
 			SpePanel2.setVisible(true);		
 			Specific2.setIcon(new Qirale(new Build()).qirale_specific);
+		}
+		
+		if(B.name.equals("John")) {
+			SpePanel2.setVisible(true);		
+			Specific2.setIcon(new John(new Build()).john_specific);
 		}
 		
 		//Attack
@@ -2452,14 +2466,14 @@ public class Game {
 				case "Demonic Cuteness":
 					if(A.spell.effectTurn == 0)
 						break;
-					B.changeHP(-15);
+					B.changeHP(-10);
 					SM.demonic_burn.play();
 					A.spell.effectTurn--;
 				break;
 				
 				case "Meditation Medication":
 					if(A.spell.effectTurn == 0) {
-						A.changeHP(100);
+						A.changeHP(80);
 						A.spell.effectTurn--;
 						break;
 					}
@@ -2475,14 +2489,14 @@ public class Game {
 				case "Demonic Cuteness":
 					if(B.spell.effectTurn == 0)
 						break;
-					A.changeHP(-15);
+					A.changeHP(-10);
 					SM.demonic_burn.play();
 					B.spell.effectTurn--;
 				break;
 				
 				case "Meditation Medication":
 					if(B.spell.effectTurn == 0) {
-						B.changeHP(100);
+						B.changeHP(80);
 						B.spell.effectTurn--;
 						break;
 					}					
@@ -2835,6 +2849,44 @@ public class Game {
 					Vollie temp = (Vollie) B;
 					brawlerLabels[5].setIcon(stackIcon);
 					brawlerLabels[5].setText(temp.runicStacks+"");
+					brawlerLabels[5].setFont(new Font("Times New Roman", Font.BOLD, 20));
+					brawlerLabels[5].setHorizontalTextPosition(JLabel.CENTER);
+					brawlerLabels[5].setVerticalTextPosition(JLabel.CENTER);
+				}
+				
+				//Pine
+				if(A.name.equals("Pine")) {
+					Pine temp = (Pine) A;
+					brawlerLabels[4].setIcon(stackIcon);
+					brawlerLabels[4].setText(temp.stacks+"");
+					brawlerLabels[4].setFont(new Font("Times New Roman", Font.BOLD, 20));
+					brawlerLabels[4].setHorizontalTextPosition(JLabel.CENTER);
+					brawlerLabels[4].setVerticalTextPosition(JLabel.CENTER);
+				}
+				
+				if(B.name.equals("Pine")) {
+					Pine temp = (Pine) B;
+					brawlerLabels[5].setIcon(stackIcon);
+					brawlerLabels[5].setText(temp.stacks+"");
+					brawlerLabels[5].setFont(new Font("Times New Roman", Font.BOLD, 20));
+					brawlerLabels[5].setHorizontalTextPosition(JLabel.CENTER);
+					brawlerLabels[5].setVerticalTextPosition(JLabel.CENTER);
+				}
+				
+				//John
+				if(A.name.equals("John")) {
+					John temp = (John) A;
+					brawlerLabels[4].setIcon(stackIcon);
+					brawlerLabels[4].setText(temp.bulletCount+"");
+					brawlerLabels[4].setFont(new Font("Times New Roman", Font.BOLD, 20));
+					brawlerLabels[4].setHorizontalTextPosition(JLabel.CENTER);
+					brawlerLabels[4].setVerticalTextPosition(JLabel.CENTER);
+				}
+				
+				if(B.name.equals("John")) {
+					John temp = (John) B;
+					brawlerLabels[5].setIcon(stackIcon);
+					brawlerLabels[5].setText(temp.bulletCount+"");
 					brawlerLabels[5].setFont(new Font("Times New Roman", Font.BOLD, 20));
 					brawlerLabels[5].setHorizontalTextPosition(JLabel.CENTER);
 					brawlerLabels[5].setVerticalTextPosition(JLabel.CENTER);
@@ -3193,7 +3245,7 @@ public class Game {
 					}
 				break;
 			case "Yellow":
-				user.changeCHARGE(15);
+				user.changeCHARGE(20);
 				user.changePOTCNT(-1);
 				if(user.potionCount <= 0) {
 					Potion1.setBackground(new Color(66, 66, 66));
@@ -3260,7 +3312,7 @@ public class Game {
 				break;
 			case "Dark Gray":
 				SM.guardian.play();
-				user.shield += 60;
+				user.shield += 50;
 				user.changePOTCNT(-1);
 				if(user.potionCount <= 0) {
 					Potion1.setBackground(new Color(66, 66, 66));
@@ -3270,7 +3322,7 @@ public class Game {
 				break;
 			case "Brown":
 				SM.demonic_burn.play();
-				enemy.changeHP(-30);
+				enemy.changeHP(-40);
 				user.changePOTCNT(-1);
 				if(user.potionCount <= 0) {
 					Potion1.setBackground(new Color(66, 66, 66));
@@ -3325,17 +3377,17 @@ public class Game {
 			
 		case "Heart of Steel":
 			SM.Heartsteel.play();
-			enemy.changeHP( (int)(user.HP * -0.15) );
+			enemy.changeHP( (int)(user.HP * -0.125) );
 			break;
 			
 		case "Glacial Gale":
 			SM.GlacialGale.play();
-			enemy.changeHP(-30);
+			enemy.changeHP(-20);
 			enemy.changeSTATUS(Status.Frosty);
 			
 			if(ran.nextInt(0,2) == 1) {
 				enemy.changeSTATUS(Status.Stunned);
-				enemy.changeHP(-30);
+				enemy.changeHP(-40);
 				SM.GlacialGaleStun.play();
 			}
 			break;
@@ -3365,12 +3417,12 @@ public class Game {
 		case "Prixie":
 			if (ran.nextInt(0,2) == 0) {
 				SM.prixieheal.play();
-				user.changeHP(30);
-				user.changeSHIELD(30);
+				user.changeHP(20);
+				user.changeSHIELD(20);
 			}
 			else {
 				SM.prixiedmg.play();
-				enemy.changeHP(-30);
+				enemy.changeHP(-20);
 				enemy.changeSTATUS(Status.Weakened); 
 			}
 			break;
@@ -3615,7 +3667,7 @@ public class Game {
 							+ brawler.name.toUpperCase(Locale.US) + " " + brawler.title.toUpperCase(Locale.US)+
 							"<br/>HP: " + brawler.HP + "<br/>REGENERATION: " + brawler.regen
 							+ "<br/><br/>ATTACK: Lisa brings the fire of justice from herself and deals " + atk + " damage"
-							+ "<br/><br/>SUPER: In a fit of perseverence, Lisa almost doubles her ATK and REGEN"
+							+ "<br/><br/>SUPER: In a fit of perseverence, Lisa almost doubles her ATK and REGEN. (" + HYPERCHARGE+") Lisa doubles her ATK and REGEN"
 							+ "<br/><br/>GADGETS: "
 							+ "<br/>First Gadget: Lisa prays for a help from the heavens and gets super charge"
 							+ "<br/>Second Gadget: Lisa makes a deal with the gods, with a portion of her HP gone, she gets some super charge"
@@ -3654,7 +3706,7 @@ public class Game {
 							"<br/>HP: " + brawler.HP + "<br/>REGENERATION: " + brawler.regen
 							+ "<br/><br/>ATTACK: Timmy fires his gun, dealing " + atk + " damage plus a portion of the enemy's current HP" 
 							+ "<br/><br/>SUPER: Timmy's trusty Dragonic pet fires an enchanting flame, dealing " + sup +  " damage and instantly deleting "
-							+ "a portion of the enemy's HP"
+							+ "a portion of the enemy's HP (" + HYPERCHARGE+ ") Timmy's pet attacks once again after the super"
 							+ "<br/><br/>GADGETS: "
 							+ "<br/>First Gadget: Timmy's pet latches on the enemy and " + STUNS + " them"
 							+ "<br/>Second Gadget: Timmy heals in proportion to the enemy's missing HP"
@@ -3677,13 +3729,15 @@ public class Game {
 					description.setText("<html><p style=\"width:600px\">"
 							+ brawler.name.toUpperCase(Locale.US) + " " + brawler.title.toUpperCase(Locale.US)+
 							"<br/>HP: " + brawler.HP + "<br/>REGENERATION: " + brawler.regen
-							+ "<br/><br/>ATTACK: John shoots his rifle and deals " + atk + " damage"
-							+ "<br/><br/>SUPER: John shoots his shutgun and deals " + sup + " damage on top of a certain portion of his current HP. (" + HYPERCHARGE + ") "
-							+ "John's super deals %20 more damage"
+							+ "<br/><br/>ATTACK: John's shotgun has 5 bullets that deal " + atk + " damage! If he runs out of bullets he uses his"
+									+ " small gun to deal 10 damage."
+							+ "<br/><br/>SUPER: John starts raining all remaining bullets in his shotgun to the enemy! They deal more damage than normal"
+							+ " ( "  + HYPERCHARGE +" ) John fires one more bullet."
 							+ "<br/><br/>GADGETS: "
-							+ "<br/>First Gadget: John gets " + WEAKENED + " but heals some HP"
-							+ "<br/>Second Gadget: John gets " + STRENGTHENED + " but loses some HP"
-							+ "<br/><br/>PASSIVE (LAST BREATH): Before John dies he quickly uses his attack one last time"
+							+ "<br/>First Gadget: John takes out a bullet from his gun and bites it to get some shield!"
+							+ "<br/>Second Gadget: John reloads 1 bullet to his shotgun"
+							+ "<br/><br/>PASSIVE (LAST BREATH): When John dies, he uses his normal attack one last time..."
+							+ "<br><br>SPECIFIC: John reloads his shotgun and gets 5 bullets"
 							);
 							break;
 				case "Light":
@@ -3741,7 +3795,8 @@ public class Game {
 							+ brawler.name.toUpperCase(Locale.US) + " " + brawler.title.toUpperCase(Locale.US)+
 							"<br/>HP: " + brawler.HP + "<br/>REGENERATION: " + brawler.regen
 							+ "<br/><br/>ATTACK: Betty throws some glitter(?) to the enemy and deals " + atk + " damage"
-							+ "<br/><br/>SUPER: Betty mimics his enemy and uses their super ability! All by herself!"
+							+ "<br/><br/>SUPER: Betty creates a clone that mimics her enemy and uses their super ability! All by herself! (" + HYPERCHARGE + ") "
+									+ "The clone is hypercharged too!"
 							+ "<br/><br/>GADGETS: <br/>First Gadget: Betty forces the enemy to attack theirselves! "
 							+ "<br/>Second Gadget: Betty creates a stronger copy of the enemy's potion and uses it!"
 							+ "<br/><br/>PASSIVE (MAGICAL RESISTANCE): Betty can not get a Soft-Negative Status effect"
@@ -3839,13 +3894,13 @@ public class Game {
 					description.setText("<html><p style=\"width:600px\">"
 							+ brawler.name.toUpperCase(Locale.US) + " " + brawler.title.toUpperCase(Locale.US)+
 							"<br/>HP: " + brawler.HP + "<br/>REGENERATION: " + brawler.regen
-							+ "<br/><br/>ATTACK: (CANNON) Clyde fires her cannon and deals " + atk + " damage. (SOLO) Clyde fires 3 fireworks to the enemy dealing " + (atk*2) + " damage"
+							+ "<br/><br/>ATTACK: (CANNON) Clyde fires her cannon and deals " + atk + " damage. (SOLO) Clyde fires 3 fireworks to the enemy dealing " + (atk*1.5) + " damage"
 							+ "<br/><br/>SUPER: (CANNON) Clyde shoots herself from her cannon, dealing " + sup + " damage and " + STUNS +" the enemy. She loses her cannon protection and becomes SOLO!"
 								+ " (SOLO) Clyde hops back on her cannon, getting her sheld back."
 							+ "<br/><br/>GADGETS: "
 							+ "<br/>First Gadget: (CANNON) Clyde converts her cannon's shield to HP. (SOLO) Clyde heatbutts the enemy with her helmet and " + STUNS + " them."
 							+ "<br/>Second Gadget: (CANNON) Clyde charges some super charge. (SOLO) Clyde fully charges her super."
-							+ "<br/><br/>PASSIVE (Reckless Stunts): Hopping in and out of the Cannon makes Clyde " + ENRAGED
+							+ "<br/><br/>PASSIVE (RECKLESS STUNTS): Hopping in and out of the Cannon makes Clyde " + ENRAGED
 							);
 							break;
 				
@@ -3860,7 +3915,7 @@ public class Game {
 							+ "<br/><br/>GADGETS: "
 							+ "<br/>First Gadget: Amber uses the weapon on her hand but doesn't switch it."
 							+ "<br/>Second Gadget: Amber changes her weapon to the next in cycle and uses it."
-							+ "<br/><br/>PASSIVE (Fast Hands): Each time Amber switches weapons she gets a little shield"
+							+ "<br/><br/>PASSIVE (FAST HANDS): Each time Amber switches weapons she gets a little shield"
 							);
 							break; 
 							
@@ -3873,7 +3928,7 @@ public class Game {
 							+ "<br/><br/>GADGETS: "
 							+ "<br/>First Gadget: Anton becomes Furious"
 							+ "<br/>Second Gadget: Anton becomes Balanced"
-							+ "<br/><br/>PASSIVE (Balanced): Anton has 2 forms: Balanced and Furious! Balanced form deals less damage but heals him more while Furious form deals a lot more damage! Going from balanced to furious"
+							+ "<br/><br/>PASSIVE (BALANCED): Anton has 2 forms: Balanced and Furious! Balanced form deals less damage but heals him more while Furious form deals a lot more damage! Going from balanced to furious"
 							+ " makes Anton " + ENRAGED + ". While going from Furious to Balanced heals him."
 							);
 							break;
@@ -3888,7 +3943,7 @@ public class Game {
 							+ "<br/><br/>GADGETS: "
 							+ "<br/>First Gadget: Qirale randomly takes on another element"
 							+ "<br/>Second Gadget: Qirale uses the element she's holding to help her in this fight!"
-							+ "<br/><br/>PASSIVE (Grandmage): Qirale can have 4 elemental modes to choose from! From less damage to most; Air, Water, Earth and Fire! Each"
+							+ "<br/><br/>PASSIVE (GRANDMAGE): Qirale can have 4 elemental modes to choose from! From less damage to most; Air, Water, Earth and Fire! Each"
 							+ " with its own unique normal and super attacks!"
 							+ "<br><br>SPECIFIC: Qirale takes on a random element she found. (5 uses per match)"
 							);
@@ -3899,7 +3954,7 @@ public class Game {
 							"<br/>HP: " + brawler.HP + "<br/>REGENERATION: " + brawler.regen
 							+ "<br/><br/>ATTACK: Olea shoots an arrow from his FABOLOUS bow and deals " + atk + " damage. If he is " + INTOXICATED + " he deals more "
 							+ "damage and decreases the enemy's regeneration"
-							+ "<br/><br/>SUPER: Olea makes himself and the enemy " + INTOXICATED + " for some turns!"
+							+ "<br/><br/>SUPER: Olea makes himself and the enemy " + INTOXICATED + " for some turns! (" + HYPERCHARGE + ") 1 more turn is added to the super!"
 							+ "<br/><br/>GADGETS: "
 							+ "<br/>First Gadget: Olea heals himself. If he is " +INTOXICATED+ " he heals more."
 							+ "<br/>Second Gadget: Olea makes himself and the enemy " + INTOXICATED+ " for a few turns"
@@ -3932,6 +3987,20 @@ public class Game {
 							+ " and hitting himself charges his super too!"
 							);
 							break; 		
+				case "Pine":
+					description.setText("<html><p style=\"width:600px\">"
+							+ brawler.name.toUpperCase(Locale.US) + " " + brawler.title.toUpperCase(Locale.US)+
+							"<br/>HP: " + brawler.HP + "<br/>REGENERATION: " + brawler.regen
+							+ "<br/><br/>ATTACK: Pine uses his nasty whip to deal " + atk + " damage"
+							+ "<br/><br/>SUPER: Pine forces the enemy to attack themselves 3 times! Each use increases the attack count! After that,"
+								+ " Pine brings their super and hypercharge back to its original state. (" + HYPERCHARGE + ") The enemy uses their attack one more"
+									+ " time"
+							+ "<br/><br/>GADGETS: "
+							+ "<br/>First Gadget: Pine trades his super charge with the enemy"
+							+ "<br/>Second Gadget: Pine's next super also forces the enemy to use their super on themselves if they have enough charges!"
+							+ "<br/><br/>PASSIVE (SADIST): Every time Pine sees the enemy hurting, he heals by 10, excluding spells and regeneration."
+							);
+							break; 	
 					
 					/*
 					description.setText("<html><p style=\"width:600px\">"

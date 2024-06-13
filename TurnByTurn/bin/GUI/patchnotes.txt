@@ -1,97 +1,38 @@
 <html><p style=\"width:570px\">
 --------------------------------------NEW FEATURES---------------------------------------<br/>
-<br>New Sound Effects for: Imelda, Mark<br>
-<br>New Brawlers: Anton the Balanced, Olea the Toxicating, Qirale the Elemental, Itan the Summoner and Louis the Reflector<br>
-<br>New Status: Intoxicated! Loses %5 of their maximum HP each turn! YIKES!<br>
-<br>New Spell: Meditation Medication! Heal a lot after a few turns!<br>
-<br>New Labels: for the brawler specific images and hypercharge turn in the battle screen!<br>
-<br>New Brawler selection screen! No longer the days of boring and ugly combo box!<br>
-<br>New Mechanic: Removed Hypercharge Spell but added HYPERCHARGE mechanic! <br>
-<br>New Hypercharged Supers for: Todd, Missy, Raven, Gusty, John and Giran!<br>
-<br>New Button: SPECIFIC! Only a few brawlers will have a specific button that does a non-skip, minor, yet important action that complements their unique playstyle!<br>
-<br>New Gear: Hypercharge Gear! Increases passive hypercharged gain each turn!
-<br>New Rework: Mark! More fun, more coolness, more unstableness and much more blood! Now with creepy sound effects!<br>
-<br>New Gamemodes: Classic: Random Brawlers, Random Builds! | Choose: Choose your own brawlers and builds! | Decaying: Everyone loses regeneration each turn! |
- Technical: Everyone has 5 more gadget charge!<br>
-<br>New Potions: Brown: (Harming Potion) Deals some damage to the enemy! Light Purple: (Hypercharging Potion) Gives some Hyper charge!<br>
+<br>New Rework: John!<br>
+<br>New Brawler: Pine the Controller<br>
+<br>New Hypercharged Supers for: Pine, Betty, Lisa, Timmy, John, Olea
 			
 <br/><br/>------------------------------------SYSTEM CHANGES--------------------------------------<br/>
-<br>Super Charge: (REWORK) Now it can be independent from the damage dealt from the normal attacks.<br>     		
-<br>Regeneration: (BUFF) Negative Regeneration is no longer affected by shields and brawlers regenerate every turn.<br>
-<br>Stunned Status: (NERF) Super Abilities, Gadgets and Spells that hit the enemy now break stuns<br>
-<br>Enraged Status: (NERF) x2 damage -> x1.5 damage<br>
-<br>Weakened Status: (BUFF) x0.75 damage -> x0.5 damage<br>
-<br>Strengthened Status: (BUFF) x1.35 damage -> x2 damage<br>
-<br>Scarred Status: (BUFF) -%1 each turn ->	-%1.5 each turn <br>
-<br>Static Shock: (NERF) x0.75 charge damage -> x0.50 charge damage<br>
-<br>Heart of Steel: (ADJUSTMENT) Cooldown: 15 -> 20 | Skips turn when used? Yes -> No<br>
-<br>Demonic Cuteness: (NERF) Cooldown: 15 -> 20<br>
-<br>Mirror: (ADJUSTMENT) Cooldown 20 -> 35 | Skips turn when used? Yes -> No<br>
-<br>Overtime: starts at turn 85 -> 101<br> | If not ended in turn 150, It ends in a draw.
-<br>Wizardary Gamemode: extra 3 potions -> Everyone have 10 potions<br>
-<br>Execution: instead of decreasing the HP, makes the HP -9999 instead<br>
-	
+<br>Prixie: (NERF) Heal: 30 -> 20 | Shield: 30 -> 20 | Damage: 30 -> 20 <br>
+<br>Heart Of Steel: (NERF) Damage: %15 -> %12.5 <br>
+<br>Demonic Cuteness: (NERF) Damage: 15 -> 10<br>
+<br>Glacial Gale: (ADJUSTMENT): ( 30 + 30 ) -> ( 20 + 40 )<br>
+<br>Meditation Medication: (NERF) Heal: 100 -> 80<br>
+<br>Shielding Potion: (NERF) Shield: 60 -> 50<br>
+<br>Harming Potion: (BUFF) Damage: 30 -> 40<br>
+<br>Charging Potion: (BUFF) Charge: 15 -> 20<br>
+
 <br><br>-----------------------------------BRAWLER CHANGES-------------------------------------<br>
-				
-<br>Crow: (ADJUSTMENT)
-<br>With the recent regeneration changes, It's no shocker that Crow will be quite powerful. So a good nerf before he gets out of control is very much needed.
-<br><br>Attack: (10 + -3 REGEN) -> (15 + -2 REGEN)
-<br>Regeneration: 5 -> 3
-<br>Super: No longer charges itself
-<br>Passive: %25 -> %33 | No longer decrease if the enemy has positive regeneration
-<br>Name: Crow -> Raven
-				
-<br><br>Missy: (NERF)
-<br>Yet another brawler that will be changed in the regeneration update, but for the better this time! She even will have a hypercharged super! Before missy dominates the meta, we will nerf her a "little" bit.
-<br><br>Super: +15 -> +10
-<br>Second Gadget: -x3 -> -x2
+							
+<br>Clyde: (NERF)
+<br>Clyde getting her super back after jumping on someone felt so unbalanced and untouchable! This will keep her down.
+<br><br>Attack: (Cannon: 20, Solo: 40) -> (Cannon: 20, Solo: 30)
+<br>Cannon HP (Shield): 200 -> 150
 
-<br><br>Zach: (NERF)
-<br>His Sticky Investment gadget will be OP! He was already quite strong, and he gets his hypercharge so fast! So we're nerfing him a notch
-<br><br>First Gadget: (-%15 HP, +%2 REGEN) ->  (-%15 HP, +%1.5 REGEN)
-<br>Attack: %11 -> %10.5
-<br>Passive: %6.6 -> %5
-				
-<br><br>Giran: (NERF)
-<br>His previous buff was too much for him! He's shredding through everyone... But We loved that he uses his super often like he should be. So nerfing his Super Damage would be a better way to nerf him as He's getting a hypercharged super aswell.
-<br><br>Super Damage: 50 -> 40
+<br><br><br>Louis: (NERF)
+<br>Louis just cycles his super and never dies and always heales and always deals damage! This has to end!
+<br><br>Super: 7 Turns -> 6 Turns
+<br>Passive: (without Super: %10, with: %50) -> (without Super: %10, with: %33)
 
-<br><br>Gusty: (NERF)
-<br>He has been strong for a while now. This nerf will make him harder to stack up his shields and harrassing low damage brawlers without making him completely useless. Besides, he has a hypercharged super now!
-<br><br>Attack Damage: 35 -> 30
+<br><br><br>Simon: (NERF)
+<br>Simon is just not dying! This survivability needs to stop!
+<br><br>HP: 550 -> 525
+<br>Attack2: +%10 ATK Regen -> +1 Regen
 
-<br><br>Kasse: (NERF)
-<br>Kasse will get his hypercharge way easier than other brawlers, and he's been very strong lately! This nerf should handle him good.
-<br><br>Attack Damage: 6 -> 5
-
-<br><br>Anvaa: (BUFF)
-<br>Since negative regeneration is not effected by shields now, Her passive feels awkward as she dies instantly from the stun status decreasing her regeneration anyway. This is mostly a bugfix.
-<br><br>Passive: (1 HP + 100 Shield) -> (30 HP  + 100 Shield) 
-
-<br><br>Amber: (ADJUSTMENT)
-<br>Amber basically always wants to use her stunning super and the soulstealer attacks feels awkward to use against low HP brawlers. This changes should help her be more well rounded:
-<br><br>Attacks:
-<br>Rapidfire: 20 x (%50 -> %33 -> %25 ... ) -> 20 x (%75 -> %50 -> %33 -> ...)
-<br>Harsh Pierce: 40 + (40 if below %30) -> 40 + (40 if below %50)
-<br>Soulfire: %10 -> (15 + %7.5)
-<br>Supers:
-<br>Fiercefire: 30 x (%90 -> %75 -> %50 ...) -> 25 x (%95 -> %85 -> %75 ...)
-<br>Soulless Strike: %15 -> (20 + %12.5)
-
-<br><br>Light: (NERF)
-<br>Light is too strong, annoying and anxiety inducing! This nerf should balance him.
-<br><br>Super: 25 turns -> 30 turns 
-
-<br><br>Clyde: (NERF)
-<br>With the buff to Strengthened status she will shred through everyone! This nerf should keep her in check
-<br>Passive: STRENGTHENED -> ENRAGED
-
-<br><br>Lisa: (BUFF)
-<br>If Lisa loses regeneration she will die immediatly when she uses her super! This is especially true for regen decreasers and stunners, this should help her a little
-<br>Regeneration 2 -> 5
-
-<br><br>John: (NERF)
-<br>John feels impossible to balance. He deals too much damage but if he gets low too fast he is nothing! Before his inevitible rework, this should bring him down.
-<br><br>Attack: 65 -> 60
-<br>Super: (60 + %75 HP) -> (50 + %65 HP)
-<br>HP: 350 -> 325  
+<br><br><br>Qirale: (NERF)
+<br>Qirale is too tanky and deals way too much damage in her fire form.
+<br><br>HP: 600 -> 550
+<br>Base Damage: 25 -> 20
+<br>Fire Super: (-60 + -3 Regen) -> (-60 + -2 Regen)

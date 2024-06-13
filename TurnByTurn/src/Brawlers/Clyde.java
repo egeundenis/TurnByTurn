@@ -30,7 +30,7 @@ public class Clyde extends Brawler {
         this.regen = 5;
         this.gadgetCount = 1;
         this.potionCount = 1;
-        this.shield = 200;
+        this.shield = 150;
         this.stat = Status.Normal;
         this.title = "the Stunter";
         this.spell = new Spell(build.spellChoise);
@@ -60,8 +60,8 @@ public class Clyde extends Brawler {
     	else {
     		//Solo Form
     		clyde_attack2.play();
-    		enemy.changeHP(-AttackDamage*statper*2);
-            this.changeCHARGE(AttackDamage*statper*2);
+    		enemy.changeHP(-AttackDamage*statper*1.5);
+            this.changeCHARGE(AttackDamage*statper*1.5);
     	}
     	
     }
@@ -82,7 +82,7 @@ public class Clyde extends Brawler {
     	else {
     		//Solo Form
     		clyde_super2.play();
-    		this.changeSHIELD(200);
+    		this.changeSHIELD(150);
     		isCannon = true;
     		this.changeSTATUS(Status.Enraged);
     	}
@@ -130,7 +130,7 @@ public class Clyde extends Brawler {
         this.stat = this.newInstance().stat;
         this.potionCount = this.newInstance().potionCount;
         isCannon = true;
-        
+        this.shield = 150;
     }
 
     public void changeATK(int x) {

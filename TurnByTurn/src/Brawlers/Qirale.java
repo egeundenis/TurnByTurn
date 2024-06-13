@@ -36,8 +36,8 @@ public class Qirale extends Brawler {
         super(build);
         this.build = build;
         this.name = "Qirale";
-        this.HP = 600;
-        this.AttackDamage = 25;
+        this.HP = 550;
+        this.AttackDamage = 20;
         this.SuperCharge = 0;
         this.HyperCharge = 0;
         this.SuperDamage = 0;
@@ -63,10 +63,10 @@ public class Qirale extends Brawler {
     Random ran = new Random();
     
     @Override
-    public int brawlerSpecificActivity(Brawler enemy) {
+    public boolean brawlerSpecificActivity(Brawler enemy) {
     	changeElement();
     	this.hak--;
-    	return hak;
+    	return false;
     }
     
     public void changeElement() {
@@ -104,7 +104,7 @@ public class Qirale extends Brawler {
     		enemy.changeHP(-this.AttackDamage*statper);
             this.changeCHARGE(this.AttackDamage*statper);
             if(ran.nextInt(0,3) == 0) {
-            	 try {Thread.sleep(200);} catch (InterruptedException e) {}
+            	 try {Thread.sleep(300);} catch (InterruptedException e) {}
             	 attackAbility(enemy);
             }
             	
@@ -127,8 +127,8 @@ public class Qirale extends Brawler {
     		break;
     	case 1:
     		qirale_super_fire.play();
-    		enemy.changeHP(-60);
-    		enemy.changeREGEN(-3);
+    		enemy.changeHP(-70);
+    		enemy.changeREGEN(-2);
     		break;
     	case 2:
     		qirale_super_earth.play();

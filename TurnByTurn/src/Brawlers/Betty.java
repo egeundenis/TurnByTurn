@@ -53,9 +53,17 @@ public class Betty extends Brawler {
     void superAbility(Brawler enemy) {
         betty_super.play();
         
+        if(enemy.name == "Betty") {
+        	betty_super.play();
+        	return;
+        }
+        
+        
+        
         Brawler temp = enemy.newInstance();
         temp.changeHP(-temp.HP/2);
         temp.changeREGEN(-temp.regen);
+        temp.isHypercharged = this.isHypercharged;
         
         int prevHP = temp.HP;
         int prevREGEN = temp.regen;
