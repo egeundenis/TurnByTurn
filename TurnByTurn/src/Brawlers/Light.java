@@ -2,6 +2,7 @@ package Brawlers;
 
 import main.Build;
 import main.SoundEffect;
+import main.SoundManager;
 import main.Spell;
 import main.Status;
 
@@ -37,6 +38,16 @@ public class Light extends Brawler {
             this.gadgetCount += 1;
         if("REGEN GEAR".equals(build.gearChoise))
         	this.regen += 3;
+    }
+    
+    public void eachTurnChecks(Brawler enemy) {
+    	if(this.lightInt == 0) {
+			SoundManager.light_superdeath.play();
+			enemy.HP = -9999;
+		}
+		if(this.lightInt != -1) {
+			this.lightInt--;
+		}
     }
 
     @Override

@@ -16,7 +16,6 @@ import java.util.Locale;
 import java.util.Random;
 import javax.swing.*;
 import Brawlers.*;
-import java.lang.Thread;
 import GUI.*;
 
 public class Game {
@@ -69,7 +68,7 @@ public class Game {
 				
 		//version
 		versionPanel = new JPanel((LayoutManager) new FlowLayout(FlowLayout.LEADING,5, 5));
-		version = new JLabel("P-BETA 1.1", SwingConstants.LEFT);
+		version = new JLabel("P-BETA 1.2", SwingConstants.LEFT);
 		version.setHorizontalAlignment(SwingConstants.RIGHT);
 		versionPanel.setBackground(Color.DARK_GRAY);
 		versionPanel.setBounds(0,535,150,30);
@@ -103,7 +102,9 @@ public class Game {
 						"Duplicates",
 						"Wizardary",
 						"Decaying",
-						"Technical"
+						"Technical",
+						"Hypermode",
+						"Nostalgic"
 				};
 				gamemode = new JComboBox<String>(gamemodes);
 				gamemode.setFocusable(false);
@@ -201,6 +202,20 @@ public class Game {
 					else
 						JOptionPane.showMessageDialog(window, "Duplicate brawlers are not allowed.");
 					break;
+				case "Hypermode":
+					if(chosens[0] != null && chosens[1] != null && chosens[1] != chosens[0]) {
+					playGame1v1(chosens[0], chosens[1], "Hypermode");
+					}
+					else
+						JOptionPane.showMessageDialog(window, "Duplicate brawlers are not allowed.");
+					break;
+				case "Nostalgic":
+					if(chosens[0] != null && chosens[1] != null && chosens[1] != chosens[0]) {
+					playGame1v1(chosens[0], chosens[1], "Nostalgic");
+					}
+					else
+						JOptionPane.showMessageDialog(window, "Duplicate brawlers are not allowed.");
+					break;
 					
 				
 				}
@@ -224,7 +239,7 @@ public class Game {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				
-				Brawler.isCallAllowed = true;
+				Brawler.isCallAllowed = true; 
 				SoundManager.click.play();
 				
 			}
@@ -999,8 +1014,6 @@ public class Game {
 
 	public static void playGame1v1(Brawler A1, Brawler B2, String gamemode) {
 		
-		SoundManager SM = new SoundManager();
-				//Start
 		SoundManager.intro.play();
 				
 		Brawler[] brawlers = Brawler.brawlers;
@@ -1012,6 +1025,8 @@ public class Game {
 		String potionA = A.build.potionChoise;
 		String potionB = B.build.potionChoise;
 		
+		A.enemy = B;
+		B.enemy = A;
 		
 		if(gamemode == "Wizardary") {
 			A.potionCount = 10;
@@ -1022,8 +1037,11 @@ public class Game {
 			A.gadgetCount += 5;
 			B.gadgetCount += 5;
 		}
-
 		
+		if(gamemode == "Hypermode") {
+			SoundManager.hypercharge.play();
+		}
+
 		JPanel Quit,
 			   AtPanel1, AtPanel2,
 			   SuPanel1, SuPanel2,
@@ -1580,10 +1598,12 @@ public class Game {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				enableOrDisable(A, B, P1buttons, P2buttons, "ALL");
-				attack(A, B);				
+				attack(A, B);	
 				update(A, B, HP1, HP2, SG1, SG2, REG1, REG2, Potion1Amount, Potion2Amount, Gadget1Amount, Gadget2Amount, cd1,cd2, STATICON1, STATICON2, icons, hpbar1, hpbar2, shbar1, shbar2, scbar1, scbar2, hcbar1, hcbar2, TM, turn,Name1, Name2 ,abilityNamesArray, brawlerLabels, gamemode);
 				isOver(A, B, HP1, HP2, SG1, SG2, REG1, REG2, Potion1Amount, Potion2Amount, Gadget1Amount, Gadget2Amount, STATICON1, STATICON2, Name1, Name2, icons, hpbar1, hpbar2,scbar1, scbar2, buttons);		
 				superChargeCheck(A, Super1, B, Super2);
+				if(A.stat == Status.Stunned || B.stat == Status.Stunned)
+					 enableOrDisable(A, B, P1buttons, P2buttons, "ALL");
 			}
 		});
 		
@@ -1599,10 +1619,12 @@ public class Game {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				enableOrDisable(B, A, P2buttons, P1buttons, "ALL");
-				attack(B, A);
+				attack(B, A);				
 				update(A, B, HP1, HP2, SG1, SG2, REG1, REG2, Potion1Amount, Potion2Amount, Gadget1Amount, Gadget2Amount, cd1,cd2, STATICON1, STATICON2, icons, hpbar1, hpbar2,shbar1, shbar2, scbar1, scbar2, hcbar1, hcbar2, TM, turn,Name1, Name2,abilityNamesArray, brawlerLabels, gamemode);	
 				isOver(A, B, HP1, HP2, SG1, SG2, REG1, REG2, Potion1Amount, Potion2Amount, Gadget1Amount, Gadget2Amount, STATICON1, STATICON2, Name1, Name2, icons, hpbar1, hpbar2, scbar1, scbar2, buttons);	
 				superChargeCheck(A, Super1, B, Super2);
+				if(A.stat == Status.Stunned || B.stat == Status.Stunned)
+					enableOrDisable(B, A, P2buttons, P1buttons, "ALL");
 			}
 		});
 		AtPanel1.add(Attack1); AtPanel2.add(Attack2);
@@ -1628,6 +1650,8 @@ public class Game {
 				enableOrDisable(A, B, P1buttons, P2buttons, "ALL");
 				isOver(A, B, HP1, HP2, SG1, SG2, REG1, REG2, Potion1Amount, Potion2Amount, Gadget1Amount, Gadget2Amount, STATICON1, STATICON2, Name1, Name2, icons, hpbar1, hpbar2, scbar1, scbar2, buttons);	
 				superChargeCheck(A, Super1, B, Super2);
+				if(A.stat == Status.Stunned || B.stat == Status.Stunned)
+					 enableOrDisable(A, B, P1buttons, P2buttons, "ALL");
 				}
 			}
 					
@@ -1660,6 +1684,8 @@ public class Game {
 				enableOrDisable(B, A, P2buttons, P1buttons, "ALL");
 				isOver(A, B, HP1, HP2, SG1, SG2, REG1, REG2, Potion1Amount, Potion2Amount, Gadget1Amount, Gadget2Amount, STATICON1, STATICON2, Name1, Name2, icons, hpbar1, hpbar2,scbar1, scbar2, buttons);	
 				superChargeCheck(A, Super1, B, Super2);
+				if(A.stat == Status.Stunned || B.stat == Status.Stunned)
+					enableOrDisable(B, A, P2buttons, P1buttons, "ALL");
 				}
 				
 			}
@@ -1683,15 +1709,16 @@ public class Game {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				SM.gadget.play();
+				SoundManager.gadget.play();
 				gadget(A, B);
 				superChargeCheck(A, Super1, B, Super2);
-				enableOrDisable(A, B, P1buttons, P2buttons, "GADGET_POTION");
+				enableOrDisable(A, B, P1buttons, P2buttons, "GADGET_POTION");				
 				update(A, B, HP1, HP2, SG1, SG2, REG1, REG2, Potion1Amount, Potion2Amount, Gadget1Amount, Gadget2Amount, cd1,cd2, STATICON1, STATICON2, icons, hpbar1, hpbar2,shbar1, shbar2,scbar1, scbar2,  hcbar1, hcbar2,TM, turn,Name1, Name2,abilityNamesArray, brawlerLabels, gamemode);
 				cooldownCheck(A, Spell1);
 				isOver(A, B, HP1, HP2, SG1, SG2, REG1, REG2, Potion1Amount, Potion2Amount, Gadget1Amount, Gadget2Amount, STATICON1, STATICON2, Name1, Name2, icons, hpbar1, hpbar2,scbar1, scbar2, buttons);	
 				superChargeCheck(A, Super1, B, Super2);
-				
+				if(A.stat == Status.Stunned || B.stat == Status.Stunned)
+					 enableOrDisable(A, B, P1buttons, P2buttons, "ALL");
 			}
 		});
 		
@@ -1712,14 +1739,17 @@ public class Game {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				SM.gadget.play();
+				SoundManager.gadget.play();
 				gadget(B, A);
 				superChargeCheck(A, Super1, B, Super2);
 				enableOrDisable(B, A, P2buttons,P1buttons , "GADGET_POTION");
+				
 				update(A, B, HP1, HP2, SG1, SG2, REG1, REG2, Potion1Amount, Potion2Amount, Gadget1Amount, Gadget2Amount, cd1,cd2, STATICON1, STATICON2, icons, hpbar1, hpbar2,shbar1, shbar2, scbar1, scbar2, hcbar1, hcbar2, TM, turn,Name1, Name2,abilityNamesArray, brawlerLabels, gamemode);
 				cooldownCheck(B, Spell2);
 				isOver(A, B, HP1, HP2, SG1, SG2, REG1, REG2, Potion1Amount, Potion2Amount, Gadget1Amount, Gadget2Amount, STATICON1, STATICON2, Name1, Name2, icons, hpbar1, hpbar2,scbar1, scbar2, buttons);	
 				superChargeCheck(A, Super1, B, Super2);
+				if(A.stat == Status.Stunned || B.stat == Status.Stunned)
+					enableOrDisable(B, A, P2buttons, P1buttons, "ALL");
 				
 			}
 		});
@@ -1794,7 +1824,7 @@ public class Game {
 		Potion1.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				SM.potion.play();
+				SoundManager.potion.play();
 				potion(A, B, potionA, Potion1, Super1);
 				superChargeCheck(A, Super1, B, Super2);
 				enableOrDisable(A, B, P1buttons, P2buttons, "GADGET_POTION");
@@ -1802,6 +1832,8 @@ public class Game {
 				cooldownCheck(A, Spell1);
 				isOver(A, B, HP1, HP2, SG1, SG2, REG1, REG2, Potion1Amount, Potion2Amount, Gadget1Amount, Gadget2Amount, STATICON1, STATICON2, Name1, Name2, icons, hpbar1, hpbar2, scbar1, scbar2, buttons);	
 				superChargeCheck(A, Super1, B, Super2);
+				if(A.stat == Status.Stunned || B.stat == Status.Stunned)
+					 enableOrDisable(A, B, P1buttons, P2buttons, "ALL");
 				
 			}
 		});
@@ -1874,7 +1906,7 @@ public class Game {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				
-				SM.potion.play();
+				SoundManager.potion.play();
 				potion(B, A, potionB, Potion2, Super2);
 				superChargeCheck(A, Super1, B, Super2);			
 				enableOrDisable(B, A, P2buttons, P1buttons, "GADGET_POTION");
@@ -1882,6 +1914,8 @@ public class Game {
 				cooldownCheck(B, Spell2);
 				isOver(A, B, HP1, HP2, SG1, SG2, REG1, REG2, Potion1Amount, Potion2Amount, Gadget1Amount, Gadget2Amount, STATICON1, STATICON2, Name1, Name2, icons, hpbar1, hpbar2, scbar1, scbar2, buttons);	
 				superChargeCheck(A, Super1, B, Super2);
+				if(A.stat == Status.Stunned || B.stat == Status.Stunned)
+					enableOrDisable(B, A, P2buttons, P1buttons, "ALL");
 			}
 		});
 			
@@ -1910,6 +1944,8 @@ public class Game {
 				update(A, B, HP1, HP2, SG1, SG2, REG1, REG2, Potion1Amount, Potion2Amount, Gadget1Amount, Gadget2Amount, cd1,cd2, STATICON1, STATICON2, icons, hpbar1, hpbar2,shbar1, shbar2,scbar1, scbar2,  hcbar1, hcbar2,TM, turn,Name1, Name2,abilityNamesArray, brawlerLabels, gamemode);
 				isOver(A, B, HP1, HP2, SG1, SG2, REG1, REG2, Potion1Amount, Potion2Amount, Gadget1Amount, Gadget2Amount, STATICON1, STATICON2, Name1, Name2, icons, hpbar1, hpbar2,scbar1, scbar2, buttons);		
 				superChargeCheck(A, Super1, B, Super2);
+				if(A.stat == Status.Stunned || B.stat == Status.Stunned)
+					 enableOrDisable(A, B, P1buttons, P2buttons, "ALL");
 			}
 		});
 		
@@ -1932,6 +1968,8 @@ public class Game {
 				update(A, B, HP1, HP2, SG1, SG2, REG1, REG2, Potion1Amount, Potion2Amount, Gadget1Amount, Gadget2Amount, cd1,cd2, STATICON1, STATICON2, icons, hpbar1, hpbar2,shbar1, shbar2, scbar1, scbar2, hcbar1, hcbar2, TM, turn,Name1, Name2,abilityNamesArray, brawlerLabels, gamemode);	
 				isOver(A, B, HP1, HP2, SG1, SG2, REG1, REG2, Potion1Amount, Potion2Amount, Gadget1Amount, Gadget2Amount, STATICON1, STATICON2, Name1, Name2, icons, hpbar1, hpbar2, scbar1, scbar2, buttons);	
 				superChargeCheck(A, Super1, B, Super2);
+				if(A.stat == Status.Stunned || B.stat == Status.Stunned)
+					enableOrDisable(B, A, P2buttons, P1buttons, "ALL");
 			}
 		});
 		SpellPanel1.add(Spell1); SpellPanel2.add(Spell2);
@@ -2201,6 +2239,9 @@ public class Game {
 		
 
 		update(A, B, HP1, HP2, SG1, SG2, REG1, REG2, Potion1Amount, Potion2Amount, Gadget1Amount, Gadget2Amount, cd1,cd2,STATICON1, STATICON2, icons, hpbar1, hpbar2,shbar1, shbar2,scbar1, scbar2,  hcbar1, hcbar2,TM, turn, Name1, Name2,abilityNamesArray, brawlerLabels, gamemode);
+		enableOrDisable(A, B, P1buttons, P2buttons, "ALL");
+		enableOrDisable(B, A, P2buttons, P1buttons, "ALL");
+		
 	}	
 	 
 	public static void attack(Brawler attacker, Brawler attacked) {	
@@ -2214,7 +2255,7 @@ public class Game {
 		
 		//Guarded
 		if (attacked.stat == Status.Guarded) {
-			new SoundManager().noten.play();
+			SoundManager.noten.play();
 			attacked.changeSTATUS(Status.Normal);
 			return;
 		}
@@ -2234,7 +2275,6 @@ public class Game {
 	
 	public static boolean superAbility(Brawler attacker, Brawler attacked, JButton Super1, JButton Super2, TurnManager TM) {
 
-	    SoundManager SM = new SoundManager();
 
 	    if (attacker.SuperCharge >= 100) {
 
@@ -2258,7 +2298,7 @@ public class Game {
 
 	        return true;
 	    } else {
-	        SM.noten.play();
+	    	SoundManager.noten.play();
 	        return false;
 	    }
 	}
@@ -2302,7 +2342,6 @@ public class Game {
 	
 	public static void eachTurnPassives(Brawler A, Brawler B) {
 		
-		SoundManager SM = new SoundManager();
 		
 		//Hypercharge
 		A.passiveHyperCharge();
@@ -2346,118 +2385,9 @@ public class Game {
 			if(B.spell.currentCooldown != 0)
 					B.spell.currentCooldown--;
 			
-			//Light Super
-			if(A.name.equals("Light")) {
-				Light temp = (Light) A;
-				if(temp.lightInt == 0) {
-					SM.light_superdeath.play();
-					B.HP = -9999;
-				}
-				if(temp.lightInt != -1) {
-					temp.lightInt--;
-				}
-			}
-			
-			if(B.name.equals("Light")) {
-				Light temp = (Light) B;
-				if(temp.lightInt == 0) {
-					SM.light_superdeath.play();
-					A.HP = -9999;
-				}
-				if(temp.lightInt != -1) {
-					temp.lightInt--;
-				}
-			}
-			
-			//Louis Super
-			if(A.name.equals("Louis")) {
-				Louis temp = (Louis) A;	
-				if(temp.passiveTurns == 0) {					
-					B.changeHP(temp.decreasedHP);
-					A.changeHP(-temp.decreasedHP/2);
-					temp.decreasedHP = 0;
-					temp.louis_superburst.play();
-					try {Thread.sleep(300);}catch(Exception e){}
-				}			
-				if(temp.passiveTurns >= 0)
-					temp.passiveTurns--;			
-			}
-			
-			if(B.name.equals("Louis")) {
-				Louis temp = (Louis) B;	
-				if(temp.passiveTurns == 0) {					
-					A.changeHP(temp.decreasedHP);
-					B.changeHP(-temp.decreasedHP/2);
-					temp.decreasedHP = 0;			
-					temp.louis_superburst.play();
-				}			
-				if(temp.passiveTurns >= 0)
-					temp.passiveTurns--;			
-			}
-			
-			//Olea Super
-			if(A.name.equals("Olea")) {
-				Olea temp = (Olea) A;
-				if(temp.superTurns > 0) {
-					B.changeHP(-temp.SuperDamage);
-					A.changeSTATUS(Status.Intoxicated);
-					B.changeSTATUS(Status.Intoxicated);
-					temp.superTurns--;
-				}
-			}
-			
-			if(B.name.equals("Olea")) {
-				Olea temp = (Olea) B;
-				if(temp.superTurns > 0) {
-					A.changeHP(-temp.SuperDamage);
-					A.changeSTATUS(Status.Intoxicated);
-					B.changeSTATUS(Status.Intoxicated);
-					temp.superTurns--;
-				}
-			}
-		
-			//Itan Super
-			if(A.name.equals("Itan")) {
-				Itan temp = (Itan) A;
-				if(temp.BeurcHP > 0) {
-					Itan.itan_super_attack.play();
-					B.changeHP(-temp.SuperDamage);
-					A.changeHP(10);
-				}
-			}
+			A.eachTurnChecks(B);
+			B.eachTurnChecks(A);
 
-			if(B.name.equals("Itan")) {
-				Itan temp = (Itan) B;
-				if(temp.BeurcHP > 0) {
-					Itan.itan_super_attack.play();
-					A.changeHP(-temp.SuperDamage);
-					B.changeHP(10);
-				}
-			}
-			
-			//Missy Passive
-			if(A.name == "Missy" && A.regen < 0)
-				A.changeREGEN(1);
-			if(B.name == "Missy" && B.regen < 0)
-				B.changeREGEN(1);
-			
-			//John Passive
-			if(A.name == "John" && A.HP < 0)
-				attack(A, B);
-			if(B.name == "John" && B.HP < 0)
-				attack(B, A);
-			
-			//Mark Passive
-			if(A.name == "Mark")
-				A.changeREGEN(-1);
-			if(B.name == "Mark")
-				B.changeREGEN(-1);
-			
-			//Crow Passive
-			if(A.name == "Crow" && B.regen < 0)
-				A.changeCHARGE(B.regen / -3);
-			if(B.name == "Crow" && A.regen < 0)
-				B.changeCHARGE(A.regen / -3);
 			
 			//Effective Spells
 			if(A.spell.effectTurn != -1) {
@@ -2467,7 +2397,7 @@ public class Game {
 					if(A.spell.effectTurn == 0)
 						break;
 					B.changeHP(-10);
-					SM.demonic_burn.play();
+					SoundManager.demonic_burn.play();
 					A.spell.effectTurn--;
 				break;
 				
@@ -2490,7 +2420,7 @@ public class Game {
 					if(B.spell.effectTurn == 0)
 						break;
 					A.changeHP(-10);
-					SM.demonic_burn.play();
+					SoundManager.demonic_burn.play();
 					B.spell.effectTurn--;
 				break;
 				
@@ -2542,13 +2472,12 @@ public class Game {
 							  JLabel[] brawlerLabels,
 							  String gamemode) {
 		
-		SoundManager SM = new SoundManager();
 		
 		//Overtime
 		TM.increaseTurn();
 		turn.setText("Turn " + TM.getTurn());
 		if(TM.getTurn() == 99)
-			SM.overtime.play();
+			SoundManager.overtime.play();
 		if(TM.getTurn() > 100) {
 			A.changeSTATUS(Status.Enraged);
 			B.changeSTATUS(Status.Enraged);	
@@ -2567,6 +2496,22 @@ public class Game {
 			A.changeREGEN(-1);
 			B.changeREGEN(-1);
 		}
+		
+		//Hypermode
+		if(gamemode.equals("Hypermode")) {
+			A.HyperCharge += 9999;
+			B.HyperCharge += 9999;
+		}
+		
+		//Nostalgic
+		if(gamemode.equals("Nostalgic")) {
+			A.gadgetCount = 0;
+			A.potionCount = 0;
+			A.spell.cooldown = 9999;
+			B.gadgetCount = 0;
+			B.potionCount = 0;
+			B.spell.cooldown = 9999;
+		} 
 		
 		//Each Turn Passive
 		eachTurnPassives(A, B);
@@ -2595,6 +2540,7 @@ public class Game {
 		Gadget2Amount.setText(B.gadgetCount + "/" + B.newInstance().gadgetCount);
 		cooldown1.setText(A.spell.currentCooldown+"");
 		cooldown2.setText(B.spell.currentCooldown+"");
+				
 		
 		if (A.stat == Status.Stunned)
 			STATICON1.setIcon(icons[1]);
@@ -2622,7 +2568,7 @@ public class Game {
 		if (A.isHypercharged) {
 			Name1.setForeground(new Color(181,11,204));
 		}
-		else {
+		else{
 			Name1.setForeground(Color.black);
 		}
 		
@@ -2654,6 +2600,19 @@ public class Game {
 		}else {
 			Name2.setForeground(Color.black);
 		}
+		
+		//Color
+		if(A.name.equals("Ritz")) {
+			Ritz temp = (Ritz) A;
+			if(temp.passive > 0)
+				Name1.setForeground(Color.red);
+		}
+				
+		if(B.name.equals("Ritz")) {
+			Ritz temp = (Ritz) B;
+			if(temp.passive > 0)
+				Name2.setForeground(Color.red);
+		}		
 		
 	}
 	
@@ -2741,6 +2700,33 @@ public class Game {
 						brawlerLabels[5].setText("");
 				}
 				
+				//Todd
+				if(A.name.equals("Todd")) {				
+					Todd temp = (Todd) A;
+					if (temp.superTurns >= 0) {
+						brawlerLabels[4].setText(temp.superTurns+"");
+						brawlerLabels[4].setVisible(true);
+						brawlerLabels[4].setFont(new Font("Times New Roman", Font.BOLD, 20));
+						brawlerLabels[4].setHorizontalTextPosition(JLabel.CENTER);
+						brawlerLabels[4].setVerticalTextPosition(JLabel.CENTER);
+					}					
+					else
+						brawlerLabels[4].setText("");
+				}
+				
+				if(B.name.equals("Todd")) {				
+					Todd temp = (Todd) B;
+					if (temp.superTurns >= 0) {
+						brawlerLabels[5].setText(temp.superTurns+"");
+						brawlerLabels[5].setVisible(true);
+						brawlerLabels[5].setFont(new Font("Times New Roman", Font.BOLD, 20));
+						brawlerLabels[5].setHorizontalTextPosition(JLabel.CENTER);
+						brawlerLabels[5].setVerticalTextPosition(JLabel.CENTER);
+					}					
+					else
+						brawlerLabels[5].setText("");
+				}
+				
 				//Light
 				if(A.name.equals("Light")) {				
 					Light temp = (Light) A;
@@ -2771,7 +2757,7 @@ public class Game {
 				//Louis
 				if(A.name.equals("Louis")) {				
 					Louis temp = (Louis) A;
-					if (temp.passiveTurns > 0) {
+					if (temp.passiveTurns >= 0) {
 						brawlerLabels[4].setText(temp.passiveTurns+"");
 						brawlerLabels[4].setVisible(true);
 						brawlerLabels[4].setFont(new Font("Times New Roman", Font.BOLD, 20));
@@ -2784,8 +2770,35 @@ public class Game {
 				
 				if(B.name.equals("Louis")) {				
 					Louis temp = (Louis) B;
-					if (temp.passiveTurns > 0) {
+					if (temp.passiveTurns >= 0) {
 						brawlerLabels[5].setText(temp.passiveTurns+"");
+						brawlerLabels[5].setVisible(true);
+						brawlerLabels[5].setFont(new Font("Times New Roman", Font.BOLD, 20));
+						brawlerLabels[5].setHorizontalTextPosition(JLabel.CENTER);
+						brawlerLabels[5].setVerticalTextPosition(JLabel.CENTER);
+					}					
+					else
+						brawlerLabels[5].setText("");
+				}
+				
+				//Ritz
+				if(A.name.equals("Ritz")) {				
+					Ritz temp = (Ritz) A;
+					if (temp.passive > 0) {
+						brawlerLabels[4].setText(temp.passive+"");
+						brawlerLabels[4].setVisible(true);
+						brawlerLabels[4].setFont(new Font("Times New Roman", Font.BOLD, 20));
+						brawlerLabels[4].setHorizontalTextPosition(JLabel.CENTER);
+						brawlerLabels[4].setVerticalTextPosition(JLabel.CENTER);
+					}					
+					else
+						brawlerLabels[4].setText("");
+				}
+				
+				if(B.name.equals("Ritz")) {				
+					Ritz temp = (Ritz) B;
+					if (temp.passive > 0) {
+						brawlerLabels[5].setText(temp.passive+"");
 						brawlerLabels[5].setVisible(true);
 						brawlerLabels[5].setFont(new Font("Times New Roman", Font.BOLD, 20));
 						brawlerLabels[5].setHorizontalTextPosition(JLabel.CENTER);
@@ -2811,6 +2824,25 @@ public class Game {
 					Jester temp = (Jester) B;
 					brawlerLabels[5].setIcon(stackIcon);
 					brawlerLabels[5].setText(temp.normalAttackCounter+"");
+					brawlerLabels[5].setFont(new Font("Times New Roman", Font.BOLD, 20));
+					brawlerLabels[5].setHorizontalTextPosition(JLabel.CENTER);
+					brawlerLabels[5].setVerticalTextPosition(JLabel.CENTER);
+				}
+				
+				//Gash
+				if(A.name.equals("Gash")) {
+					Gash temp = (Gash) A;
+					brawlerLabels[4].setIcon(stackIcon);
+					brawlerLabels[4].setText(temp.poisons.size()+"");
+					brawlerLabels[4].setFont(new Font("Times New Roman", Font.BOLD, 20));
+					brawlerLabels[4].setHorizontalTextPosition(JLabel.CENTER);
+					brawlerLabels[4].setVerticalTextPosition(JLabel.CENTER);
+				}
+				
+				if(B.name.equals("Gash")) {
+					Gash temp = (Gash) B;
+					brawlerLabels[5].setIcon(stackIcon);
+					brawlerLabels[5].setText(temp.poisons.size()+"");
 					brawlerLabels[5].setFont(new Font("Times New Roman", Font.BOLD, 20));
 					brawlerLabels[5].setHorizontalTextPosition(JLabel.CENTER);
 					brawlerLabels[5].setVerticalTextPosition(JLabel.CENTER);
@@ -2906,6 +2938,44 @@ public class Game {
 					Giran temp = (Giran) B;
 					brawlerLabels[5].setIcon(stackIcon);
 					brawlerLabels[5].setText(temp.superstack+"");
+					brawlerLabels[5].setFont(new Font("Times New Roman", Font.BOLD, 20));
+					brawlerLabels[5].setHorizontalTextPosition(JLabel.CENTER);
+					brawlerLabels[5].setVerticalTextPosition(JLabel.CENTER);
+				}
+				
+				//Betty
+				if(A.name.equals("Betty")) {
+					Betty temp = (Betty) A;
+					brawlerLabels[4].setIcon(stackIcon);
+					brawlerLabels[4].setText(temp.cloneCount+"");
+					brawlerLabels[4].setFont(new Font("Times New Roman", Font.BOLD, 20));
+					brawlerLabels[4].setHorizontalTextPosition(JLabel.CENTER);
+					brawlerLabels[4].setVerticalTextPosition(JLabel.CENTER);
+				}
+				
+				if(B.name.equals("Betty")) {
+					Betty temp = (Betty) B;
+					brawlerLabels[5].setIcon(stackIcon);
+					brawlerLabels[5].setText(temp.cloneCount+"");
+					brawlerLabels[5].setFont(new Font("Times New Roman", Font.BOLD, 20));
+					brawlerLabels[5].setHorizontalTextPosition(JLabel.CENTER);
+					brawlerLabels[5].setVerticalTextPosition(JLabel.CENTER);
+				}
+				
+				//Jack
+				if(A.name.equals("Jack")) {
+					Jack temp = (Jack) A;
+					brawlerLabels[4].setIcon(stackIcon);
+					brawlerLabels[4].setText(temp.passive+"");
+					brawlerLabels[4].setFont(new Font("Times New Roman", Font.BOLD, 20));
+					brawlerLabels[4].setHorizontalTextPosition(JLabel.CENTER);
+					brawlerLabels[4].setVerticalTextPosition(JLabel.CENTER);
+				}
+				
+				if(B.name.equals("Jack")) {
+					Jack temp = (Jack) B;
+					brawlerLabels[5].setIcon(stackIcon);
+					brawlerLabels[5].setText(temp.passive+"");
 					brawlerLabels[5].setFont(new Font("Times New Roman", Font.BOLD, 20));
 					brawlerLabels[5].setHorizontalTextPosition(JLabel.CENTER);
 					brawlerLabels[5].setVerticalTextPosition(JLabel.CENTER);
@@ -3152,8 +3222,6 @@ public class Game {
 			  ChargeBar scbar2,
 			  ArrayList<JButton> buttons) {
 		
-		SoundManager SM = new SoundManager();
-		
 		if (A.HP < 0) {
 			hpbar1.updateHealth(A);
 			hpbar2.updateHealth(B);
@@ -3170,7 +3238,7 @@ public class Game {
 			for (JButton but : buttons)
 				but.setEnabled(false);
 			Name2.setForeground(Color.yellow);
-			SM.outro.play();
+			SoundManager.outro.play();
 			if(A.spell.name == "Demonic Cuteness" || A.spell.name == "Hypercharge") {
 				A.spell.effectTurn = 0;
 			}
@@ -3195,7 +3263,7 @@ public class Game {
 			for (JButton but : buttons)
 				but.setEnabled(false);
 			Name1.setForeground(Color.yellow);
-			SM.outro.play();
+			SoundManager.outro.play();
 			if(A.spell.name == "Demonic Cuteness" || A.spell.name == "Hypercharge") {
 				A.spell.effectTurn = 0;
 			}
@@ -3230,7 +3298,6 @@ public class Game {
 	
 	public static void potion(Brawler user, Brawler enemy, String potion, JButton Potion1, JButton Super1) {
 		
-			SoundManager SM = new SoundManager();
 		
 			int initcharge = user.SuperCharge;
 		
@@ -3266,7 +3333,7 @@ public class Game {
 				if(enemy.name != "Simon")
 					if (enemy.stat != Status.Guarded) {
 						enemy.changeSTATUS(Status.Weakened);
-						SM.weakSE.play();
+						SoundManager.weakSE.play();
 					}else enemy.changeSTATUS(Status.Normal);
 				
 				user.changePOTCNT(-1);
@@ -3279,7 +3346,7 @@ public class Game {
 			case "Dark Red":
 				user.changeSTATUS(Status.Strengthened);
 				user.changePOTCNT(-1);
-				SM.strongSE.play();
+				SoundManager.strongSE.play();
 				if(user.potionCount <= 0) {
 					Potion1.setBackground(new Color(66, 66, 66));
 					Potion1.setForeground(Color.white);
@@ -3311,7 +3378,7 @@ public class Game {
 					}
 				break;
 			case "Dark Gray":
-				SM.guardian.play();
+				SoundManager.guardian.play();
 				user.shield += 50;
 				user.changePOTCNT(-1);
 				if(user.potionCount <= 0) {
@@ -3321,7 +3388,7 @@ public class Game {
 					}
 				break;
 			case "Brown":
-				SM.demonic_burn.play();
+				SoundManager.demonic_burn.play();
 				enemy.changeHP(-40);
 				user.changePOTCNT(-1);
 				if(user.potionCount <= 0) {
@@ -3343,134 +3410,17 @@ public class Game {
 			}
 			
 			if(user.SuperCharge > 99 && initcharge < 100)
-				SM.charged.play();
+				SoundManager.charged.play();
 		
 	}
 
 	public static void spell(Brawler user, Brawler enemy, Spell spell) {
 		
-		SoundManager SM = new SoundManager();
-
-	    Random ran = new Random();
-
 	    int enemyHPbeforeSpell = enemy.shield + enemy.HP;
 	    Status enemyStatBeforeSpell = enemy.stat;
 		 
-		switch (spell.name) {
-		
-		case "Static Shock":
-			SM.static_damage.play();
-			int num = user.SuperCharge;
-			if (num >= 100) {
-				enemy.changeSTATUS(Status.Stunned);
-				SM.static_stun.play();
-			}
-			enemy.changeHP((int)(-num*0.5));
-			user.changeCHARGE(-num);
-			break;
-		case "Redemption":
-			SM.redemption1.play();
-			SM.redemption2.play();
-			user.changeHP(40);
-			enemy.changeHP(-40);
-			break;
+		Spell.doSpell(user, enemy, spell);
 			
-		case "Heart of Steel":
-			SM.Heartsteel.play();
-			enemy.changeHP( (int)(user.HP * -0.125) );
-			break;
-			
-		case "Glacial Gale":
-			SM.GlacialGale.play();
-			enemy.changeHP(-20);
-			enemy.changeSTATUS(Status.Frosty);
-			
-			if(ran.nextInt(0,2) == 1) {
-				enemy.changeSTATUS(Status.Stunned);
-				enemy.changeHP(-40);
-				SM.GlacialGaleStun.play();
-			}
-			break;
-			
-		case "Electric Storm":
-			enemy.changeHP(-25);
-			SM.electro1.play();
-					
-			if(ran.nextInt(0,3) % 2 == 0) {
-				try {Thread.sleep(300);}catch(InterruptedException e){}
-				enemy.changeHP(-50);
-				SM.electro2.play();
-				
-				if(ran.nextInt(0,3) == 1) {
-					try {Thread.sleep(300);}catch(InterruptedException e){}
-					enemy.changeHP(-100);
-					SM.electro3.play();
-				}
-			}
-			break;
-			
-		case "Guardian":
-			SM.guardian.play();
-			user.changeSHIELD(125);
-			break;
-			
-		case "Prixie":
-			if (ran.nextInt(0,2) == 0) {
-				SM.prixieheal.play();
-				user.changeHP(20);
-				user.changeSHIELD(20);
-			}
-			else {
-				SM.prixiedmg.play();
-				enemy.changeHP(-20);
-				enemy.changeSTATUS(Status.Weakened); 
-			}
-			break;
-		
-		case "Last Strike":
-			SM.laststrikeREADY.play();
-			try {Thread.sleep(500);}catch(InterruptedException e){}
-			int count = 0;
-			for(int i = 0; i < 20; i++) 
-				if(ran.nextInt(0,2) == 0)
-					count++;
-			
-			for(int i = 0; i < count; i++) {				
-				switch(ran.nextInt(0,3)) {
-				case 0: SM.laststrike1.play(); try {Thread.sleep(125);}catch(InterruptedException e){} break;
-				case 1: SM.laststrike2.play(); try {Thread.sleep(125);}catch(InterruptedException e){} break;
-				case 2: SM.laststrike3.play(); try {Thread.sleep(125);}catch(InterruptedException e){} break;
-				}
-				enemy.changeHP(-10);	
-			}
-				
-			break;	
-		
-		case "Demonic Cuteness":
-			SM.demonic_cuteness.play();
-			user.spell.effectTurn = 5;
-			break;
-		case "Mirror":
-			SM.mirror.play();
-			if(enemy.spell.name == "Mirror") {
-				try {Thread.sleep(355);}catch(InterruptedException e){}
-				SM.mirror.play();
-			}
-			else {				
-				user.spell.name = enemy.spell.name;
-				spell(user, enemy, user.spell);
-			}
-			break;
-		case "Meditation Medication":
-			SoundManager.medmed.play();
-			user.spell.effectTurn = 5;
-			break;
-			
-			
-		//end of switch
-		}
-		
-		
 		// Check if the spell dealt damage to the enemy
 	    int enemyHPafterSpell = enemy.shield + enemy.HP;
 	    boolean spellDealtDamage = (enemyHPafterSpell < enemyHPbeforeSpell);
@@ -3588,11 +3538,11 @@ public class Game {
 							+ brawler.name.toUpperCase(Locale.US) + " " + brawler.title.toUpperCase(Locale.US)+
 							"<br/>HP: " + brawler.HP + "<br/>REGENERATION: " + brawler.regen
 							+ "<br/><br/>ATTACK: Todd swings his sword to the ground and deals " + atk + " damage"
-							+ "<br/><br/>SUPER: Todd attacks and uses his commitment to the kingdom as sheer power to either double his damage or heal himself. "
-							+ "(" + HYPERCHARGE + ") Todd's damage and/or heal doubles!"
+							+ "<br/><br/>SUPER: Todd raises his shield and takes/deals %50 less damage for 5 turns, then he charges forth to deal " + sup + " damage and make the enemy " + STUNNED
+							+ " (" + HYPERCHARGE + ") Todd's super last a little longer; doesn't reduce his damage and further decreases the damage he takes"
 							+ "<br/><br/>GADGETS: "
 							+ "<br/>First Gadget: Todd drinks some regional beer to get some Regeneration"
-							+ "<br/>Second Gadget: Todd remembers his fallen comarades and increases his ATK and becomes " + STRENGTHENED
+							+ "<br/>Second Gadget: Todd remembers his fallen comrades and increases his ATK and becomes " + ENRAGED
 							+ "<br/><br/>PASSIVE (ALWAYS READY): Todd starts the match with some shield"
 							);
 							break;
@@ -3639,7 +3589,7 @@ public class Game {
 							+ brawler.name.toUpperCase(Locale.US) + " " + brawler.title.toUpperCase(Locale.US)+
 							"<br/>HP: " + brawler.HP + "<br/>REGENERATION: " + brawler.regen
 							+ "<br/><br/>ATTACK: Susan kicks the enemy and deals " + atk + " damage"
-							+ "<br/><br/>SUPER: Susan uses all her force to blow a kick that " + STUNS + " and deals " + sup + " damage"
+							+ "<br/><br/>SUPER: Susan uses all her force to blow a kick that " + STUNS + " and deals " + sup + " damage ( " + HYPERCHARGE + " ) Susan kicks twice."
 							+ "<br/><br/>GADGETS: "
 							+ "<br/>First Gadget: Susan meditates and rests her legs. She heals a little"
 							+ "<br/>Second Gadget: Susan blows 2 kicks back to back and deals some damage"
@@ -3795,8 +3745,8 @@ public class Game {
 							+ brawler.name.toUpperCase(Locale.US) + " " + brawler.title.toUpperCase(Locale.US)+
 							"<br/>HP: " + brawler.HP + "<br/>REGENERATION: " + brawler.regen
 							+ "<br/><br/>ATTACK: Betty throws some glitter(?) to the enemy and deals " + atk + " damage"
-							+ "<br/><br/>SUPER: Betty creates a clone that mimics her enemy and uses their super ability! All by herself! (" + HYPERCHARGE + ") "
-									+ "The clone is hypercharged too!"
+							+ "<br/><br/>SUPER: Betty creates a clone that mimics her enemy and uses their super ability! All by herself! With each use,"
+							+ " Betty creates one more clone! They turn into dust that deal " + atk + " damage before they vanish! (" + HYPERCHARGE + ") The clones are hypercharged too!"
 							+ "<br/><br/>GADGETS: <br/>First Gadget: Betty forces the enemy to attack theirselves! "
 							+ "<br/>Second Gadget: Betty creates a stronger copy of the enemy's potion and uses it!"
 							+ "<br/><br/>PASSIVE (MAGICAL RESISTANCE): Betty can not get a Soft-Negative Status effect"
@@ -3807,7 +3757,7 @@ public class Game {
 							+ brawler.name.toUpperCase(Locale.US) + " " + brawler.title.toUpperCase(Locale.US)+
 							"<br/>HP: " + brawler.HP + "<br/>REGENERATION: " + brawler.regen
 							+ "<br/><br/>ATTACK: Nanni charges her pulsaters and shoots them. Each has a 1/3 chance to attack and deals " + atk + " damage! But at least one always hits."
-							+ "<br/><br/>SUPER: Nanni charges her laser and deals " + sup + " damage"
+							+ "<br/><br/>SUPER: Nanni charges her laser and deals " + sup + " damage! (" + HYPERCHARGE + ") The laser deals %50 more damage"
 							+ "<br/><br/>GADGETS: <br/>First Gadget: Nanni gets " + ENRAGED + "! Out of fear, the enemy becomes " + WEAKENED +  ". "
 							+ "<br/>Second Gadget: Nanni overcharges and " + STUNS + " the enemy."
 							+ "<br/><br/>PASSIVE (ENERGY CONVERSION): If Nanni gets " + STUNNED + ", she gets some shield."
@@ -3999,6 +3949,43 @@ public class Game {
 							+ "<br/>First Gadget: Pine trades his super charge with the enemy"
 							+ "<br/>Second Gadget: Pine's next super also forces the enemy to use their super on themselves if they have enough charges!"
 							+ "<br/><br/>PASSIVE (SADIST): Every time Pine sees the enemy hurting, he heals by 10, excluding spells and regeneration."
+							);
+							break; 	
+				case "Ritz":
+					description.setText("<html><p style=\"width:600px\">"
+							+ brawler.name.toUpperCase(Locale.US) + " " + brawler.title.toUpperCase(Locale.US)+
+							"<br/>HP: " + brawler.HP + "<br/>REGENERATION: " + brawler.regen
+							+ "<br/><br/>ATTACK: Ritz throws his punches that hit like bear claws! It deals " + atk + " damage."
+							+ "<br/><br/>SUPER: Ritz becomes uncontrollable for some turns! He's immune to weak negatives effects, deals twice as much damage"
+							+ " and gets hurt half! (" + HYPERCHARGE + ") The super lasts %50 more turns!"
+							+ "<br/><br/>GADGETS: "
+							+ "<br/>First Gadget: Ritz adds 3 more turns to his super"
+							+ "<br/>Second Gadget: Ritz becomes " + ENRAGED
+							+ "<br/><br/>PASSIVE (PAPA BEAR): Ritz have a chance to become " + ENRAGED + " each normal attack"
+							);
+							break; 		
+				case "Gash":
+					description.setText("<html><p style=\"width:600px\">"
+							+ brawler.name.toUpperCase(Locale.US) + " " + brawler.title.toUpperCase(Locale.US)+
+							"<br/>HP: " + brawler.HP + "<br/>REGENERATION: " + brawler.regen
+							+ "<br/><br/>ATTACK: Gash poisons the enemy with some darts... It deals " + atk + " damage every turn for 10 turns, it can stack!"
+							+ "<br/><br/>SUPER: Gash heals himself and deals damage to the enemy for " + sup + ". (" + HYPERCHARGE + ") Gash makes himself " + STRENGTHENED + " and the enemy " + WEAKENED
+							+ "<br/><br/>GADGETS: "
+							+ "<br/>First Gadget: Gash increases existing poisons' duration by 3 turns"
+							+ "<br/>Second Gadget: Gash's next attack sticks around for 20 turns"
+							+ "<br/><br/>PASSIVE (POISON BOMB): When Gash dies, all poison darts explode and deal 20 damage"
+							);
+							break;
+				case "Jack":
+					description.setText("<html><p style=\"width:600px\">"
+							+ brawler.name.toUpperCase(Locale.US) + " " + brawler.title.toUpperCase(Locale.US)+
+							"<br/>HP: " + brawler.HP + "<br/>REGENERATION: " + brawler.regen
+							+ "<br/><br/>ATTACK: jack slaps the enemy and deals " + atk + " damage"
+							+ "<br/><br/>SUPER: jack sharpenes his stingers. " + HYPERCHARGE + ": jack throws 2 stingers"
+							+ "<br/><br/>GADGETS: "
+							+ "<br/>First Gadget: jack throws a stinger"
+							+ "<br/>Second Gadget: jack eats and weakenes his stingers to heal"
+							+ "<br/><br/>PASSIVE (defense): when jack gets hurt, he releases a stinger and gets some super charge"
 							);
 							break; 	
 					

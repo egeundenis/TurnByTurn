@@ -37,6 +37,12 @@ public class Mark extends Brawler {
         	this.changeREGEN(3);
     }
 	
+	public void eachTurnChecks(Brawler enemy) {
+    	
+		this.changeREGEN(-1);
+    	
+    }
+	
 	@Override
 	public
     void attackAbility(Brawler enemy) {

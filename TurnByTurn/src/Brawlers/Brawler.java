@@ -43,7 +43,10 @@ public abstract class Brawler {
 			new Olea(new Build()),
 			new Itan(new Build()),
 			new Louis(new Build()),
-			new Pine(new Build())
+			new Pine(new Build()),
+			new Ritz(new Build()),
+			new Gash(new Build()),
+			new Jack(new Build())
 	};
 
 	public String name;
@@ -59,6 +62,9 @@ public abstract class Brawler {
     public Status stat;
     public  Build build;
     public Spell spell;
+    
+    public Brawler enemy;
+    public boolean isNormalModified = false;
     
     public String briefExpl;
     
@@ -89,7 +95,7 @@ public abstract class Brawler {
 
     public abstract void reset();
  
-    //changeHP Different Brawlers: Anvaa Zach Imelda Vollie Itan Louis
+    //changeHP Different Brawlers: Anvaa Zach Imelda Vollie Itan Louis Ritz Jack Todd
     public void changeHP(double x) {
 
         if (x < 0 && shield != 0) {
@@ -112,7 +118,7 @@ public abstract class Brawler {
             else
                 this.HP += (int) (x * (isHypercharged ? 0.8 : 1));
         }
-    }
+    }   
 
     public void regenerate() {
         this.HP += this.regen;
@@ -127,10 +133,12 @@ public abstract class Brawler {
 
     public abstract void changeSUPATK(int x);
 
+    
+    //different for Louis, Ritz
     public void changeCHARGE(double x) {
 
-        if (this.SuperCharge - x < 100 && this.SuperCharge + x > 99)
-            new SoundManager().charged.play();
+        if (this.SuperCharge - x < 100 && this.SuperCharge + x > 99 && this.SuperCharge < 100)
+            SoundManager.charged.play();
 
         this.SuperCharge += x;
         if (this.SuperCharge > 200)
@@ -195,7 +203,7 @@ public abstract class Brawler {
 
     public abstract void changePOTCNT(int x);
     
-    //Different change status brawlers: Simon Betty Vollie Imelda Nanni  
+    //Different change status brawlers: Simon Betty Vollie Imelda Nanni Ritz
     public void changeSTATUS(Status x) {
         this.stat = x;
     }
@@ -203,6 +211,10 @@ public abstract class Brawler {
     public abstract void changeSHIELD(int x);
     
     abstract public String getExplanation();
+    
+    public void eachTurnChecks(Brawler enemy) {
+    	//nothin
+    }
     
     public static Brawler GenerateBrawler(String str) {
     	switch(str) {
@@ -237,6 +249,9 @@ public abstract class Brawler {
     	case "Itan": return new Itan(new Build());
     	case "Louis": return new Louis(new Build());
     	case "Pine": return new Pine(new Build());
+    	case "Ritz": return new Ritz(new Build());
+    	case "Gash": return new Gash(new Build());
+    	case "Jack": return new Jack(new Build());
     	
     	default: return new Todd(new Build());
     	

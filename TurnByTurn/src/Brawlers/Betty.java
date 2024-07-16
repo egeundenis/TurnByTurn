@@ -8,7 +8,9 @@ import main.Status;
 public class Betty extends Brawler {
 	
 	SoundEffect betty_attack = new SoundEffect("res/audio/betty_attack.wav");
+	SoundEffect betty_passive = new SoundEffect("res/audio/betty_passive.wav");
 	SoundEffect betty_super = new SoundEffect("res/audio/betty_super.wav");
+	public int cloneCount = 1;
 
     public Betty(Build build) {
         super(build);
@@ -52,37 +54,27 @@ public class Betty extends Brawler {
 	public
     void superAbility(Brawler enemy) {
         betty_super.play();
-        
+        try {Thread.sleep(1000);} catch (InterruptedException e) {}
         if(enemy.name == "Betty") {
         	betty_super.play();
         	return;
         }
+         
+        for(int i = 0; i < this.cloneCount; i++) {   	
+        	Brawler temp = enemy.newInstance();
+        	temp.enemy = enemy;
+            temp.isHypercharged = this.isHypercharged;
+            temp.changeCHARGE(100);
+            temp.superAbility(enemy);           
+            try {Thread.sleep(700);} catch (InterruptedException e) {}
+            enemy.changeHP(-this.AttackDamage);
+            betty_passive.play();
+            try {Thread.sleep(500);} catch (InterruptedException e) {}
+            
+        }
         
-        
-        
-        Brawler temp = enemy.newInstance();
-        temp.changeHP(-temp.HP/2);
-        temp.changeREGEN(-temp.regen);
-        temp.isHypercharged = this.isHypercharged;
-        
-        int prevHP = temp.HP;
-        int prevREGEN = temp.regen;
-        int prevSHIELD = temp.shield;
-        int prevATK = temp.AttackDamage;
-        
-        temp.superAbility(enemy);
-        
-        int nowHP = temp.HP;
-        int nowREGEN = temp.regen;
-        int nowSHIELD = temp.shield;
-        int nowATK = temp.AttackDamage;
-        Status nowSTATUS = temp.stat;
-        
-        this.changeHP(nowHP-prevHP);
-        this.changeREGEN(nowREGEN-prevREGEN);
-        this.changeSHIELD(nowSHIELD-prevSHIELD);
-        this.changeATK(nowATK-prevATK);
-        this.changeSTATUS(nowSTATUS);
+        this.cloneCount++;
+
     }
     
     @Override

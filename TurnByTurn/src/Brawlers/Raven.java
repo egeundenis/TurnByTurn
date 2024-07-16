@@ -36,6 +36,13 @@ public class Raven extends Brawler {
         if("REGEN GEAR".equals(build.gearChoise))
         	this.regen += 3;
     }
+    
+    public void eachTurnChecks(Brawler enemy) {
+    	
+    	if(enemy.regen < 0)
+    		this.changeCHARGE(enemy.regen / -3);
+    	
+    }
 
     @Override
 	public

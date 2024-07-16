@@ -1,5 +1,9 @@
 package main;
 
+import java.util.Random;
+
+import Brawlers.Brawler;
+
 public class Spell {
 
 	public int currentCooldown = 0;
@@ -26,15 +30,15 @@ public class Spell {
 			doesSkip = false;
 			break;
 		case "Glacial Gale":
-			cooldown = 20;
+			cooldown = 25;
 			effectTurn = -1;
 			break;
 		case "Electric Storm":
-			cooldown = 15;
+			cooldown = 20;
 			effectTurn = -1;
 			break;
 		case "Guardian":
-			cooldown = 20;
+			cooldown = 25;
 			effectTurn = -1;
 			break;
 		case "Prixie":
@@ -63,5 +67,126 @@ public class Spell {
 		
 	}
 
+	public static void doSpell(Brawler user, Brawler enemy, Spell spell) {
+		
+	    Random ran = new Random();
+	    
+		switch (spell.name) {
+		
+		case "Static Shock":
+			SoundManager.static_damage.play();
+			int num = user.SuperCharge;
+			if (num >= 100) {
+				enemy.changeSTATUS(Status.Stunned);
+				SoundManager.static_stun.play();
+			}
+			enemy.changeHP((int)(-num*0.5));
+			user.changeCHARGE(-num);
+			break;
+		case "Redemption":
+			SoundManager.redemption1.play();
+			SoundManager.redemption2.play();
+			user.changeHP(40);
+			enemy.changeHP(-40);
+			break;
+			
+		case "Heart of Steel":
+			SoundManager.Heartsteel.play();
+			enemy.changeHP( (int)(user.HP * -0.10) );
+			break;
+			
+		case "Glacial Gale":
+			SoundManager.GlacialGale.play();
+			enemy.changeHP(-20);
+			enemy.changeSTATUS(Status.Frosty);
+			
+			if(ran.nextInt(0,2) == 1) {
+				enemy.changeSTATUS(Status.Stunned);
+				enemy.changeHP(-40);
+				SoundManager.GlacialGaleStun.play();
+			}
+			break;
+			
+		case "Electric Storm":
+			enemy.changeHP(-25);
+			SoundManager.electro1.play();
+					
+			if(ran.nextInt(0,3) % 2 == 0) {
+				try {Thread.sleep(300);}catch(InterruptedException e){}
+				enemy.changeHP(-50);
+				SoundManager.electro2.play();
+				
+				if(ran.nextInt(0,3) == 1) {
+					try {Thread.sleep(300);}catch(InterruptedException e){}
+					enemy.changeHP(-100);
+					SoundManager.electro3.play();
+				}
+			}
+			break;
+			
+		case "Guardian":
+			SoundManager.guardian.play();
+			user.changeSHIELD(125);
+			break;
+			
+		case "Prixie":
+			if (ran.nextInt(0,2) == 0) {
+				SoundManager.prixieheal.play();
+				user.changeHP(20);
+				user.changeSHIELD(20);
+			}
+			else {
+				SoundManager.prixiedmg.play();
+				enemy.changeHP(-20);
+				enemy.changeSTATUS(Status.Weakened); 
+			}
+			break;
+		
+		case "Last Strike":
+			SoundManager.laststrikeREADY.play();
+			try {Thread.sleep(500);}catch(InterruptedException e){}
+			int count = 0;
+			for(int i = 0; i < 20; i++) 
+				if(ran.nextInt(0,2) == 0)
+					count++;
+			
+			for(int i = 0; i < count; i++) {				
+				switch(ran.nextInt(0,3)) {
+				case 0: SoundManager.laststrike1.play(); try {Thread.sleep(125);}catch(InterruptedException e){} break;
+				case 1: SoundManager.laststrike2.play(); try {Thread.sleep(125);}catch(InterruptedException e){} break;
+				case 2: SoundManager.laststrike3.play(); try {Thread.sleep(125);}catch(InterruptedException e){} break;
+				}
+				enemy.changeHP(-10);	
+			}
+				
+			break;	
+		
+		case "Demonic Cuteness":
+			SoundManager.demonic_cuteness.play();
+			user.spell.effectTurn = 5;
+			break;
+			
+		case "Mirror":
+			SoundManager.mirror.play();
+			if(enemy.spell.name == "Mirror") {
+				try {Thread.sleep(355);}catch(InterruptedException e){}
+				SoundManager.mirror.play();
+			}
+			else {				
+				user.spell.name = enemy.spell.name;
+				doSpell(user, enemy, spell);
+			}
+			break;
+			
+		case "Meditation Medication":
+			SoundManager.medmed.play();
+			user.spell.effectTurn = 5;
+			break;
+			
+			
+		//end of switch
+		}
+	}
+	
 	
 }

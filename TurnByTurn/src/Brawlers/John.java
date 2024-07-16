@@ -46,6 +46,13 @@ public class John extends Brawler {
         	this.regen += 3;
     }
     
+    public void eachTurnChecks(Brawler enemy) {
+    	
+    	if(this.HP < 0)
+			attackAbility(enemy);
+    	
+    }
+    
     @Override
 	public
     void attackAbility(Brawler enemy) {

@@ -36,6 +36,13 @@ public class Missy extends Brawler{
         if("REGEN GEAR".equals(build.gearChoise))
         	this.regen += 3;
     }
+	
+	public void eachTurnChecks(Brawler enemy) {
+    	
+		if(this.regen < 0)
+			this.changeREGEN(1);
+    	
+    }
 
     @Override
 	public

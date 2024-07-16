@@ -42,7 +42,7 @@ public class Amber extends Brawler {
         super(build);
         this.build = build;
         this.name = "Amber";
-        this.HP = 550;
+        this.HP = 500;
         this.AttackDamage = 120;
         this.SuperCharge = 0;
         this.HyperCharge = 0;
@@ -121,7 +121,7 @@ public class Amber extends Brawler {
     				enemy.changeHP(-this.AttackDamage*statper/12);
     	    		this.changeCHARGE(this.AttackDamage*statper/12);
     			}
-    			this.changeSHIELD(10);
+    			this.changeSHIELD(5);
     			currentWeapon = 2;
     		break;
     		
@@ -141,7 +141,7 @@ public class Amber extends Brawler {
     			}else 
     				enemy.changeSTATUS(Status.Weakened);
     			
-    			this.changeSHIELD(10);
+    			this.changeSHIELD(5);
     			currentWeapon = 3;
     		break;
     		
@@ -159,7 +159,7 @@ public class Amber extends Brawler {
         		this.changeCHARGE(this.AttackDamage*statper/3);
         		
     		}
-    			this.changeSHIELD(10);
+    			this.changeSHIELD(5);
     			currentWeapon = 4;
     		break;
     		
@@ -173,7 +173,7 @@ public class Amber extends Brawler {
     		this.changeHP(change);
     		this.changeCHARGE(change);
     		
-    		this.changeSHIELD(10);
+    		this.changeSHIELD(5);
     		currentWeapon = 1;
     		break;
     	}
@@ -225,7 +225,7 @@ public class Amber extends Brawler {
     				enemy.changeHP(-this.AttackDamage/8);
     			}
     			
-    			this.changeSHIELD(10);
+    			this.changeSHIELD(5);
     			currentWeapon = 2;
     		break;
     		
@@ -244,7 +244,7 @@ public class Amber extends Brawler {
     			}else 
     				enemy.changeSTATUS(Status.Stunned);
     		
-    			this.changeSHIELD(10);
+    			this.changeSHIELD(5);
     			currentWeapon = 3;	
     		break;
     		
@@ -261,7 +261,7 @@ public class Amber extends Brawler {
         		
     		}
     			
-    			this.changeSHIELD(10);
+    			this.changeSHIELD(5);
     			currentWeapon = 4;
     		break;
     		
@@ -275,7 +275,7 @@ public class Amber extends Brawler {
     		this.changeHP(change);
     		enemy.changeSTATUS(Status.Scarred);
     		
-    			this.changeSHIELD(10);
+    			this.changeSHIELD(5);
     			currentWeapon = 1;
     		break;
     	}
@@ -292,7 +292,7 @@ public class Amber extends Brawler {
 			currentWeapon = temp;
 		}
 		else {
-			this.changeSHIELD(10);
+			this.changeSHIELD(5);
 			currentWeapon++;
 			if(currentWeapon == 5)
 				currentWeapon = 1;

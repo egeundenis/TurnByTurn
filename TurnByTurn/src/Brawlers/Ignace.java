@@ -14,11 +14,11 @@ public class Ignace extends Brawler {
         super(build);
         this.build = build;
         this.name = "Ignace";
-        this.HP = 550;
-        this.AttackDamage = 30;
+        this.HP = 500;
+        this.AttackDamage = 25;
         this.SuperCharge = 0;
         this.HyperCharge = 0;
-        this.SuperDamage = 80;
+        this.SuperDamage = 60;
         this.regen = 0;
         this.gadgetCount = 2;
         this.potionCount = 1;

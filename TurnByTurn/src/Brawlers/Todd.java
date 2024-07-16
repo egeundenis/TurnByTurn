@@ -4,6 +4,7 @@ import java.util.Random;
 
 import main.Build;
 import main.SoundEffect;
+import main.SoundManager;
 import main.Spell;
 import main.Status;
 
@@ -11,20 +12,22 @@ public class Todd extends Brawler {
 
     SoundEffect todd_normal = new SoundEffect("res/audio/todd_normal.wav");
     SoundEffect todd_super = new SoundEffect("res/audio/todd_super.wav");
+    
+    public int superTurns = -1;
 
     public Todd(Build build) {
         super(build);
         this.build = build;
         this.name = "Todd";
-        this.HP = 800;
-        this.AttackDamage = 30;
+        this.HP = 700;
+        this.AttackDamage = 20;
         this.SuperCharge = 0;
         this.HyperCharge = 0;
-        this.SuperDamage = 0;
-        this.regen = 5;
+        this.SuperDamage = 30;
+        this.regen = 3;
         this.gadgetCount = 2;
         this.potionCount = 1;
-        this.shield = 150;
+        this.shield = 100;
         this.stat = Status.Normal;
         this.title = "the Tanker";
         this.spell = new Spell(build.spellChoise);
@@ -40,6 +43,17 @@ public class Todd extends Brawler {
     }
 
     Random ran = new Random();
+    
+    public void eachTurnChecks(Brawler enemy) {
+    	
+    	if(this.superTurns == 0) {					
+			enemy.changeSTATUS(Status.Stunned);
+			enemy.changeHP(-this.SuperDamage);
+			SoundManager.shieldbash.play();
+		}			
+		if(this.superTurns >= 0)
+			this.superTurns--;		
+    }
 
     @Override
 	public
@@ -48,22 +62,19 @@ public class Todd extends Brawler {
     	double statper = per();
     	
     	todd_normal.play();
-        enemy.changeHP(-this.AttackDamage*statper);
-        this.changeCHARGE(this.AttackDamage*statper);
+        enemy.changeHP(-this.AttackDamage*statper*(this.superTurns > 0 ? 0.5 : 1)* ( (this.superTurns > 0 && this.isHypercharged) ? 2 : 1));
+        this.changeCHARGE(this.AttackDamage*statper*(this.superTurns > 0 ? 0.5 : 1)* ( (this.superTurns > 0 && this.isHypercharged) ? 2 : 1));
+        
     }
 
     @Override
 	public
     void superAbility(Brawler enemy) {
-        todd_super.play();
-        int Damage = new Random().nextInt(30, 60) * (isHypercharged ? 2 : 1);
-        if (Damage % 2 == 0) 
-        	this.changeHP(Damage);
-        else 
-        	Damage *= 1.5;
-        
-        
-        enemy.changeHP(Damage * -1);
+
+    	SoundManager.guarded.play();
+    	this.superTurns = 6 + (this.isHypercharged ? 3 : 0);
+    	
+
     }
     
     @Override
@@ -71,10 +82,10 @@ public class Todd extends Brawler {
 	void gadgetAbility(Brawler enemy) {
 
 		if (this.build.gadgetChoise == "FIRST")
-			this.changeREGEN(5);
+			this.changeREGEN(3);
 		else {
 			this.changeATK(3);
-			this.changeSTATUS(Status.Strengthened);
+			this.changeSTATUS(Status.Enraged);
 		}
 		
 	}
@@ -82,6 +93,30 @@ public class Todd extends Brawler {
     public Brawler newInstance() {
         return new Todd(build);
     }
+    
+    public void changeHP(double x) {
+
+        if (x < 0 && shield != 0) {
+            shield += x;
+            x = 0;
+        }
+
+        if (shield < 0) {
+            x = shield;
+            shield = 0;
+        }
+
+        if (x > 0) {
+            this.HP += (int) (x * (this.build.gearChoise.equals("HEAL GEAR") ? 1.2 : 1));
+            if (this.HP > newInstance().HP)
+                this.HP = newInstance().HP;
+        } else {
+            if (this.stat == Status.Guarded)
+                this.stat = Status.Normal;
+            else
+                this.HP += (int) (x * (isHypercharged ? 0.8 : 1) * (this.superTurns > 0 ? 0.5 : 1) * ( (this.superTurns > 0 && this.isHypercharged) ? 0.5 : 1) );
+        }
+    }   
 
     public void reset() {
         this.HP = this.newInstance().HP;
@@ -93,7 +128,8 @@ public class Todd extends Brawler {
         this.SuperDamage = this.newInstance().SuperDamage;
         this.stat = this.newInstance().stat;
         this.potionCount = this.newInstance().potionCount;
-        this.shield += 150;
+        this.shield += 100;
+        this.superTurns = -1;
     }
 
     public void changeATK(int x) {

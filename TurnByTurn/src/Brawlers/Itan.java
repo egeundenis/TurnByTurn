@@ -17,7 +17,7 @@ public class Itan extends Brawler {
         this.build = build;
         this.name = "Itan";
         this.HP = 500;
-        this.AttackDamage = 10;
+        this.AttackDamage = 15;
         this.SuperCharge = 0;
         this.HyperCharge = 0;
         this.SuperDamage = 20;
@@ -37,6 +37,16 @@ public class Itan extends Brawler {
             this.gadgetCount += 1;
         if("REGEN GEAR".equals(build.gearChoise))
         	this.regen += 3;
+    }
+    
+    public void eachTurnChecks(Brawler enemy) {
+    	
+    	if(this.BeurcHP > 0) {
+			Itan.itan_super_attack.play();
+			enemy.changeHP(-this.SuperDamage);
+			this.changeHP(10);
+		}
+    	
     }
 
     @Override
@@ -116,7 +126,8 @@ public class Itan extends Brawler {
                 this.stat = Status.Normal;
             else {
             	if(BeurcHP > 0) {
-            		BeurcHP += (int) (x);
+            		BeurcHP += (int) (x/2);
+            		this.HP += (int) (x/2);
             	} else           		
             		this.HP += (int) (x * (isHypercharged ? 0.8 : 1));
             }

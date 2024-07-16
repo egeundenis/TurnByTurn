@@ -40,7 +40,7 @@ public class Qirale extends Brawler {
         this.AttackDamage = 20;
         this.SuperCharge = 0;
         this.HyperCharge = 0;
-        this.SuperDamage = 0;
+        this.SuperDamage = 50;
         this.regen = 5;
         this.gadgetCount = 2;
         this.potionCount = 1;
@@ -48,7 +48,7 @@ public class Qirale extends Brawler {
         this.stat = Status.Normal;
         this.title = "the Elemental";
         this.spell = new Spell(build.spellChoise);
-        this.hak = 5;
+        this.hak = 10;
 
         if ("HP GEAR".equals(build.gearChoise))
             this.HP *= 1.1;
@@ -71,7 +71,9 @@ public class Qirale extends Brawler {
     
     public void changeElement() {
     	qirale_passive.play();
-    	passive = ran.nextInt(0,4);
+    	this.passive += 1;
+    	if(this.passive == 4)
+    		this.passive = 0;
     }
 
     @Override
@@ -86,7 +88,7 @@ public class Qirale extends Brawler {
     		qirale_normal_water.play();
     		enemy.changeHP(-this.AttackDamage*statper-5);
             this.changeCHARGE(this.AttackDamage*statper+5);
-            enemy.changeSTATUS(Status.Weakened);
+            this.changeHP(10);
     		break;
     	case 1:
     		qirale_normal_fire.play();
@@ -122,22 +124,22 @@ public class Qirale extends Brawler {
     	switch(passive) {
     	case 0:
     		qirale_super_water.play();
-    		enemy.changeHP(-40);
-    		this.changeHP(100);
+    		enemy.changeHP(-this.SuperDamage);
+    		this.changeHP(this.SuperDamage);
     		break;
     	case 1:
     		qirale_super_fire.play();
-    		enemy.changeHP(-70);
-    		enemy.changeREGEN(-2);
+    		enemy.changeHP(-this.SuperDamage);
+    		enemy.changeREGEN(-this.SuperDamage/10);
     		break;
     	case 2:
     		qirale_super_earth.play();
-    		enemy.changeHP(-50);
-    		this.changeSHIELD(125);
+    		enemy.changeHP(-this.SuperDamage);
+    		this.changeSHIELD(this.SuperDamage*2);
     		break;
     	case 3:
     		qirale_super_air.play();
-    		enemy.changeHP(-30);
+    		enemy.changeHP(-this.SuperDamage);
     		enemy.changeSTATUS(Status.Confused);
     		break;   				
     	}

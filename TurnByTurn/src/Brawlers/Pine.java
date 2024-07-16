@@ -89,7 +89,7 @@ public class Pine extends Brawler {
     		enemy.isHypercharged = ishyper;
     		if(!ishyper) enemy.hyperchargeTurn = -1;
     		this.changeHP(10);
-        	try {Thread.sleep(650 - (this.stacks*40) );} catch (InterruptedException e) {}
+        	try {Thread.sleep( Math.max(650 - (this.stacks*40), 0)  );} catch (InterruptedException e) {}
     	}
     	
     	if(isSuper) {

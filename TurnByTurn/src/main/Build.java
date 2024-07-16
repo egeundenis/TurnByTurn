@@ -36,7 +36,10 @@ public class Build {
 			{"The Archer", "Vigilante Shit", "Delicate", "Midnight Rain"},					//Olea
 			{"Quake", "Summon: Beurc", "Paw Quake", "Purring Heal"},		 				//Itan
 			{"Grace Attack", "Won't Feel It!", "Self-Harm", "Eye For An Eye"}, 				//Louis
-			{"Forced Bow", "Submit to Power", "Charge Swap", "Super Control"} 				//Pine		
+			{"Forced Bow", "Submit to Power", "Charge Swap", "Super Control"}, 				//Pine
+			{"Clawlike", "Uncontrollable", "Unstable", "Anger"},							//Ritz
+			{"Everlasting Scar", "Up and Down", "Once Again", "Everlasting"}, 				//Gash
+			{"slap", "harsher defense", "voluntary", "yummy prick"}					 	//Jack
 	};
 	 
 	public static String[] Potions = {

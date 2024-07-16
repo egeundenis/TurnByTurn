@@ -87,7 +87,24 @@ public class Susan extends Brawler {
         }
         susan_super.play();
         enemy.changeSTATUS(Status.Stunned);
-        enemy.changeHP(-this.SuperDamage);
+        enemy.changeHP(-this.SuperDamage * (this.isHypercharged ? 2 : 1));
+        
+        if(this.isHypercharged) {
+        	try {Thread.sleep(400);} catch (InterruptedException e) {}
+        	switch (ran.nextInt(0, 3)) {
+            case 0:
+                susan_attack1.play();
+                break;
+            case 1:
+                susan_attack2.play();
+                break;
+            case 2:
+                susan_attack3.play();
+                break;
+        	}
+        	susan_super.play();
+        }
+        
     }
 
     @Override

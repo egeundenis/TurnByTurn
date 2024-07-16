@@ -1,38 +1,58 @@
 <html><p style=\"width:570px\">
 --------------------------------------NEW FEATURES---------------------------------------<br/>
-<br>New Rework: John!<br>
-<br>New Brawler: Pine the Controller<br>
-<br>New Hypercharged Supers for: Pine, Betty, Lisa, Timmy, John, Olea
+<br>New Reworks: Todd and Betty!
+<br><br>New Brawlers: Ritz the Uncontrollable, Gash the Unbalanced! Jack the Prickly!
+<br><br>New Hypercharged Supers for: Ritz, Gash, Jack, Susan and Nanni!
+<br><br>New Gamemodes: Hypermode and Nostalgic!
 			
 <br/><br/>------------------------------------SYSTEM CHANGES--------------------------------------<br/>
-<br>Prixie: (NERF) Heal: 30 -> 20 | Shield: 30 -> 20 | Damage: 30 -> 20 <br>
-<br>Heart Of Steel: (NERF) Damage: %15 -> %12.5 <br>
-<br>Demonic Cuteness: (NERF) Damage: 15 -> 10<br>
-<br>Glacial Gale: (ADJUSTMENT): ( 30 + 30 ) -> ( 20 + 40 )<br>
-<br>Meditation Medication: (NERF) Heal: 100 -> 80<br>
-<br>Shielding Potion: (NERF) Shield: 60 -> 50<br>
-<br>Harming Potion: (BUFF) Damage: 30 -> 40<br>
-<br>Charging Potion: (BUFF) Charge: 15 -> 20<br>
+
+<br>Glacial Gale (NERF): Cooldown: 20 -> 25
+<br><br>Heart of Steel (NERF): Damage: %12.5 -> %10
+<br><br>Guardian (NERF): Cooldown: 20 -> 25
+<br><br>Electric Storm (NERF): Cooldown: 15 -> 20
 
 <br><br>-----------------------------------BRAWLER CHANGES-------------------------------------<br>
 							
-<br>Clyde: (NERF)
-<br>Clyde getting her super back after jumping on someone felt so unbalanced and untouchable! This will keep her down.
-<br><br>Attack: (Cannon: 20, Solo: 40) -> (Cannon: 20, Solo: 30)
-<br>Cannon HP (Shield): 200 -> 150
+<br>Louis: (ADJUSTMENT)
+<br>Louis' super doesn't feel like a threat anymore, with this change it should feel much more threatening
+<br><br>Super: 6 Turns -> 10 Turns | No longer can charge super, it's added to the energy field instead.
 
-<br><br><br>Louis: (NERF)
-<br>Louis just cycles his super and never dies and always heales and always deals damage! This has to end!
-<br><br>Super: 7 Turns -> 6 Turns
-<br>Passive: (without Super: %10, with: %50) -> (without Super: %10, with: %33)
+<br><br><br>Amber: (NERF)
+<br>She feels oddly tanky because of her passive, this should balance her.
+<br><br>Passive: 10 -> 5
+<br>HP: 550 -> 500
 
-<br><br><br>Simon: (NERF)
-<br>Simon is just not dying! This survivability needs to stop!
-<br><br>HP: 550 -> 525
-<br>Attack2: +%10 ATK Regen -> +1 Regen
+<br><br><br>Todd: (REWORK)
+<br>Todd's super is super weird. It doesn't really make sense? He's a tank, he shouldn't deal damage and heal at the same time! We had to make him feel like a tank artificially with his passive and gadgets! This rework should make him feel much more like a tanker now.
+<br><br>Super: Todd takes and deals %50 less damage for 5 turns and then stuns the enemy at the end.
+<br>Attack: 30 -> 20
+<br>First Gadget: 5 -> 3
+<br>Second Gadget: STRENGHTENED -> ENRAGED
+<br>Regeneration: 5 -> 3
+<br>Passive: 150 -> 100
+<br>HP: 800 -> 700
 
-<br><br><br>Qirale: (NERF)
-<br>Qirale is too tanky and deals way too much damage in her fire form.
-<br><br>HP: 600 -> 550
-<br>Base Damage: 25 -> 20
-<br>Fire Super: (-60 + -3 Regen) -> (-60 + -2 Regen)
+<br><br><br>Betty: (REWORK)
+<br>Betty was always a pain in the ass to code, and I've had enough to make her work. This rework to her super will keep her interesting without making me insecure about my coding skills!
+<br><br>Super: Creates a clone that uses enemy's own super against them! With each use, Betty summons one more clone!
+
+<br><br><br>Ignace: (NERF)
+<br>Ignace was consistently overpowered since the regeneration and weakness changes, this should bring him down.
+<br><br>HP: 550 -> 500
+<br>Attack: 30 -> 25
+<br>Super: 80 -> 60
+
+<br><br><br>Qirale: (ADJUSTMENT)
+<br>Qirale is annoying to deal and play with. WEAKENED effect is annoying, Earth Super makes her impossible to kill and Fire Super was underwhelming, yet spammed. These changes should make her feel better.
+<br><br>Specific: No longer randomly changes, they're in a cycle of WATER -> FIRE -> EARTH -> AIR now. It also now has 10 uses
+<br>Water Normal: (25 damage + WEAKENED) -> (25 Damage + 10 Heal)
+<br>Water Super: (40 damage + 100 Heal) -> (50 Damage + 50 Heal)
+<br>Fire Super: (70 Damage + 2 Regen Decrease) -> (50 Damage + 5 Regen Decrease)
+<br>Earth Super: (50 Damage + 125 Shield) -> (50 Damage + 100 Shield)
+<br>Air Super: (30 Damage + CONFUSED) -> (50 Damage + CONFUSED)
+
+<br><br><br>Itan: (BUFF)
+<br>Itan is weak. He just dies before he can do anything and if he can get a super, Beurc just dies with him too. This changes should make him feel better.
+<br><br>Attack: 10 -> 15
+<br>Super: Instead of fully tanking all the damage, they split it %50.

@@ -31,7 +31,8 @@ public class BrawlerSelectionGrid extends JPanel {
                 "Finn", "Timmy", "Kasse", "John", "Missy", "Zach",
                 "Simon", "Felix", "Imelda", "Betty", "Light", "Hassan",
                 "Nanni", "Ignace", "Gusty", "Anvaa", "Vollie", "Giran",
-                "Clyde", "Amber", "Anton", "Qirale", "Olea", "Itan", "Louis", "Pine"
+                "Clyde", "Amber", "Anton", "Qirale", "Olea", "Itan", 
+                "Louis", "Pine", "Ritz", "Gash", "Jack"
         };
 
         buttonGroup = new ButtonGroup(); // Initialize the ButtonGroup

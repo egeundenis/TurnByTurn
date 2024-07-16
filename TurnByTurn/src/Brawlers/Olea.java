@@ -40,6 +40,17 @@ public class Olea extends Brawler {
         	this.regen += 3;
         
     }
+    
+    public void eachTurnChecks(Brawler enemy) {
+    	
+    	if(this.superTurns > 0) {
+			enemy.changeHP(-this.SuperDamage);
+			this.changeSTATUS(Status.Intoxicated);
+			enemy.changeSTATUS(Status.Intoxicated);
+			this.superTurns--;
+		}
+    	
+    }
 
     @Override
 	public void attackAbility(Brawler enemy) {

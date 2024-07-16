@@ -4,6 +4,7 @@ import java.util.Random;
 
 import main.Build;
 import main.SoundEffect;
+import main.SoundManager;
 import main.Spell;
 import main.Status;
 
@@ -44,6 +45,19 @@ public class Louis extends Brawler {
     }
 
     Random ran = new Random();
+    
+    public void eachTurnChecks(Brawler enemy) {
+    	
+    	if(this.passiveTurns == 0) {					
+			enemy.changeHP(this.decreasedHP);
+			this.changeHP(-this.decreasedHP/2);
+			this.decreasedHP = 0;
+			this.louis_superburst.play();
+			try {Thread.sleep(300);}catch(Exception e){}
+		}			
+		if(this.passiveTurns >= 0)
+			this.passiveTurns--;	
+    }
 
     @Override
 	public
@@ -75,7 +89,7 @@ public class Louis extends Brawler {
 	public
     void superAbility(Brawler enemy) {
         
-        passiveTurns = 6;
+        passiveTurns = 10;
         louis_super.play();
 
     }
@@ -151,6 +165,27 @@ public class Louis extends Brawler {
             }
                
         }
+    }
+    
+    public void changeCHARGE(double x) {
+    	
+    	if(this.passiveTurns > 0 && x > 0) {
+    		decreasedHP += x;
+    		return;
+    	}
+
+    	if (this.SuperCharge - x < 100 && this.SuperCharge + x > 99 && this.SuperCharge < 100)
+            SoundManager.charged.play();
+
+        this.SuperCharge += x;
+        if (this.SuperCharge > 200)
+            this.SuperCharge = 200;
+        if (this.SuperCharge < 0)
+            this.SuperCharge = 0;
+
+        if (x > 0)
+            changeHYPERCHARGE(x / 3);
+
     }
 
     public void changeGADCNT(int x) {
