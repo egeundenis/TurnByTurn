@@ -6,14 +6,14 @@ import java.awt.Font;
 
 import javax.swing.*;
 
-import Brawlers.Brawler;
+import Fighters.Fighter;
 
 public class ChargeBar {
 	
     private JProgressBar chargeBar;
     private int requiredCharge;
 
-    public ChargeBar(Brawler A, String player) {
+    public ChargeBar(Fighter A, String player) {
         this.requiredCharge = 200;
         chargeBar = new JProgressBar(0, requiredCharge);
         chargeBar.setValue(0);
@@ -30,7 +30,7 @@ public class ChargeBar {
 
     }
 
-    public void updateCharge(Brawler A) {
+    public void updateCharge(Fighter A) {
 
         chargeBar.setValue(A.SuperCharge);
     }

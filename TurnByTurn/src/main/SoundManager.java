@@ -37,7 +37,8 @@ public class SoundManager {
 	public static   SoundEffect mirror = new SoundEffect("res/audio/mirror.wav");
 	public static SoundEffect medmed = new SoundEffect("res/audio/medmed.wav");
 	public static SoundEffect shieldbash = new SoundEffect("res/audio/shieldbash.wav");
-	
+	public static SoundEffect laser_rain = new SoundEffect("res/audio/laser_rain.wav");
+	 
 	//Menu
 	public static SoundEffect click = new SoundEffect("res/audio/click.wav");
 	

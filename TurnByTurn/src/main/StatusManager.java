@@ -1,25 +1,25 @@
 package main;
 
-import Brawlers.Brawler;
+import Fighters.Fighter;
 
 public class StatusManager {
 
 	public StatusManager() {}
 	
-	public double damagePercentage(Brawler brawler) {
+	public double damagePercentage(Fighter fighter) {
 		
 		double ret = 0;
 		
-		switch(brawler.stat) {
+		switch(fighter.stat) {
 		case Weakened:
-			brawler.changeSTATUS(Status.Normal);
+			fighter.changeSTATUS(Status.Normal);
 			ret = 0.50;
 			break;
 		case Confused:
 			ret = 1.0;
 			break;
 		case Enraged:
-			brawler.changeSTATUS(Status.Normal);
+			fighter.changeSTATUS(Status.Normal);
 			ret = 1.5;
 			break;
 		case Frosty:
@@ -35,7 +35,7 @@ public class StatusManager {
 			ret = 1.0;
 			break;
 		case Strengthened:
-			brawler.changeSTATUS(Status.Normal);
+			fighter.changeSTATUS(Status.Normal);
 			ret = 2;
 			break;
 		case Stunned:
@@ -50,7 +50,7 @@ public class StatusManager {
 			break;
 		}
 		
-		if(brawler.isHypercharged) {
+		if(fighter.isHypercharged) {
 			ret += 0.2;
 		}
 		

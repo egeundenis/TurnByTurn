@@ -16,14 +16,14 @@ public class Build {
 			{"The Beginning", "The End", "Fast Forward", "Slow Motion"},					//Kasse
 			{"POW! or pew", "Love Salvo", "Bite The Bullet", "Spare Bullet"},				//John
 			{"Health Nut", "Anti-inflammatory", "Vitamin Gummies", "Healthy Hit"},			//Missy
-			{"Slimy", "Regroup!", "Sticky Investment", "Last Resort"},						//Zach
+			{"Slimy", "Regroup!", "Sticky Investment", "Last Resort"},						//Zachy
 			{"Magical Projectile", "aand... Iceball.", "Restocked", "Fire Spell"},			//Simon
 			{"Sword Swing", "Counter Strike", "En guarde!", "Taunt"},						//Felix	
 			{"Destined Punch", "Adrenaline", "Blood Rush", "No Pain, No Gain"},				//Imelda
 			{"Broken Glass", "Green Reflection", "Passage Granted", "Reflective Glass"}, 	//Betty
 			{"Hard Punch", "Deadly Notebook", "Waste away", "A Run to Death"},				//Light
 			{"Cruel Attack", "Grim Look", "Starvation", "Full-Course Meal"},				//Hassan
-			{"Light Beams", "Peeped Beam", "Eyes Everywhere!", "Shocking"},					//Nanni
+			{"Light Beams", "Peeped Beam", "Eyes Everywhere!", "Shocking"},					//Nanny
 			{"Heartburn", "Flame within", "Flamed", "Burning Bridges"},						//Ignace
 			{"My Balloon!", "Spooooky", "Phasmablast", "Tough Attack"},						//Gusty
 			{"Ice Projectile", "The Storm", "Freezing!", "Self-Loathe"},					//Anvaa
@@ -31,15 +31,17 @@ public class Build {
 			{"Annoying Poke", "Multiplying Fun!" , "Yummy Poultry", "Quick Attacks"},	    //Giran
 			{"Cannon Attack!", "Wooohooo!", "Shield Conversion", "Charging Port"},			//Clyde
 			{"Rapidfire", "Fiercefire", "Favorite Weapon!", "Skipped Symmetry"},			//Amber
-			{"Selfless Attack", "Breeze of Heart", "Anger", "Calm"},						//Anton
+			{"Selfless Attack", "Breeze of Heart", "Overreact", "Bipolar"},					//Anton
 			{"Elemental Strike", "Queen of All!", "Change of Plans", "A Blessing"},			//Qirale
 			{"The Archer", "Vigilante Shit", "Delicate", "Midnight Rain"},					//Olea
 			{"Quake", "Summon: Beurc", "Paw Quake", "Purring Heal"},		 				//Itan
 			{"Grace Attack", "Won't Feel It!", "Self-Harm", "Eye For An Eye"}, 				//Louis
 			{"Forced Bow", "Submit to Power", "Charge Swap", "Super Control"}, 				//Pine
-			{"Clawlike", "Uncontrollable", "Unstable", "Anger"},							//Ritz
+			{"Clawlike", "Uncontrollable", "Unstable", "Anger"},							//Rits
 			{"Everlasting Scar", "Up and Down", "Once Again", "Everlasting"}, 				//Gash
-			{"slap", "harsher defense", "voluntary", "yummy prick"}					 	//Jack
+			{"slap", "harsher defense", "voluntary", "yummy prick"},					 	//Jack
+			{"Electrical Bat", "Nrut Yb nrut!", "Hard Bash", "Return to Past"},				//June
+			{"Magical Slice", "Fairy Bless", "Sacrificial Charge", "Sacrificial Shield"} 	//Aboa
 	};
 	 
 	public static String[] Potions = {
@@ -94,7 +96,8 @@ public class Build {
 			"Last Strike",
 			"Demonic Cuteness",
 			"Mirror",
-			"Meditation Medication"
+			"Meditation Medication",
+			"Laser Rain"
 
 	};
 	

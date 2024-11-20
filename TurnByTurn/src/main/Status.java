@@ -11,24 +11,25 @@ public enum Status {
 	Enraged,
 	Frosty,
 	Scarred,
-	Intoxicated;
+	Intoxicated,
+	Poisoned;
 	
-	public boolean isNegative(Status x) {
+	public static boolean isNegative(Status x) {
 		if(x == Weakened || x == Confused || x == Scarred || x == Frosty)
 			return true;
 		else
 			return false;
 	}
 	
-	public boolean isPositive(Status x) {
+	public static boolean isPositive(Status x) {
 		if(x == Strengthened || x == Enraged || x == Guarded)
 			return true;
 		else
 			return false;
 	}
 	
-	public boolean isHard(Status x) {
-		if(x == Stunned || x == Guarded || x == Intoxicated)
+	public static boolean isHard(Status x) {
+		if(x == Stunned || x == Guarded || x == Intoxicated || x == Poisoned)
 			return true;
 		else
 			return false;

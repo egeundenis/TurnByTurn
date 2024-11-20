@@ -1,58 +1,87 @@
 <html><p style=\"width:570px\">
---------------------------------------NEW FEATURES---------------------------------------<br/>
-<br>New Reworks: Todd and Betty!
-<br><br>New Brawlers: Ritz the Uncontrollable, Gash the Unbalanced! Jack the Prickly!
-<br><br>New Hypercharged Supers for: Ritz, Gash, Jack, Susan and Nanni!
-<br><br>New Gamemodes: Hypermode and Nostalgic!
+---NEW FEATURES---<br/>
+
+<br>Super Charging is now completely independent from the damage dealt! It will be determined by percentages! This had to be done a long time ago, but we postponed it a lot because we were balancing the normal attacks
+ thinking how it will effect the charge rate, this way it will no longer hinder the balancing anymore! Especially for Status effects, Timmy and Zach! From this point on, normal attacks should feel more balanced over time! Check HELP for all the info you need!
+
+<br><br>New Mechanic: TRAITS! For now we have: Magical: Can not get soft negative status effects, Tank: Gets super charge from getting attacked!
+
+<br><br>New Spell: Laser Rain!
+
+<br><br>New Reworks: Kasse and Anton!
+
+<br><br>New Hypercharged supers: Kasse, Aboa, June
+
+<br><br>New Fighters: June the Time Traveler and Aboa the Fairy Swordsman!
+
+<br><br>New Status: Poisoned! The poisoned fighters will heal only %50 efficiently!
 			
-<br/><br/>------------------------------------SYSTEM CHANGES--------------------------------------<br/>
+<br/><br/>---SYSTEM CHANGES---<br/>
 
-<br>Glacial Gale (NERF): Cooldown: 20 -> 25
-<br><br>Heart of Steel (NERF): Damage: %12.5 -> %10
-<br><br>Guardian (NERF): Cooldown: 20 -> 25
-<br><br>Electric Storm (NERF): Cooldown: 15 -> 20
+<br>Hypercharge (NERF): 15 Turns -> 10 Turns
 
-<br><br>-----------------------------------BRAWLER CHANGES-------------------------------------<br>
+<br><br>---FIGHTER CHANGES---<br>
 							
-<br>Louis: (ADJUSTMENT)
-<br>Louis' super doesn't feel like a threat anymore, with this change it should feel much more threatening
-<br><br>Super: 6 Turns -> 10 Turns | No longer can charge super, it's added to the energy field instead.
-
-<br><br><br>Amber: (NERF)
-<br>She feels oddly tanky because of her passive, this should balance her.
-<br><br>Passive: 10 -> 5
-<br>HP: 550 -> 500
-
-<br><br><br>Todd: (REWORK)
-<br>Todd's super is super weird. It doesn't really make sense? He's a tank, he shouldn't deal damage and heal at the same time! We had to make him feel like a tank artificially with his passive and gadgets! This rework should make him feel much more like a tanker now.
-<br><br>Super: Todd takes and deals %50 less damage for 5 turns and then stuns the enemy at the end.
-<br>Attack: 30 -> 20
-<br>First Gadget: 5 -> 3
-<br>Second Gadget: STRENGHTENED -> ENRAGED
+<br>Itan: (NERF)
+<br>Itan is STRONG! He is just not dying at all! This should make them easier to kill
+<br><br>HP: 500 -> 400
+<br>Super: 300 -> 200 | Its HP can not go beyond 200
+<br>Passive: 10 -> 5
 <br>Regeneration: 5 -> 3
-<br>Passive: 150 -> 100
-<br>HP: 800 -> 700
+
+<br><br><br>Simon: (REWORK)
+<br>Since his passive is now his trait, a new passive is needed for him!
+<br><br>Passive: Simon now have a %20 chance to make the enemy FROSTY in his attack
 
 <br><br><br>Betty: (REWORK)
-<br>Betty was always a pain in the ass to code, and I've had enough to make her work. This rework to her super will keep her interesting without making me insecure about my coding skills!
-<br><br>Super: Creates a clone that uses enemy's own super against them! With each use, Betty summons one more clone!
+<br>Since her passive is now her trait, a new passive is needed for her!
+<br><br>Passive: Betty now have a %20 chance to make the enemy CONFUSED in her attack
 
-<br><br><br>Ignace: (NERF)
-<br>Ignace was consistently overpowered since the regeneration and weakness changes, this should bring him down.
+<br><br><br>Lisa: (BUFF)
+<br>Lisa was already struggling for a very long time... And now that the super charge changes are here it will be infinitely hard for her... These changes should make her feel much better as a fighter and not just a weird pick.
+<br><br>First Gadget: 10 -> 25
+<br>Second Gadget: (-%15 HP + %9 Charge) -> (-%15 HP + %15 Charge)
+
+<br><br><br>Raven: (ADJUSTMENT)
+<br>This little change will make him feel less annoying, but more reliable!
+<br><br>Super: Now makes the enemy POISONED
+<br>Attack/Super Damage: 15 -> 10
+
+<br><br><br>Qirale: (NERF)
+<br>Qirale is weirdly very OP and no amount of nerfs or reworks seem to balance her. So we're nerfing her survivabilty! This should make her feel much balanced.
 <br><br>HP: 550 -> 500
-<br>Attack: 30 -> 25
-<br>Super: 80 -> 60
+<br>Regeneration: 5 -> 3
+<br>Earth Super: 100 Shield -> 75 Shield
+<br>Fire Super: -5 Regen -> -3 Regen
 
-<br><br><br>Qirale: (ADJUSTMENT)
-<br>Qirale is annoying to deal and play with. WEAKENED effect is annoying, Earth Super makes her impossible to kill and Fire Super was underwhelming, yet spammed. These changes should make her feel better.
-<br><br>Specific: No longer randomly changes, they're in a cycle of WATER -> FIRE -> EARTH -> AIR now. It also now has 10 uses
-<br>Water Normal: (25 damage + WEAKENED) -> (25 Damage + 10 Heal)
-<br>Water Super: (40 damage + 100 Heal) -> (50 Damage + 50 Heal)
-<br>Fire Super: (70 Damage + 2 Regen Decrease) -> (50 Damage + 5 Regen Decrease)
-<br>Earth Super: (50 Damage + 125 Shield) -> (50 Damage + 100 Shield)
-<br>Air Super: (30 Damage + CONFUSED) -> (50 Damage + CONFUSED)
+<br><br><br>Amber: (NERF)
+<br>Amber is weirdly very OP and no amount of nerfs or reworks seem to balance her. So we're nerfing her survivabilty! This should make her feel much balanced.
+<br><br>HP: 500 -> 400
+<br>Regeneration: 3 -> 2
 
-<br><br><br>Itan: (BUFF)
-<br>Itan is weak. He just dies before he can do anything and if he can get a super, Beurc just dies with him too. This changes should make him feel better.
-<br><br>Attack: 10 -> 15
-<br>Super: Instead of fully tanking all the damage, they split it %50.
+<br><br><br>Felix: (NERF)
+<br>Felix deals too much damage but still have a lot of HP. This nerf should make him feel better.
+<br><br>HP: 650 -> 600
+<br>Regeneration: 5 -> 3
+
+<br><br><br>Timmy: (NERF)
+<br>Timmy deals too much damage but still have a lot of HP and too much late game security. This nerf should make him feel better.
+<br><br>Passive: 25 -> 15
+<br>Passive Activation: %30 HP -> %20 HP
+<br>Super: (30 + %35) -> (30 + %30) | No longer decreases regeneration.
+<br>Attack: (15 + %10) -> (15 + %9)
+
+<br><br><br>Rits: (BUFF)
+<br>He feels weirdly weak, these buffs should make him feel stronger.
+<br><br>Attack Damage: 30 -> 40
+<br>Gadget Count: 1 -> 2
+<br>Potion Count: 1 -> 2
+
+<br><br><br>Hassan: (ADJUSTMENT)
+<br>Hassan deals too much damage but still have a lot of HP. These changes should make him feel better.
+<br><br>HP: 600 -> 500
+<br>Regeneration: 0 -> 3
+<br>First Gadget: -7 Regen -> -5 Regen
+<br>Second Gadget: +7 Regen -> +5 Regen
+<br>Passive: %80 -> %70
+<br>Attack: (20 + %9.5 of Missing HP) -> (25 + %8 of Missing HP)

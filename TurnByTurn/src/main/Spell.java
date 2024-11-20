@@ -2,7 +2,7 @@ package main;
 
 import java.util.Random;
 
-import Brawlers.Brawler;
+import Fighters.Fighter;
 
 public class Spell {
 
@@ -10,6 +10,7 @@ public class Spell {
 	public int cooldown;
 	public int effectTurn;
 	public boolean doesSkip = true;
+	public int useCount = 0;
 	public String name;
 
 	public Spell(String name){
@@ -63,11 +64,18 @@ public class Spell {
 		case "Meditation Medication":
 			cooldown = 25;
 			effectTurn = 0;
+			break;
+		case "Laser Rain":
+			cooldown = 10;
+			effectTurn = -1;
+			useCount = 0;
+			break;
+			
 		}
 		
 	}
 
-	public static void doSpell(Brawler user, Brawler enemy, Spell spell) {
+	public static void doSpell(Fighter user, Fighter enemy, Spell spell) {
 		
 	    Random ran = new Random();
 	    
@@ -181,6 +189,22 @@ public class Spell {
 		case "Meditation Medication":
 			SoundManager.medmed.play();
 			user.spell.effectTurn = 5;
+			break;
+		case "Laser Rain":
+			
+			for(int i = -1; i < user.spell.useCount; i++) {
+				SoundManager.laser_rain.play();
+				try {
+					Thread.sleep(250);
+				} catch (InterruptedException e) {
+
+					e.printStackTrace();
+				}
+				enemy.changeHP(-20);
+			}			
+			
+			user.spell.useCount++;
+			
 			break;
 			
 			

@@ -5,14 +5,14 @@ import java.awt.ComponentOrientation;
 
 import javax.swing.*;
 
-import Brawlers.Brawler;
+import Fighters.Fighter;
 
 public class HyperBar {
 	
     private JProgressBar hyperBar;
     private int requiredCharge;
 
-    public HyperBar(Brawler A, String player) {
+    public HyperBar(Fighter A, String player) {
     	
         this.requiredCharge = 250;
         hyperBar = new JProgressBar(0, requiredCharge);
@@ -29,7 +29,7 @@ public class HyperBar {
 
     }
 
-    public void updateCharge(Brawler A) {
+    public void updateCharge(Fighter A) {
 
         hyperBar.setValue(A.HyperCharge);
     }

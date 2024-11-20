@@ -5,7 +5,7 @@ import java.awt.ComponentOrientation;
 
 import javax.swing.*;
 
-import Brawlers.Brawler;
+import Fighters.Fighter;
 
 public class HealthBar {
     public JProgressBar healthBar;
@@ -25,11 +25,11 @@ public class HealthBar {
 
     }
 
-    public void updateHealth(Brawler A) {
+    public void updateHealth(Fighter A) {
         healthBar.setValue(A.HP);
     }
     
-    public void updateShield(Brawler A) {
+    public void updateShield(Fighter A) {
         healthBar.setValue(A.shield);
     }
 

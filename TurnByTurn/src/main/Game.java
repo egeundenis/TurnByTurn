@@ -2,1025 +2,39 @@ package main;
 
 import java.awt.Color;
 import java.awt.Container;
-import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Random;
-import javax.swing.*;
-import Brawlers.*;
-import GUI.*;
+
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+
+import Fighters.*;
+import GUI.ChargeBar;
+import GUI.HealthBar;
+import GUI.HyperBar;
 
 public class Game {
-	
-	public Game(){}
-	
-	public static void main(String[] args){
-		
-		SoundManager.intro.play();
-			
-		Build defaultBuild = new Build();
-		Brawler[] brawlers = Brawler.brawlers;
-		
-		Brawler[] chosens = new Brawler[2];
-		
-		JFrame window = new JFrame();
-		window.setSize(900,600);
-		window.setTitle("TURN BY TURN! Client");
-		Container con;
-		
-		JPanel titleNamePanel,
-			   titleCreditPanel,
-			   quitPanel,
-			   startButtonPanel, 
-			   player1BrawlerPanel, 
-			   player2BrawlerPanel, 
-			   helpPanel,
-			   versionPanel,
-			   patchNotesPanel,
-			   gamemodePanel;
-		
-		JLabel titleName,titleCredit,version,gamemodeLabel;
-		JButton startButton, quitButton, helpButton, patchNotes, player1Brawler,player2Brawler;
-		JComboBox<String> gamemode;
-		
-		String[] brawlersName = new String[brawlers.length];
-		for(int i = 0; i < brawlers.length; i++) {
-			brawlersName[i] = brawlers[i].name;
-		}
-		
-		
-		//The window
-		window.setResizable(false);
-		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		window.getContentPane().setBackground(Color.DARK_GRAY);
-		window.setLayout(null);
-		con = window.getContentPane();
-		window.setIconImage(new ImageIcon("res/images/turnbyturn.png").getImage());
-		
-				
-		//version
-		versionPanel = new JPanel((LayoutManager) new FlowLayout(FlowLayout.LEADING,5, 5));
-		version = new JLabel("P-BETA 1.2", SwingConstants.LEFT);
-		version.setHorizontalAlignment(SwingConstants.RIGHT);
-		versionPanel.setBackground(Color.DARK_GRAY);
-		versionPanel.setBounds(0,535,150,30);
-		versionPanel.add(version);
-		version.setForeground(Color.white);
-		version.setFont(new Font("Arial", Font.PLAIN, 15));
-		con.add(versionPanel);
-		
-		
-		//TitleName
-		titleNamePanel = new JPanel();
-		titleCreditPanel = new JPanel();
-		titleNamePanel.setBounds(150,10,600,80);
-		titleCreditPanel.setBounds(190,85,500,35);
-		titleNamePanel.setBackground(Color.DARK_GRAY);
-		titleCreditPanel.setBackground(Color.darkGray);
-		titleName = new JLabel("TURN BY TURN!");
-		titleCredit = new JLabel("by Ege Ündeniş");
-		titleName.setForeground(Color.white);
-		titleName.setFont(new Font("Arial", Font.BOLD, 70 ));
-		titleCredit.setForeground(Color.gray);
-		titleCredit.setFont(new Font("Arial", Font.BOLD, 25 ));
-		titleCredit.setVisible(true);
-		titleNamePanel.add(titleName);
-		titleCreditPanel.add(titleCredit);
-		
-		//Gamemode
-				String[] gamemodes = {
-						"Classic",
-						"Choose",
-						"Duplicates",
-						"Wizardary",
-						"Decaying",
-						"Technical",
-						"Hypermode",
-						"Nostalgic"
-				};
-				gamemode = new JComboBox<String>(gamemodes);
-				gamemode.setFocusable(false);
-				gamemode.setFont(new Font("Arial", Font.BOLD, 15));
-				((JLabel)gamemode.getRenderer()).setHorizontalAlignment(SwingConstants.CENTER);
-				gamemodeLabel = new JLabel("GAMEMODE");
-				gamemodeLabel.setFont(new Font("Arial", Font.BOLD, 20));
-				gamemodeLabel.setForeground(Color.white);
-				gamemodeLabel.setBounds(390,320,120,60);
-				con.add(gamemodeLabel);
-				gamemodePanel = new JPanel();
-				gamemodePanel.setBounds(400,360,100,60);
-				gamemode.setBackground(Color.black);
-				gamemode.setForeground(Color.white);
-				gamemodePanel.setBackground(Color.darkGray);
-				gamemodePanel.setVisible(true);
-				
-				
-				gamemodePanel.add(gamemode);
-		
-		//StartButton
-		startButtonPanel = new JPanel();
-		startButtonPanel.setBounds(350,400,200,50);
-		startButtonPanel.setBackground(Color.darkGray);
-		startButton = new JButton("START");
-		startButton.setBackground(Color.black);
-		startButton.setForeground(Color.white);
-		startButton.setFont(new Font("Arial", Font.BOLD, 30 ));
-		startButton.setFocusPainted(false);
-		startButton.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				
-				switch((String) gamemode.getSelectedItem()) {
-				
-				case "Choose":
-					if(chosens[0] != null && chosens[1] != null && chosens[1] != chosens[0]) {
-					playGame1v1(chosens[0], chosens[1], "Choose");
-					}
-					else
-						JOptionPane.showMessageDialog(window, "Duplicate brawlers are not allowed.");
-					break;
-				
-				case "Classic":
-					Random ran = new Random();
-					
-					Brawler chosenBrawler1 = new Todd(defaultBuild);
-					Brawler chosenBrawler2 = new Todd(defaultBuild);
-					
-					int chosen1 = 0, chosen2 = 0;
-					while(chosen1 == chosen2){
-					int len = brawlers.length;
-					chosen1 = new Random().nextInt(0, len);	
-					chosen2 = new Random().nextInt(0, len);
-					chosenBrawler1 = brawlers[chosen1].newInstance();
-					chosenBrawler2 = brawlers[chosen2].newInstance();
-					}
-					chosenBrawler1.build = new Build(ran);
-					chosenBrawler2.build = new Build(ran);
-					
-					playGame1v1(chosenBrawler1,chosenBrawler2, "Classic");
-					break;
-					
-					
-				case "Duplicates":
-					if(chosens[0] != null && chosens[1] != null && chosens[1] == chosens[0]) {
-					playGame1v1(chosens[0], chosens[1], "Duplicates");
-					}
-					else {
-						JOptionPane.showMessageDialog(window, "Chosen brawlers are not duplicates");	
-					}
-					break;
-					
-				case "Wizardary":
-					if(chosens[0] != null && chosens[1] != null && chosens[1] != chosens[0]) {
-					playGame1v1(chosens[0], chosens[1], "Wizardary");
-					}
-					else
-						JOptionPane.showMessageDialog(window, "Duplicate brawlers are not allowed.");
-					break;
-					
-				case "Decaying":
-					if(chosens[0] != null && chosens[1] != null && chosens[1] != chosens[0]) {
-					playGame1v1(chosens[0], chosens[1], "Decaying");
-					}
-					else
-						JOptionPane.showMessageDialog(window, "Duplicate brawlers are not allowed.");
-					break;
-					
-				case "Technical":
-					if(chosens[0] != null && chosens[1] != null && chosens[1] != chosens[0]) {
-					playGame1v1(chosens[0], chosens[1], "Technical");
-					}
-					else
-						JOptionPane.showMessageDialog(window, "Duplicate brawlers are not allowed.");
-					break;
-				case "Hypermode":
-					if(chosens[0] != null && chosens[1] != null && chosens[1] != chosens[0]) {
-					playGame1v1(chosens[0], chosens[1], "Hypermode");
-					}
-					else
-						JOptionPane.showMessageDialog(window, "Duplicate brawlers are not allowed.");
-					break;
-				case "Nostalgic":
-					if(chosens[0] != null && chosens[1] != null && chosens[1] != chosens[0]) {
-					playGame1v1(chosens[0], chosens[1], "Nostalgic");
-					}
-					else
-						JOptionPane.showMessageDialog(window, "Duplicate brawlers are not allowed.");
-					break;
-					
-				
-				}
-				
-				
-			}
-		});
-		startButtonPanel.add(startButton);
-		
-		//Experimental!
-		JPanel expButtonPanel = new JPanel();
-		expButtonPanel.setBounds(390,300,120,45);
-		expButtonPanel.setBackground(Color.darkGray);
-		JButton expButton = new JButton("Experimental");
-		expButton.setBackground(Color.black);
-		expButton.setForeground(Color.white);
-		expButton.setFont(new Font("Arial", Font.BOLD, 15 ));
-		expButton.setFocusPainted(false);
-		expButton.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				
-				Brawler.isCallAllowed = true; 
-				SoundManager.click.play();
-				
-			}
-		});
-		expButtonPanel.add(expButton);
-		con.add(expButtonPanel);
-		
-		//Options Button
-		JPanel OptionButtonPanel = new JPanel();
-		OptionButtonPanel.setBounds(150,470,180,100);
-		OptionButtonPanel.setBackground(Color.darkGray);
-		JButton optionsButton = new JButton("OPTIONS");
-		optionsButton.setBackground(Color.black);
-		optionsButton.setForeground(Color.white);
-		optionsButton.setFont(new Font("Times New Roman", Font.ITALIC, 25 ));
-		optionsButton.setFocusPainted(false);
-		optionsButton.addActionListener(new ActionListener() {
-			@Override public void actionPerformed(ActionEvent e) {
-			SoundManager.click.play();
 
-				JWindow window = new JWindow();
-				window.setLocationRelativeTo(null);
-				window.setBounds(645,280,250,350);
-				window.getContentPane().setBackground(Color.LIGHT_GRAY);
-				window.setVisible(true);
-				window.setLayout(null);
-				Container wincon = window.getContentPane();
-				
-				JLabel menuSoundsLabel = new JLabel("Menu Sound Effects:");
-				menuSoundsLabel.setFont(new Font("Bahnschrift", Font.PLAIN, 15));
-				menuSoundsLabel.setBounds(10,10, 150,30);
-				wincon.add(menuSoundsLabel);				
-				JToggleButton menuSoundsButton = new JToggleButton();
-				menuSoundsButton.setBounds(150,10, 30,30);
-				wincon.add(menuSoundsButton);
-				
-				JLabel brawlerSoundsLabel = new JLabel("Brawler Sound Effects:");
-				brawlerSoundsLabel.setFont(new Font("Bahnschrift", Font.PLAIN, 15));
-				brawlerSoundsLabel.setBounds(10,50, 160,30);
-				wincon.add(brawlerSoundsLabel);				
-				JToggleButton brawlerSoundsButton = new JToggleButton();
-				brawlerSoundsButton.setBounds(170,50, 30,30);
-				wincon.add(brawlerSoundsButton);
-				
-				
-				
-				JButton exitOptions = new JButton("EXIT");
-				exitOptions.setBounds(75,300, 100,30);
-				exitOptions.setBackground(Color.black);
-				exitOptions.setForeground(Color.white);
-				exitOptions.setFont(new Font("Times New Roman", Font.ITALIC, 20));
-				exitOptions.addActionListener(new ActionListener() {
-					
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						
-						SoundManager.click.play();
-						window.dispose();
-						
-					}
-				});
-				wincon.add(exitOptions);		
-				
-			}}
-		);
-		/*
-		OptionButtonPanel.add(optionsButton);
-		con.add(OptionButtonPanel);
-		*/
-		
-		//Help button
-		helpPanel = new JPanel();
-		helpPanel.setBounds(270,470,100,100);
-		helpPanel.setBackground(Color.darkGray);
-		helpButton = new JButton("HELP");
-		helpButton.setBackground(Color.black);
-		helpButton.setForeground(Color.white);
-		helpButton.setFont(new Font("Times New Roman", Font.ITALIC, 25 ));
-		helpButton.setFocusPainted(false);
-		helpButton.addActionListener(new ActionListener() {
-			@Override public void actionPerformed(ActionEvent e) {
-			SoundManager.click.play();
-			helpScreen(brawlers, brawlersName);
-			}});
-		
-		helpPanel.add(helpButton);
-		
-		//Player1 choosing character
-		JPanel p1p = new JPanel(); 
-		JLabel p1 = new JLabel("PLAYER 1", JLabel.LEFT);
-		p1p.setBounds(20,165, 100 , 40);
-		p1.setFont(new Font("Arial", Font.BOLD, 20));
-		p1.setForeground(Color.white);
-		p1p.setBackground(Color.DARK_GRAY);
-		p1p.add(p1);
-		con.add(p1p);
-		
-		player1BrawlerPanel = new JPanel();
-		player1BrawlerPanel.setBounds(20, 200, 200, 100);
-		player1BrawlerPanel.setBackground(Color.darkGray);
-		player1Brawler = new JButton("SELECT BRAWLER");
-		player1Brawler.setBackground(new Color(217, 180, 212) );
-		player1Brawler.setFocusable(false);
-		player1Brawler.setFont(new Font("Times New Roman", Font.BOLD ,20));
-		player1Brawler.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				
-				SoundManager.click.play();
+	public Game() {}
 
-				JWindow brawlerChooseWindow1 = new JWindow();
-				brawlerChooseWindow1.setLocationRelativeTo(null);
-				brawlerChooseWindow1.setIconImage(new ImageIcon("res/images/turnbyturn.png").getImage());
-				brawlerChooseWindow1.setBounds(375,280,786,390);
-				brawlerChooseWindow1.getContentPane().setBackground(Color.LIGHT_GRAY);
-				brawlerChooseWindow1.setVisible(true);
-				brawlerChooseWindow1.setLayout(null);
-				Container bcwcon1 = brawlerChooseWindow1.getContentPane();
-				
-				
-				JLabel welcome = new JLabel("Choose your Brawler!");
-				welcome.setFont(new Font("Bahnschrift", Font.PLAIN, 17));
-				welcome.setHorizontalAlignment(SwingConstants.CENTER);
-				welcome.setVerticalAlignment(SwingConstants.CENTER);
-				welcome.setBounds(580, 20, 200 , 20);
-				bcwcon1.add(welcome);
-				
-				JLabel expl = new JLabel("<html><p style=\"width:110px\"> Select a brawler to get some brief information! <html>");
-				expl.setBackground(Color.white);
-				expl.setOpaque(true);
-				expl.setFont(new Font("Bahnschrift", Font.PLAIN, 13));
-				expl.setBounds(600, 140 , 150 ,180);
-				expl.setHorizontalAlignment(SwingConstants.LEFT);
-				expl.setVerticalAlignment(SwingConstants.TOP);
-				expl.setBorder(BorderFactory.createLineBorder(Color.black, 2) );
-				bcwcon1.add(expl);
-				
-				BrawlerSelectionGrid bsg1 = new BrawlerSelectionGrid(welcome, expl);
-				bsg1.setBounds(30, 20, 550, 350);
-				bsg1.setVisible(true);
-				bcwcon1.add(bsg1);
-	
-				JPanel buttonPane1 = new JPanel();
-				buttonPane1.setBounds(630, 50, 100, 40);
-				buttonPane1.setBackground(Color.lightGray);
-				JButton player1BrawlerButton = new JButton("Lock in");
-				player1BrawlerButton.setBackground(Color.black);
-				player1BrawlerButton.setForeground(Color.white);
-				player1BrawlerButton.setFont(new Font("Arial", Font.PLAIN, 18 ));
-				player1BrawlerButton.setFocusable(false);
-				player1BrawlerButton.setVisible(true);
-				player1BrawlerButton.addActionListener(new ActionListener() {
-					@Override
-					public void actionPerformed(ActionEvent e) {
-							
-						boolean bool = bsg1.randomlyChosen;
-						if(bool) {
-							brawlerChooseWindow1.dispose();
-							Brawler.brawlerCall(welcome.getText().toLowerCase());
-							return;						
-						}
-						
-						
-						String chosenBrawlerName =  (String) bsg1.getSelectedBrawler();
-						for(int i = 0; i < brawlers.length; i++) 
-							if (brawlers[i].name == chosenBrawlerName) {
-								chosens[0] = brawlers[i];					
-								p1.setText(brawlers[i].name);
-								brawlerChooseWindow1.dispose();
-								Brawler.brawlerCall(welcome.getText().toLowerCase());
-							}	
-					}
-				});
-				buttonPane1.add(player1BrawlerButton);
-				bcwcon1.add(buttonPane1);
-				
-				//Random
-				JPanel random1Panel = new JPanel();
-				random1Panel.setBounds(630, 90, 100, 60);
-				random1Panel.setBackground(Color.lightGray);
-				JButton random1 = new JButton("Random");
-				random1.setBackground(Color.black);
-				random1.setForeground(Color.white);
-				random1.setFont(new Font("Arial", Font.PLAIN, 18 ));
-				random1.setFocusable(false);
-				random1.setVisible(true);
-				random1.addActionListener(new ActionListener() {
-					@Override
-					public void actionPerformed(ActionEvent e) {
-							
-						int len = brawlers.length;
-						int chosen = new Random().nextInt(0, len);
-						chosens[0] = brawlers[chosen];
-						chosens[0].build = new Build(new Random());
-						
-						p1.setText(brawlers[chosen].name);
-						welcome.setText(brawlers[chosen].name.toUpperCase());
-                        welcome.setFont(new Font("Bahnschrift", Font.PLAIN, 22));
-                        p1.setText(brawlers[chosen].name);
-                        
-                        bsg1.randomlyChosen = true;
-                        bsg1.changeLabels( brawlers[chosen].name);
-						
-					}
-				});		
-				random1Panel.add(random1);
-				bcwcon1.add(random1Panel);
-				
-				//Exit
-				JPanel exit1Panel = new JPanel();
-				exit1Panel.setBounds(630, 330, 100, 60);
-				random1Panel.setBackground(Color.lightGray);
-				exit1Panel.setBackground(Color.lightGray);
-				JButton exit1 = new JButton("Exit");
-				exit1.setBackground(Color.black);
-				exit1.setForeground(Color.white);
-				exit1.setFont(new Font("Arial", Font.PLAIN, 18 ));
-				exit1.setFocusable(false);
-				exit1.setVisible(true);
-				exit1.addActionListener(new ActionListener() {
-					
-					@Override
-					public void actionPerformed(ActionEvent e) {
-
-						brawlerChooseWindow1.dispose();
-					}
-				});
-				exit1Panel.add(exit1);
-				bcwcon1.add(exit1Panel);
-				
-				
-			}
-		});
-		player1BrawlerPanel.add(player1Brawler);
-			
-		//Player 2 choosing character
-		JPanel p2p = new JPanel(); 
-		JLabel p2 = new JLabel("PLAYER 2", JLabel.RIGHT);
-		p2p.setBounds(760,165, 100 , 40);
-		p2.setFont(new Font("Arial", Font.BOLD, 20));
-		p2.setForeground(Color.white);
-		p2p.setBackground(Color.DARK_GRAY);
-		p2p.add(p2);
-		con.add(p2p);
-		
-		player2BrawlerPanel = new JPanel();
-		player2BrawlerPanel.setBounds(665, 200, 200, 100);
-		player2BrawlerPanel.setBackground(Color.darkGray);
-		player2Brawler = new JButton("SELECT BRAWLER");
-		player2Brawler.setBackground(new Color(217, 180, 212) );
-		player2Brawler.setFocusable(false);
-		player2Brawler.setFont(new Font("Times New Roman", Font.BOLD ,20));
-		player2Brawler.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				
-				SoundManager.click.play();
-
-				JWindow brawlerChooseWindow1 = new JWindow();
-				brawlerChooseWindow1.setLocationRelativeTo(null);
-				brawlerChooseWindow1.setIconImage(new ImageIcon("res/images/turnbyturn.png").getImage());
-				brawlerChooseWindow1.setBounds(375,280,786,390);
-				brawlerChooseWindow1.getContentPane().setBackground(Color.LIGHT_GRAY);
-				brawlerChooseWindow1.setVisible(true);
-				brawlerChooseWindow1.setLayout(null);
-				Container bcwcon1 = brawlerChooseWindow1.getContentPane();
-				
-				
-				JLabel welcome = new JLabel("Choose your Brawler!");
-				welcome.setFont(new Font("Bahnschrift", Font.PLAIN, 17));
-				welcome.setHorizontalAlignment(SwingConstants.CENTER);
-				welcome.setVerticalAlignment(SwingConstants.CENTER);
-				welcome.setBounds(580, 20, 200 , 20);
-				bcwcon1.add(welcome);
-				
-				JLabel expl = new JLabel("<html><p style=\"width:110px\"> Select a brawler to get some brief information! <html>");
-				expl.setBackground(Color.white);
-				expl.setOpaque(true);
-				expl.setFont(new Font("Bahnschrift", Font.PLAIN, 13));
-				expl.setBounds(600, 140 , 150 ,180);
-				expl.setHorizontalAlignment(SwingConstants.LEFT);
-				expl.setVerticalAlignment(SwingConstants.TOP);
-				expl.setBorder(BorderFactory.createLineBorder(Color.black, 2) );
-				bcwcon1.add(expl);
-				
-				BrawlerSelectionGrid bsg1 = new BrawlerSelectionGrid(welcome, expl);
-				bsg1.setBounds(30, 20, 550, 350);
-				bsg1.setVisible(true);
-				bcwcon1.add(bsg1);
-				
-				JPanel buttonPane1 = new JPanel();
-				buttonPane1.setBounds(630, 50, 100, 40);
-				buttonPane1.setBackground(Color.lightGray);
-				JButton player1BrawlerButton = new JButton("Lock in");
-				player1BrawlerButton.setBackground(Color.black);
-				player1BrawlerButton.setForeground(Color.white);
-				player1BrawlerButton.setFont(new Font("Arial", Font.PLAIN, 18 ));
-				player1BrawlerButton.setFocusable(false);
-				player1BrawlerButton.setVisible(true);
-				player1BrawlerButton.addActionListener(new ActionListener() {
-					@Override
-					public void actionPerformed(ActionEvent e) {
-							
-						boolean bool = bsg1.randomlyChosen;
-						if(bool) {
-							brawlerChooseWindow1.dispose();
-							Brawler.brawlerCall(welcome.getText().toLowerCase());
-							return;						
-						}
-						
-						
-						String chosenBrawlerName =  (String) bsg1.getSelectedBrawler();
-						for(int i = 0; i < brawlers.length; i++) 
-							if (brawlers[i].name == chosenBrawlerName) {
-								chosens[1] = brawlers[i];					
-								p2.setText(brawlers[i].name);
-								brawlerChooseWindow1.dispose();
-								Brawler.brawlerCall(welcome.getText().toLowerCase());
-							}	
-					}
-				});
-				buttonPane1.add(player1BrawlerButton);
-				bcwcon1.add(buttonPane1);
-				
-				//Random
-				JPanel random1Panel = new JPanel();
-				random1Panel.setBounds(630, 90, 100, 60);
-				random1Panel.setBackground(Color.lightGray);
-				JButton random1 = new JButton("Random");
-				random1.setBackground(Color.black);
-				random1.setForeground(Color.white);
-				random1.setFont(new Font("Arial", Font.PLAIN, 18 ));
-				random1.setFocusable(false);
-				random1.setVisible(true);
-				random1.addActionListener(new ActionListener() {
-					@Override
-					public void actionPerformed(ActionEvent e) {
-							
-						int len = brawlers.length;
-						int chosen = new Random().nextInt(0, len);
-						chosens[1] = brawlers[chosen];
-						chosens[1].build = new Build(new Random());
-						
-						p2.setText(brawlers[chosen].name);
-						welcome.setText(brawlers[chosen].name.toUpperCase());
-                        welcome.setFont(new Font("Bahnschrift", Font.PLAIN, 22));
-                        p2.setText(brawlers[chosen].name);
-                        
-                        bsg1.randomlyChosen = true;
-                        bsg1.changeLabels( brawlers[chosen].name);
-						
-					}
-				});		
-				random1Panel.add(random1);
-				bcwcon1.add(random1Panel);
-				
-				//Exit
-				JPanel exit1Panel = new JPanel();
-				exit1Panel.setBounds(630, 330, 100, 60);
-				random1Panel.setBackground(Color.lightGray);
-				exit1Panel.setBackground(Color.lightGray);
-				JButton exit1 = new JButton("Exit");
-				exit1.setBackground(Color.black);
-				exit1.setForeground(Color.white);
-				exit1.setFont(new Font("Arial", Font.PLAIN, 18 ));
-				exit1.setFocusable(false);
-				exit1.setVisible(true);
-				exit1.addActionListener(new ActionListener() {
-					
-					@Override
-					public void actionPerformed(ActionEvent e) {
-
-						brawlerChooseWindow1.dispose();
-					}
-				});
-				exit1Panel.add(exit1);
-				bcwcon1.add(exit1Panel);
-				
-				
-			}
-		});
-		player2BrawlerPanel.add(player2Brawler);
-		con.add(player2BrawlerPanel);
-			
-		//Builds
-		String[] Potions = Build.Potions;
-		String[] PotionsName = Build.PotionsName;
-		String[] GadgetsArray = Build.Gadgets;
-		String[] GearsArray = Build.Gears;
-		String[] SpellArray = Build.Spells;
-		
-		 JPanel build1Panel = new JPanel();
-		 build1Panel.setBounds(20, 250, 100, 100);
-		 build1Panel.setBackground(Color.darkGray);
-		 JButton build1 = new JButton("BUILD");
-		 build1.setBackground(new Color(217, 180, 212));
-		 build1.setFont(new Font("Times New Roman", Font.BOLD ,20));
-		 build1.setFocusable(false);
-		 build1.setVisible(true);
-		 build1.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				SoundManager.click.play();
-				if (chosens[0] != null) {
-
-				JWindow buildWindow1 = new JWindow();
-				buildWindow1.setLocationRelativeTo(null);
-				buildWindow1.setIconImage(new ImageIcon("res/images/turnbyturn.png").getImage());
-				buildWindow1.setBounds(375,280,786,390);
-				buildWindow1.getContentPane().setBackground(Color.lightGray);
-				buildWindow1.setVisible(true);
-				buildWindow1.setLayout(null);
-				Container bwcon1 = buildWindow1.getContentPane();
-				
-				JComboBox<String> potionCombo = new JComboBox<String>(PotionsName);
-				((JLabel)potionCombo.getRenderer()).setHorizontalAlignment(SwingConstants.CENTER);
-				JLabel potionComboTitle = new JLabel("POTION", SwingConstants.CENTER);
-				potionComboTitle.setFont(new Font("Arial",Font.BOLD,20));
-				potionComboTitle.setForeground(Color.black);
-				potionComboTitle.setBounds(20,20,150,30);
-				bwcon1.add(potionComboTitle);
-				potionCombo.setBackground(Color.black);
-				potionCombo.setForeground(Color.white);
-				potionCombo.setFocusable(false);
-				potionCombo.setMaximumRowCount(10);
-				potionCombo.setFont(new Font("Times New Roman", Font.PLAIN, 19));
-				JPanel potionComboPanel = new JPanel();
-				potionComboPanel.setBackground(Color.lightGray);
-				potionComboPanel.setBounds(20,50,150,75);
-				potionComboPanel.add(potionCombo);
-				bwcon1.add(potionComboPanel);
-				
-				//Gadget
-				JLabel gadgetTitle = new JLabel("GADGET");
-				gadgetTitle.setForeground(Color.black);
-				gadgetTitle.setFont(new Font("Arial",Font.BOLD,20));
-				gadgetTitle.setBounds(210,20,150,30);
-				bwcon1.add(gadgetTitle);
- 				JPanel gadgetPanel = new JPanel();
-				gadgetPanel.setBounds(180, 50, 150,75);
-				gadgetPanel.setBackground(Color.lightGray);
-				
-				JComboBox<String> gadgetchoose = new JComboBox<String>(GadgetsArray);
-				((JLabel)gadgetchoose.getRenderer()).setHorizontalAlignment(SwingConstants.CENTER);
-				gadgetchoose.setBackground(Color.black);
-				gadgetchoose.setForeground(Color.white);
-				gadgetchoose.setFocusable(false);
-				gadgetchoose.setFont(new Font("Times New Roman", Font.PLAIN, 19));
-				gadgetchoose.setMaximumRowCount(6);
-				gadgetPanel.add(gadgetchoose);
-				bwcon1.add(gadgetPanel);
-				 
-				//Gear
-				JLabel geartitle = new JLabel("GEAR");
-				geartitle.setForeground(Color.black);
-				geartitle.setFont(new Font("Arial",Font.BOLD,20));
-				geartitle.setBounds(425,20,150,30);
-				bwcon1.add(geartitle);
- 				JPanel gearPanel = new JPanel();
-				gearPanel.setBounds(355, 50, 195,75);
-				gearPanel.setBackground(Color.lightGray);
-				
-				JComboBox<String> gearchoose = new JComboBox<String>(GearsArray);
-				((JLabel)gearchoose.getRenderer()).setHorizontalAlignment(SwingConstants.CENTER);
-				gearchoose.setBackground(Color.black);
-				gearchoose.setForeground(Color.white);
-				gearchoose.setFocusable(false);
-				gearchoose.setFont(new Font("Times New Roman", Font.PLAIN, 19));
-				gearchoose.setMaximumRowCount(8);
-				gearPanel.add(gearchoose);
-				bwcon1.add(gearPanel);
-				
-				//Spell
-				JLabel spellTitle = new JLabel("SPELLS");
-				spellTitle.setForeground(Color.black);
-				spellTitle.setFont(new Font("Arial",Font.BOLD,20));
-				spellTitle.setBounds(640,20,150,30);
-				bwcon1.add(spellTitle);
- 				JPanel spellPanel = new JPanel();
-				spellPanel.setBounds(590, 50, 180,75);
-				spellPanel.setBackground(Color.lightGray);
-			
-				JComboBox<String> spellChoose = new JComboBox<String>(SpellArray);
-				((JLabel)spellChoose.getRenderer()).setHorizontalAlignment(SwingConstants.CENTER);
-				spellChoose.setBackground(Color.black);
-				spellChoose.setForeground(Color.white);
-				spellChoose.setFocusable(false);
-				spellChoose.setMaximumRowCount(11);
-				spellChoose.setFont(new Font("Times New Roman", Font.PLAIN, 17));
-				spellPanel.add(spellChoose);
-				bwcon1.add(spellPanel);
-				
-				JPanel randomButtonPanel = new JPanel();
-				randomButtonPanel.setBounds(295,280,200,50);
-				randomButtonPanel.setBackground(Color.lightGray);
-				JButton randomButton = new JButton("RANDOM");
-				randomButton.setBackground(Color.black);
-				randomButton.setForeground(Color.white);
-				randomButton.setFocusable(false);
-				randomButton.setFont(new Font("Times New Roman", Font.PLAIN, 20));
-				randomButton.addActionListener(new ActionListener() {
-					
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						SoundManager.click.play();
-						chosens[0].build = new Build(new Random());
-						buildWindow1.dispose();
-						
-					}
-				});
-				randomButtonPanel.add(randomButton);
-				bwcon1.add(randomButtonPanel);
-				
-				JLabel msg = new JLabel( ("Create a build for " + chosens[0].name) );
-				msg.setBounds(290, 240, 250, 50);
-				msg.setFont(new Font("Arial",Font.BOLD,20));
-				msg.setForeground(Color.black);
-				bwcon1.add(msg);
-				
-				JPanel doneButtonPanel = new JPanel();
-				doneButtonPanel.setBounds(320,330,150,100);
-				doneButtonPanel.setBackground(Color.lightGray);
-				JButton doneButton = new JButton("DONE");
-				doneButton.setBackground(Color.black);
-				doneButton.setForeground(Color.white);
-				doneButton.setFocusable(false);
-				doneButton.setFont(new Font("Times New Roman", Font.PLAIN, 20));
-				doneButton.addActionListener(new ActionListener() {
-					
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						SoundManager.click.play();
-						chosens[0].build = new Build(
-								GadgetsArray[gadgetchoose.getSelectedIndex()], 
-								Potions[potionCombo.getSelectedIndex()], 
-								GearsArray[gearchoose.getSelectedIndex()],
-								SpellArray[spellChoose.getSelectedIndex()]		
-								);
-						buildWindow1.dispose();			
-					}
-				});  
-				doneButtonPanel.add(doneButton);
-			    bwcon1.add(doneButtonPanel);
-				
-				}
-			}
-		});
-		 build1Panel.add(build1);
-		 con.add(build1Panel);
-		 
-		 JPanel build2Panel = new JPanel();
-		 build2Panel.setBounds(765, 250, 100, 100);
-		 build2Panel.setBackground(Color.darkGray);
-		 JButton build2 = new JButton("BUILD");
-		 build2.setBackground(new Color(217, 180, 212));
-		 build2.setFont(new Font("Times New Roman", Font.BOLD ,20));
-		 build2.setFocusable(false);
-		 build2.setVisible(true);
-		 build2.addActionListener(new ActionListener() {
-				
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					SoundManager.click.play();
-					if (chosens[1] != null) {
-
-					JWindow buildWindow1 = new JWindow();
-					buildWindow1.setLocationRelativeTo(null);
-					buildWindow1.setIconImage(new ImageIcon("res/images/turnbyturn.png").getImage());
-					buildWindow1.setBounds(375,280,786,390);
-					buildWindow1.getContentPane().setBackground(Color.lightGray);
-					buildWindow1.setVisible(true);
-					buildWindow1.setLayout(null);
-					Container bwcon1 = buildWindow1.getContentPane();
-					
-					JComboBox<String> potionCombo = new JComboBox<String>(PotionsName);
-					((JLabel)potionCombo.getRenderer()).setHorizontalAlignment(SwingConstants.CENTER);
-					JLabel potionComboTitle = new JLabel("POTION", SwingConstants.CENTER);
-					potionComboTitle.setFont(new Font("Arial",Font.BOLD,20));
-					potionComboTitle.setForeground(Color.black);
-					potionComboTitle.setBounds(20,20,150,30);
-					bwcon1.add(potionComboTitle);
-					potionCombo.setBackground(Color.black);
-					potionCombo.setForeground(Color.white);
-					potionCombo.setFocusable(false);
-					potionCombo.setMaximumRowCount(10);
-					potionCombo.setFont(new Font("Times New Roman", Font.PLAIN, 19));
-					JPanel potionComboPanel = new JPanel();
-					potionComboPanel.setBackground(Color.lightGray);
-					potionComboPanel.setBounds(20,50,150,75);
-					potionComboPanel.add(potionCombo);
-					bwcon1.add(potionComboPanel);
-					
-					//Gadget
-					JLabel gadgetTitle = new JLabel("GADGET");
-					gadgetTitle.setForeground(Color.black);
-					gadgetTitle.setFont(new Font("Arial",Font.BOLD,20));
-					gadgetTitle.setBounds(210,20,150,30);
-					bwcon1.add(gadgetTitle);
-	 				JPanel gadgetPanel = new JPanel();
-					gadgetPanel.setBounds(180, 50, 150,75);
-					gadgetPanel.setBackground(Color.lightGray);
-					
-					JComboBox<String> gadgetchoose = new JComboBox<String>(GadgetsArray);
-					((JLabel)gadgetchoose.getRenderer()).setHorizontalAlignment(SwingConstants.CENTER);
-					gadgetchoose.setBackground(Color.black);
-					gadgetchoose.setForeground(Color.white);
-					gadgetchoose.setFocusable(false);
-					gadgetchoose.setFont(new Font("Times New Roman", Font.PLAIN, 19));
-					gadgetchoose.setMaximumRowCount(6);
-					gadgetPanel.add(gadgetchoose);
-					bwcon1.add(gadgetPanel);
-					 
-					//Gear
-					JLabel geartitle = new JLabel("GEAR");
-					geartitle.setForeground(Color.black);
-					geartitle.setFont(new Font("Arial",Font.BOLD,20));
-					geartitle.setBounds(425,20,150,30);
-					bwcon1.add(geartitle);
-	 				JPanel gearPanel = new JPanel();
-					gearPanel.setBounds(355, 50, 195,75);
-					gearPanel.setBackground(Color.lightGray);
-					
-					JComboBox<String> gearchoose = new JComboBox<String>(GearsArray);
-					((JLabel)gearchoose.getRenderer()).setHorizontalAlignment(SwingConstants.CENTER);
-					gearchoose.setBackground(Color.black);
-					gearchoose.setForeground(Color.white);
-					gearchoose.setFocusable(false);
-					gearchoose.setFont(new Font("Times New Roman", Font.PLAIN, 19));
-					gearchoose.setMaximumRowCount(8);
-					gearPanel.add(gearchoose);
-					bwcon1.add(gearPanel);
-					
-					//Spell
-					JLabel spellTitle = new JLabel("SPELLS");
-					spellTitle.setForeground(Color.black);
-					spellTitle.setFont(new Font("Arial",Font.BOLD,20));
-					spellTitle.setBounds(640,20,150,30);
-					bwcon1.add(spellTitle);
-	 				JPanel spellPanel = new JPanel();
-					spellPanel.setBounds(590, 50, 180,75);
-					spellPanel.setBackground(Color.lightGray);
-				
-					JComboBox<String> spellChoose = new JComboBox<String>(SpellArray);
-					((JLabel)spellChoose.getRenderer()).setHorizontalAlignment(SwingConstants.CENTER);
-					spellChoose.setBackground(Color.black);
-					spellChoose.setForeground(Color.white);
-					spellChoose.setFocusable(false);
-					spellChoose.setMaximumRowCount(11);
-					spellChoose.setFont(new Font("Times New Roman", Font.PLAIN, 17));
-					spellPanel.add(spellChoose);
-					bwcon1.add(spellPanel);
-					
-					JPanel randomButtonPanel = new JPanel();
-					randomButtonPanel.setBounds(295,280,200,50);
-					randomButtonPanel.setBackground(Color.lightGray);
-					JButton randomButton = new JButton("RANDOM");
-					randomButton.setBackground(Color.black);
-					randomButton.setForeground(Color.white);
-					randomButton.setFocusable(false);
-					randomButton.setFont(new Font("Times New Roman", Font.PLAIN, 20));
-					randomButton.addActionListener(new ActionListener() {
-						
-						@Override
-						public void actionPerformed(ActionEvent e) {
-							SoundManager.click.play();
-							chosens[1].build = new Build(new Random());
-							buildWindow1.dispose();
-							
-						}
-					});
-					randomButtonPanel.add(randomButton);
-					bwcon1.add(randomButtonPanel);
-					
-					JLabel msg = new JLabel( ("Create a build for " + chosens[1].name) );
-					msg.setBounds(290, 240, 250, 50);
-					msg.setFont(new Font("Arial",Font.BOLD,20));
-					msg.setForeground(Color.black);
-					bwcon1.add(msg);
-					
-					JPanel doneButtonPanel = new JPanel();
-					doneButtonPanel.setBounds(320,330,150,100);
-					doneButtonPanel.setBackground(Color.lightGray);
-					JButton doneButton = new JButton("DONE");
-					doneButton.setBackground(Color.black);
-					doneButton.setForeground(Color.white);
-					doneButton.setFocusable(false);
-					doneButton.setFont(new Font("Times New Roman", Font.PLAIN, 20));
-					doneButton.addActionListener(new ActionListener() {
-						
-						@Override
-						public void actionPerformed(ActionEvent e) {
-							SoundManager.click.play();
-							chosens[1].build = new Build(
-									GadgetsArray[gadgetchoose.getSelectedIndex()], 
-									Potions[potionCombo.getSelectedIndex()], 
-									GearsArray[gearchoose.getSelectedIndex()],
-									SpellArray[spellChoose.getSelectedIndex()]		
-									);
-							buildWindow1.dispose();			
-						}
-					});  
-					doneButtonPanel.add(doneButton);
-				    bwcon1.add(doneButtonPanel);
-					
-					}
-				}
-			});
-		 build2Panel.add(build2);
-		 con.add(build2Panel);
-		
-		quitPanel = new JPanel();
-		quitPanel.setBounds(400,470,100,80);
-		quitPanel.setBackground(Color.darkGray);
-		quitPanel.setVisible(true);
-		quitButton = new JButton("QUIT");
-		quitButton.setVisible(true);
-		quitButton.setForeground(Color.white);
-		quitButton.setBackground(Color.black);
-		quitButton.setFont(new Font("Times New Roman", Font.ITALIC, 25 ));
-		quitButton.setFocusPainted(false);
-		quitButton.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				SoundManager.click.play();
-				System.exit(0);
-				
-			}
-		});
-		quitPanel.add(quitButton);
-		
-		//Patch Notes
-		patchNotesPanel = new JPanel();
-		patchNotesPanel.setBounds(520,470,220,80);
-		patchNotesPanel.setBackground(Color.darkGray);
-		patchNotesPanel.setVisible(true);
-		patchNotes = new JButton("UPDATE NOTES");
-		patchNotes.setVisible(true);
-		patchNotes.setForeground(Color.white);
-		patchNotes.setBackground(Color.black);
-		patchNotes.setFont(new Font("Times New Roman", Font.ITALIC, 25 ));
-		patchNotes.setFocusPainted(false);
-		patchNotes.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				SoundManager.click.play();
-				patchNotes(version.getText());
-				
-			}
-		});
-		patchNotesPanel.add(patchNotes);
-		
-		
-		con.add(titleNamePanel);
-		con.add(startButtonPanel);
-		con.add(player1BrawlerPanel);
-		con.add(player2BrawlerPanel);
-		con.add(quitPanel);
-		con.add(titleCreditPanel);
-		con.add(helpPanel);
-		con.add(patchNotesPanel);
-		con.add(gamemodePanel);
-		
-		window.setLocationRelativeTo(null);
-		window.setVisible(true);	
-		
-	}	
-
-	public static void playGame1v1(Brawler A1, Brawler B2, String gamemode) {
+	public static void playGame1v1(Fighter A1, Fighter B2, String gamemode) {
 		
 		SoundManager.intro.play();
 				
-		Brawler[] brawlers = Brawler.brawlers;
+		Fighter[] fighters = Fighter.fighters;
 		
 		Random ran = new Random();
-		Brawler A = A1.newInstance();
-		Brawler B = B2.newInstance();	
+		Fighter A = A1.newInstance();
+		Fighter B = B2.newInstance();	
 		
 		String potionA = A.build.potionChoise;
 		String potionB = B.build.potionChoise;
@@ -1219,27 +233,27 @@ public class Game {
 		hypericon2.setBounds(535, 125 ,50 , 50);
 		con.add(hypericon2);
 		
-		//Brawler specific icon
+		//Fighter specific icon
 		
-		JLabel brawlerSpecific1 = new JLabel();
-		brawlerSpecific1.setBounds(355, 125 ,50 , 50);
-		brawlerSpecific1.setVisible(true);
-		brawlerSpecific1.setIcon(empty);
-		con.add(brawlerSpecific1);
+		JLabel fighterSpecific1 = new JLabel();
+		fighterSpecific1.setBounds(355, 125 ,50 , 50);
+		fighterSpecific1.setVisible(true);
+		fighterSpecific1.setIcon(empty);
+		con.add(fighterSpecific1);
 		
-		JLabel brawlerSpecific2 = new JLabel();
-		brawlerSpecific2.setBounds(585, 125 ,50 , 50);
-		brawlerSpecific2.setVisible(true);
-		brawlerSpecific2.setIcon(empty);
-		con.add(brawlerSpecific2);
+		JLabel fighterSpecific2 = new JLabel();
+		fighterSpecific2.setBounds(585, 125 ,50 , 50);
+		fighterSpecific2.setVisible(true);
+		fighterSpecific2.setIcon(empty);
+		con.add(fighterSpecific2);
 		
-		JLabel[] brawlerLabels = {
+		JLabel[] fighterLabels = {
 				hyperCountdown1, 
 				hypericon1, 
 				hyperCountdown2, 
 				hypericon2, 
-				brawlerSpecific1, //4
-				brawlerSpecific2  //5
+				fighterSpecific1, //4
+				fighterSpecific2  //5
 		};
 		
 		//REGEN
@@ -1268,10 +282,10 @@ public class Game {
 		con.add(turn);
 		
 		//Amounts
-		Potion1Amount = new JLabel(A.potionCount + "/" + A.newInstance().potionCount);
-		Potion2Amount = new JLabel(B.potionCount + "/" + B.newInstance().potionCount);
-		Gadget1Amount = new JLabel(A.gadgetCount + "/" + A.newInstance().gadgetCount);
-		Gadget2Amount = new JLabel(B.gadgetCount + "/" + B.newInstance().gadgetCount);
+		Potion1Amount = new JLabel(A.potionCount+"");
+		Potion2Amount = new JLabel(B.potionCount+"");
+		Gadget1Amount = new JLabel(A.gadgetCount+"");
+		Gadget2Amount = new JLabel(B.gadgetCount+"");
 		Gadget2Amount.setHorizontalAlignment(SwingConstants.RIGHT);
 		
 		//Cooldown
@@ -1289,6 +303,7 @@ public class Game {
 		ImageIcon frosty = new ImageIcon("res/images/frosty.png");
 		ImageIcon scarred = new ImageIcon("res/images/scarred.png");
 		ImageIcon intoxicated = new ImageIcon("res/images/intoxicated.png");
+		ImageIcon poisoned = new ImageIcon("res/images/poisoned.png");
 		ImageIcon[] icons = {
 				normal,
 				stun,
@@ -1300,7 +315,8 @@ public class Game {
 				frosty,
 				scarred,
 				hypercharged, //9
-				intoxicated
+				intoxicated,
+				poisoned
 		};
 		STATICON1 = new JLabel(normal);
 		STATICON1.setBounds(10,7,50,45);
@@ -1373,6 +389,41 @@ public class Game {
 		GEARICON2.setVisible(true);
 		
 		
+		//Trait Icon
+		ImageIcon tanktrait = new ImageIcon("res/images/tank_trait.png");
+		ImageIcon magicaltrait = new ImageIcon("res/images/magical_trait.png");
+		ImageIcon normaltrait = new ImageIcon("res/images/normal_trait.png");
+		JLabel TRAITICON1 = new JLabel();
+		switch(A.trait) {
+			case Normal:
+				TRAITICON1.setIcon(normaltrait);
+				break;
+			case Tank:
+				TRAITICON1.setIcon(tanktrait);
+				break;
+			case Magical:
+				TRAITICON1.setIcon(magicaltrait);
+				break;
+		}
+		TRAITICON1.setBounds(177,64,50,45);
+		JLabel TRAITICON2 = new JLabel();
+		switch(B.trait) {
+			case Normal:
+				TRAITICON2.setIcon(normaltrait);
+				break;
+			case Tank:
+				TRAITICON2.setIcon(tanktrait);
+				break;
+			case Magical:
+				TRAITICON2.setIcon(magicaltrait);
+				break;
+		}
+		TRAITICON2.setBounds(760,64,50,45);
+		con.add(TRAITICON1); con.add(TRAITICON2);
+		TRAITICON1.setVisible(true);
+		TRAITICON2.setVisible(true);
+		
+		
 		//Gamemode Label
 		gMode = new JLabel(gamemode);
 		gMode.setBounds(7,698,150,50);
@@ -1383,13 +434,13 @@ public class Game {
 		String[][] abilityNames = Build.abilityNames;
 		
 		int Aindex = 0;
-		for (int i = 0; i < brawlers.length; i++)
-			if (brawlers[i].name == A.name)
+		for (int i = 0; i < fighters.length; i++)
+			if (fighters[i].name == A.name)
 				Aindex = i;
 		
 		int Bindex = 0;
-		for (int i = 0; i < brawlers.length; i++)
-			if (brawlers[i].name == B.name)
+		for (int i = 0; i < fighters.length; i++)
+			if (fighters[i].name == B.name)
 				Bindex = i;
 		
 		Font ability = new Font("Arial",Font.BOLD, 16);		
@@ -1456,56 +507,74 @@ public class Game {
 		spellNameB.setBounds(730,587,200,50);
 		con.add(spellNameA); con.add(spellNameB);
 		
+		
 		/*
-		// Brawler Information Button
-        JPanel infoPanel1 = new JPanel();
-        infoPanel1.setBounds(178, 70, 40, 40);
-        infoPanel1.setBackground(Color.LIGHT_GRAY);
-        JButton infoButton1 = new JButton("info");
-        infoButton1.setFont(new Font("Arial", Font.PLAIN, 15));
-        infoButton1.setBackground(Color.black);
-        infoButton1.setForeground(Color.white);
-        infoButton1.setFocusable(false);
-        infoButton1.setBorderPainted(false);
-        infoPanel1.add(infoButton1);
-        window.add(infoPanel1);
-
-        // Create the info window
-        JLabel infoLabel = new JLabel("Brawler information goes here.");
-        infoLabel.setFont(new Font("Arial", Font.PLAIN, 15));
-        infoLabel.setLocation(window.getX() + infoPanel1.getX() + infoPanel1.getWidth() + 300, window.getY() + infoPanel1.getY() + 300);
-        infoLabel.setBackground(Color.LIGHT_GRAY);
-        infoLabel.setVisible(false);
-        infoButton1.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-            	System.out.println("here");
-                infoLabel.setVisible(true);
-                String str = "<html>HP: " + A.HP
-                        + "<br>Attack Damage: " + A.AttackDamage
-                        + "<br>Super Charge: " + A.SuperCharge
-                        + "<br>Super Damage: " + A.SuperDamage
-                        + "<br>Regeneration: " + A.regen
-                        + "<br>Shield: " + A.shield
-                        + "<br>Status: " + (A.stat != null ? A.stat.toString() : "None")
-                        + "<br>Hypercharge: " + A.HyperCharge
-                        + "<br>Hypercharge Turn: " + A.hyperchargeTurn
-                        + "<br>Is Hypercharged: " + A.isHypercharged
-                        + "<br>Specific Uses: " + A.hak
-                        + "</html>";
-                infoLabel.setText(str);
-            }
-        });
+		//Target Choosing Buttons
+		
+		JPanel TargetPanel1 = new JPanel();
+		TargetPanel1.setBounds(205, 270, 30, 30);
+		TargetPanel1.setBackground(Color.lightGray);
+		JButton Target1 = new JButton();
+		Target1.setFont(new Font("Arial", Font.PLAIN, 20));
+		Target1.setBackground(Color.LIGHT_GRAY);
+		Target1.setForeground(Color.white);
+		Target1.setFocusable(false);
+		Target1.setBorderPainted(false);
+		Target1.setVisible(true);
+		
+		P1buttons.add(Target1);
+		Target1.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				
+			}
+		});
+		
+		TargetPanel1.setVisible(false);
+		TargetPanel1.add(Target1);
+		con.add(TargetPanel1);
 		
 		
-		infoPanel1.add(infoButton1);
-		con.add(infoPanel1);
-		window.add(infoLabel);
+		JPanel TargetPanel2 = new JPanel();
+		TargetPanel2.setBounds(630, 270, 30, 30);
+		TargetPanel2.setBackground(Color.lightGray);
+		JButton Target2 = new JButton();
+		Target2.setFont(new Font("Arial", Font.PLAIN, 20));
+		Target2.setBackground(Color.DARK_GRAY);
+		Target2.setForeground(Color.white);
+		Target2.setFocusable(false);
+		Target2.setBorderPainted(false);
+		Target2.setVisible(true);
+		
+		P2buttons.add(Target2);
+		
+		//SPESIFIC ABILITY
+		Target2.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+			}
+		});
+		
+		TargetPanel2.setVisible(false);
+		TargetPanel2.add(Target2);
+		con.add(TargetPanel2);
+		
+		
+		if(A.canThisFighterChooseTarget || B.canThisFighterChooseTarget) {
+			TargetPanel1.setVisible(true);
+			TargetPanel2.setVisible(true);
+			Target1.setVisible(true);
+			Target2.setVisible(true);
+			Target1.setIcon(new ImageIcon("res/images/target.png"));
+			Target2.setIcon(new ImageIcon("res/images/target.png"));
+		}
+
+		
 		*/
 		
-		
-		//Brawler Specific Button
+		//Fighter Specific Buttons
 		
 		JPanel SpePanel1 = new JPanel();
 		SpePanel1.setBounds(165, 370, 60, 60);
@@ -1522,11 +591,11 @@ public class Game {
 		Specific1.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if(A.brawlerSpecificActivity(B)) 	
+				if(A.fighterSpecificActivity(B)) 	
 					enableOrDisable(A, B, P1buttons, P2buttons, "ALL");					
 				else
 					enableOrDisable(A, B, P1buttons, P2buttons, "SPECIFIC");
-				update(A, B, HP1, HP2, SG1, SG2, REG1, REG2, Potion1Amount, Potion2Amount, Gadget1Amount, Gadget2Amount, cd1,cd2, STATICON1, STATICON2, icons, hpbar1, hpbar2, shbar1, shbar2, scbar1, scbar2, hcbar1, hcbar2, TM, turn,Name1, Name2 ,abilityNamesArray, brawlerLabels, gamemode);					
+				update(A, B, HP1, HP2, SG1, SG2, REG1, REG2, Potion1Amount, Potion2Amount, Gadget1Amount, Gadget2Amount, cd1,cd2, STATICON1, STATICON2, icons, hpbar1, hpbar2, shbar1, shbar2, scbar1, scbar2, hcbar1, hcbar2, TM, turn,Name1, Name2 ,abilityNamesArray, fighterLabels, gamemode);					
 			}
 		});
 		
@@ -1552,12 +621,12 @@ public class Game {
 		Specific2.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if(B.brawlerSpecificActivity(A)) 	
+				if(B.fighterSpecificActivity(A)) 	
 					enableOrDisable(B, A, P2buttons, P1buttons, "ALL");					
 				else
 					enableOrDisable(B, A, P2buttons, P1buttons, "SPECIFIC");					
 
-				update(A, B, HP1, HP2, SG1, SG2, REG1, REG2, Potion1Amount, Potion2Amount, Gadget1Amount, Gadget2Amount, cd1,cd2, STATICON1, STATICON2, icons, hpbar1, hpbar2, shbar1, shbar2, scbar1, scbar2, hcbar1, hcbar2, TM, turn,Name1, Name2 ,abilityNamesArray, brawlerLabels, gamemode);					
+				update(A, B, HP1, HP2, SG1, SG2, REG1, REG2, Potion1Amount, Potion2Amount, Gadget1Amount, Gadget2Amount, cd1,cd2, STATICON1, STATICON2, icons, hpbar1, hpbar2, shbar1, shbar2, scbar1, scbar2, hcbar1, hcbar2, TM, turn,Name1, Name2 ,abilityNamesArray, fighterLabels, gamemode);					
 			}
 		});
 		
@@ -1575,6 +644,16 @@ public class Game {
 			Specific1.setIcon(new John(new Build()).john_specific);
 		}
 		
+		if(A.name.equals("Anton")) {
+			SpePanel1.setVisible(true);		
+			Specific1.setIcon(new Anton(new Build()).anton_specific);
+		}
+		
+		if(A.name.equals("Aboa")) {
+			SpePanel1.setVisible(true);		
+			Specific1.setIcon(new Aboa(new Build()).aboa_specific);
+		}
+		
 		if(B.name.equals("Qirale")) {						
 			SpePanel2.setVisible(true);		
 			Specific2.setIcon(new Qirale(new Build()).qirale_specific);
@@ -1583,6 +662,16 @@ public class Game {
 		if(B.name.equals("John")) {
 			SpePanel2.setVisible(true);		
 			Specific2.setIcon(new John(new Build()).john_specific);
+		}
+		
+		if(B.name.equals("Anton")) {
+			SpePanel2.setVisible(true);		
+			Specific2.setIcon(new Anton(new Build()).anton_specific);
+		}
+		
+		if(B.name.equals("Aboa")) {
+			SpePanel2.setVisible(true);		
+			Specific2.setIcon(new Aboa(new Build()).aboa_specific);
 		}
 		
 		//Attack
@@ -1599,11 +688,12 @@ public class Game {
 			public void actionPerformed(ActionEvent e) {
 				enableOrDisable(A, B, P1buttons, P2buttons, "ALL");
 				attack(A, B);	
-				update(A, B, HP1, HP2, SG1, SG2, REG1, REG2, Potion1Amount, Potion2Amount, Gadget1Amount, Gadget2Amount, cd1,cd2, STATICON1, STATICON2, icons, hpbar1, hpbar2, shbar1, shbar2, scbar1, scbar2, hcbar1, hcbar2, TM, turn,Name1, Name2 ,abilityNamesArray, brawlerLabels, gamemode);
+				update(A, B, HP1, HP2, SG1, SG2, REG1, REG2, Potion1Amount, Potion2Amount, Gadget1Amount, Gadget2Amount, cd1,cd2, STATICON1, STATICON2, icons, hpbar1, hpbar2, shbar1, shbar2, scbar1, scbar2, hcbar1, hcbar2, TM, turn,Name1, Name2 ,abilityNamesArray, fighterLabels, gamemode);
 				isOver(A, B, HP1, HP2, SG1, SG2, REG1, REG2, Potion1Amount, Potion2Amount, Gadget1Amount, Gadget2Amount, STATICON1, STATICON2, Name1, Name2, icons, hpbar1, hpbar2,scbar1, scbar2, buttons);		
 				superChargeCheck(A, Super1, B, Super2);
 				if(A.stat == Status.Stunned || B.stat == Status.Stunned)
 					 enableOrDisable(A, B, P1buttons, P2buttons, "ALL");
+				updateEnhancedNormal(A, B, Attack1, Attack2);
 			}
 		});
 		
@@ -1620,11 +710,12 @@ public class Game {
 			public void actionPerformed(ActionEvent e) {
 				enableOrDisable(B, A, P2buttons, P1buttons, "ALL");
 				attack(B, A);				
-				update(A, B, HP1, HP2, SG1, SG2, REG1, REG2, Potion1Amount, Potion2Amount, Gadget1Amount, Gadget2Amount, cd1,cd2, STATICON1, STATICON2, icons, hpbar1, hpbar2,shbar1, shbar2, scbar1, scbar2, hcbar1, hcbar2, TM, turn,Name1, Name2,abilityNamesArray, brawlerLabels, gamemode);	
+				update(A, B, HP1, HP2, SG1, SG2, REG1, REG2, Potion1Amount, Potion2Amount, Gadget1Amount, Gadget2Amount, cd1,cd2, STATICON1, STATICON2, icons, hpbar1, hpbar2,shbar1, shbar2, scbar1, scbar2, hcbar1, hcbar2, TM, turn,Name1, Name2,abilityNamesArray, fighterLabels, gamemode);	
 				isOver(A, B, HP1, HP2, SG1, SG2, REG1, REG2, Potion1Amount, Potion2Amount, Gadget1Amount, Gadget2Amount, STATICON1, STATICON2, Name1, Name2, icons, hpbar1, hpbar2, scbar1, scbar2, buttons);	
 				superChargeCheck(A, Super1, B, Super2);
 				if(A.stat == Status.Stunned || B.stat == Status.Stunned)
 					enableOrDisable(B, A, P2buttons, P1buttons, "ALL");
+				updateEnhancedNormal(A, B, Attack1, Attack2);
 			}
 		});
 		AtPanel1.add(Attack1); AtPanel2.add(Attack2);
@@ -1646,18 +737,16 @@ public class Game {
 				
 				boolean isDone = superAbility(A, B , Super1, Super2, TM);
 				if (isDone) {
-				update(A, B, HP1, HP2, SG1, SG2, REG1, REG2, Potion1Amount, Potion2Amount, Gadget1Amount, Gadget2Amount, cd1,cd2, STATICON1, STATICON2, icons, hpbar1, hpbar2, shbar1, shbar2, scbar1, scbar2, hcbar1, hcbar2, TM, turn,Name1, Name2,abilityNamesArray, brawlerLabels, gamemode);
+				update(A, B, HP1, HP2, SG1, SG2, REG1, REG2, Potion1Amount, Potion2Amount, Gadget1Amount, Gadget2Amount, cd1,cd2, STATICON1, STATICON2, icons, hpbar1, hpbar2, shbar1, shbar2, scbar1, scbar2, hcbar1, hcbar2, TM, turn,Name1, Name2,abilityNamesArray, fighterLabels, gamemode);
 				enableOrDisable(A, B, P1buttons, P2buttons, "ALL");
 				isOver(A, B, HP1, HP2, SG1, SG2, REG1, REG2, Potion1Amount, Potion2Amount, Gadget1Amount, Gadget2Amount, STATICON1, STATICON2, Name1, Name2, icons, hpbar1, hpbar2, scbar1, scbar2, buttons);	
 				superChargeCheck(A, Super1, B, Super2);
 				if(A.stat == Status.Stunned || B.stat == Status.Stunned)
 					 enableOrDisable(A, B, P1buttons, P2buttons, "ALL");
+				updateEnhancedNormal(A, B, Attack1, Attack2);
 				}
 			}
-					
-				
-				
-				
+								
 			});
 		SuPanel1.add(Super1);
 		con.add(SuPanel1);
@@ -1680,12 +769,13 @@ public class Game {
 				boolean isDone = superAbility(B, A , Super2, Super1,TM);
 				if (isDone) {
 				superChargeCheck(A, Super1, B, Super2);
-				update(A, B, HP1, HP2, SG1, SG2, REG1, REG2, Potion1Amount, Potion2Amount, Gadget1Amount, Gadget2Amount, cd1,cd2, STATICON1, STATICON2, icons, hpbar1, hpbar2,shbar1, shbar2, scbar1, scbar2, hcbar1, hcbar2, TM, turn,Name1, Name2,abilityNamesArray, brawlerLabels, gamemode);
+				update(A, B, HP1, HP2, SG1, SG2, REG1, REG2, Potion1Amount, Potion2Amount, Gadget1Amount, Gadget2Amount, cd1,cd2, STATICON1, STATICON2, icons, hpbar1, hpbar2,shbar1, shbar2, scbar1, scbar2, hcbar1, hcbar2, TM, turn,Name1, Name2,abilityNamesArray, fighterLabels, gamemode);
 				enableOrDisable(B, A, P2buttons, P1buttons, "ALL");
 				isOver(A, B, HP1, HP2, SG1, SG2, REG1, REG2, Potion1Amount, Potion2Amount, Gadget1Amount, Gadget2Amount, STATICON1, STATICON2, Name1, Name2, icons, hpbar1, hpbar2,scbar1, scbar2, buttons);	
 				superChargeCheck(A, Super1, B, Super2);
 				if(A.stat == Status.Stunned || B.stat == Status.Stunned)
 					enableOrDisable(B, A, P2buttons, P1buttons, "ALL");
+				updateEnhancedNormal(A, B, Attack1, Attack2);
 				}
 				
 			}
@@ -1713,12 +803,13 @@ public class Game {
 				gadget(A, B);
 				superChargeCheck(A, Super1, B, Super2);
 				enableOrDisable(A, B, P1buttons, P2buttons, "GADGET_POTION");				
-				update(A, B, HP1, HP2, SG1, SG2, REG1, REG2, Potion1Amount, Potion2Amount, Gadget1Amount, Gadget2Amount, cd1,cd2, STATICON1, STATICON2, icons, hpbar1, hpbar2,shbar1, shbar2,scbar1, scbar2,  hcbar1, hcbar2,TM, turn,Name1, Name2,abilityNamesArray, brawlerLabels, gamemode);
+				update(A, B, HP1, HP2, SG1, SG2, REG1, REG2, Potion1Amount, Potion2Amount, Gadget1Amount, Gadget2Amount, cd1,cd2, STATICON1, STATICON2, icons, hpbar1, hpbar2,shbar1, shbar2,scbar1, scbar2,  hcbar1, hcbar2,TM, turn,Name1, Name2,abilityNamesArray, fighterLabels, gamemode);
 				cooldownCheck(A, Spell1);
 				isOver(A, B, HP1, HP2, SG1, SG2, REG1, REG2, Potion1Amount, Potion2Amount, Gadget1Amount, Gadget2Amount, STATICON1, STATICON2, Name1, Name2, icons, hpbar1, hpbar2,scbar1, scbar2, buttons);	
 				superChargeCheck(A, Super1, B, Super2);
 				if(A.stat == Status.Stunned || B.stat == Status.Stunned)
 					 enableOrDisable(A, B, P1buttons, P2buttons, "ALL");
+				updateEnhancedNormal(A, B, Attack1, Attack2);
 			}
 		});
 		
@@ -1732,7 +823,7 @@ public class Game {
 		Gadget2.setBackground(new Color(66, 66, 66));
 		Gadget2.setForeground(Color.white);
 		Gadget2.setVisible(true);
-		Gadget2Amount.setBounds(780,462,50,50);
+		Gadget2Amount.setBounds(775,462,50,50);
 		Gadget2Amount.setFont(new Font("Arial", Font.PLAIN, 20));
 		con.add(Gadget2Amount);
 		Gadget2.addActionListener(new ActionListener() {
@@ -1744,12 +835,13 @@ public class Game {
 				superChargeCheck(A, Super1, B, Super2);
 				enableOrDisable(B, A, P2buttons,P1buttons , "GADGET_POTION");
 				
-				update(A, B, HP1, HP2, SG1, SG2, REG1, REG2, Potion1Amount, Potion2Amount, Gadget1Amount, Gadget2Amount, cd1,cd2, STATICON1, STATICON2, icons, hpbar1, hpbar2,shbar1, shbar2, scbar1, scbar2, hcbar1, hcbar2, TM, turn,Name1, Name2,abilityNamesArray, brawlerLabels, gamemode);
+				update(A, B, HP1, HP2, SG1, SG2, REG1, REG2, Potion1Amount, Potion2Amount, Gadget1Amount, Gadget2Amount, cd1,cd2, STATICON1, STATICON2, icons, hpbar1, hpbar2,shbar1, shbar2, scbar1, scbar2, hcbar1, hcbar2, TM, turn,Name1, Name2,abilityNamesArray, fighterLabels, gamemode);
 				cooldownCheck(B, Spell2);
 				isOver(A, B, HP1, HP2, SG1, SG2, REG1, REG2, Potion1Amount, Potion2Amount, Gadget1Amount, Gadget2Amount, STATICON1, STATICON2, Name1, Name2, icons, hpbar1, hpbar2,scbar1, scbar2, buttons);	
 				superChargeCheck(A, Super1, B, Super2);
 				if(A.stat == Status.Stunned || B.stat == Status.Stunned)
 					enableOrDisable(B, A, P2buttons, P1buttons, "ALL");
+				updateEnhancedNormal(A, B, Attack1, Attack2);
 				
 			}
 		});
@@ -1828,12 +920,13 @@ public class Game {
 				potion(A, B, potionA, Potion1, Super1);
 				superChargeCheck(A, Super1, B, Super2);
 				enableOrDisable(A, B, P1buttons, P2buttons, "GADGET_POTION");
-				update(A, B, HP1, HP2, SG1, SG2, REG1, REG2, Potion1Amount, Potion2Amount, Gadget1Amount, Gadget2Amount, cd1,cd2, STATICON1, STATICON2, icons, hpbar1, hpbar2,shbar1, shbar2,scbar1, scbar2,  hcbar1, hcbar2,TM, turn,Name1, Name2,abilityNamesArray, brawlerLabels, gamemode);
+				update(A, B, HP1, HP2, SG1, SG2, REG1, REG2, Potion1Amount, Potion2Amount, Gadget1Amount, Gadget2Amount, cd1,cd2, STATICON1, STATICON2, icons, hpbar1, hpbar2,shbar1, shbar2,scbar1, scbar2,  hcbar1, hcbar2,TM, turn,Name1, Name2,abilityNamesArray, fighterLabels, gamemode);
 				cooldownCheck(A, Spell1);
 				isOver(A, B, HP1, HP2, SG1, SG2, REG1, REG2, Potion1Amount, Potion2Amount, Gadget1Amount, Gadget2Amount, STATICON1, STATICON2, Name1, Name2, icons, hpbar1, hpbar2, scbar1, scbar2, buttons);	
 				superChargeCheck(A, Super1, B, Super2);
 				if(A.stat == Status.Stunned || B.stat == Status.Stunned)
 					 enableOrDisable(A, B, P1buttons, P2buttons, "ALL");
+				updateEnhancedNormal(A, B, Attack1, Attack2);
 				
 			}
 		});
@@ -1853,7 +946,7 @@ public class Game {
 		Potion2.setBackground(new Color(66, 66, 66));
 		Potion2.setForeground(Color.white);
 		Potion2.setVisible(true);
-		Potion2Amount.setBounds(800,540,50,50);
+		Potion2Amount.setBounds(815,540,50,50);
 		Potion2Amount.setFont(new Font("Arial", Font.PLAIN, 20));
 		con.add(Potion2Amount);
 
@@ -1910,12 +1003,13 @@ public class Game {
 				potion(B, A, potionB, Potion2, Super2);
 				superChargeCheck(A, Super1, B, Super2);			
 				enableOrDisable(B, A, P2buttons, P1buttons, "GADGET_POTION");
-				update(A, B, HP1, HP2, SG1, SG2, REG1, REG2, Potion1Amount, Potion2Amount, Gadget1Amount, Gadget2Amount, cd1,cd2, STATICON1, STATICON2, icons, hpbar1, hpbar2,shbar1, shbar2,scbar1, scbar2,  hcbar1, hcbar2,TM, turn,Name1, Name2,abilityNamesArray, brawlerLabels, gamemode);
+				update(A, B, HP1, HP2, SG1, SG2, REG1, REG2, Potion1Amount, Potion2Amount, Gadget1Amount, Gadget2Amount, cd1,cd2, STATICON1, STATICON2, icons, hpbar1, hpbar2,shbar1, shbar2,scbar1, scbar2,  hcbar1, hcbar2,TM, turn,Name1, Name2,abilityNamesArray, fighterLabels, gamemode);
 				cooldownCheck(B, Spell2);
 				isOver(A, B, HP1, HP2, SG1, SG2, REG1, REG2, Potion1Amount, Potion2Amount, Gadget1Amount, Gadget2Amount, STATICON1, STATICON2, Name1, Name2, icons, hpbar1, hpbar2, scbar1, scbar2, buttons);	
 				superChargeCheck(A, Super1, B, Super2);
 				if(A.stat == Status.Stunned || B.stat == Status.Stunned)
 					enableOrDisable(B, A, P2buttons, P1buttons, "ALL");
+				updateEnhancedNormal(A, B, Attack1, Attack2);
 			}
 		});
 			
@@ -1941,11 +1035,12 @@ public class Game {
 				spell(A, B, A.spell);
 				superChargeCheck(A, Super1, B, Super2);
 				enableOrDisable(A, B, P1buttons, P2buttons, (A.spell.doesSkip ? "ALL" : "SPELL") );
-				update(A, B, HP1, HP2, SG1, SG2, REG1, REG2, Potion1Amount, Potion2Amount, Gadget1Amount, Gadget2Amount, cd1,cd2, STATICON1, STATICON2, icons, hpbar1, hpbar2,shbar1, shbar2,scbar1, scbar2,  hcbar1, hcbar2,TM, turn,Name1, Name2,abilityNamesArray, brawlerLabels, gamemode);
+				update(A, B, HP1, HP2, SG1, SG2, REG1, REG2, Potion1Amount, Potion2Amount, Gadget1Amount, Gadget2Amount, cd1,cd2, STATICON1, STATICON2, icons, hpbar1, hpbar2,shbar1, shbar2,scbar1, scbar2,  hcbar1, hcbar2,TM, turn,Name1, Name2,abilityNamesArray, fighterLabels, gamemode);
 				isOver(A, B, HP1, HP2, SG1, SG2, REG1, REG2, Potion1Amount, Potion2Amount, Gadget1Amount, Gadget2Amount, STATICON1, STATICON2, Name1, Name2, icons, hpbar1, hpbar2,scbar1, scbar2, buttons);		
 				superChargeCheck(A, Super1, B, Super2);
 				if(A.stat == Status.Stunned || B.stat == Status.Stunned)
 					 enableOrDisable(A, B, P1buttons, P2buttons, "ALL");
+				updateEnhancedNormal(A, B, Attack1, Attack2);
 			}
 		});
 		
@@ -1965,11 +1060,12 @@ public class Game {
 				spell(B, A, B.spell);
 				superChargeCheck(A, Super1, B, Super2);
 				enableOrDisable(B, A, P2buttons, P1buttons, (B.spell.doesSkip ? "ALL" : "SPELL"));
-				update(A, B, HP1, HP2, SG1, SG2, REG1, REG2, Potion1Amount, Potion2Amount, Gadget1Amount, Gadget2Amount, cd1,cd2, STATICON1, STATICON2, icons, hpbar1, hpbar2,shbar1, shbar2, scbar1, scbar2, hcbar1, hcbar2, TM, turn,Name1, Name2,abilityNamesArray, brawlerLabels, gamemode);	
+				update(A, B, HP1, HP2, SG1, SG2, REG1, REG2, Potion1Amount, Potion2Amount, Gadget1Amount, Gadget2Amount, cd1,cd2, STATICON1, STATICON2, icons, hpbar1, hpbar2,shbar1, shbar2, scbar1, scbar2, hcbar1, hcbar2, TM, turn,Name1, Name2,abilityNamesArray, fighterLabels, gamemode);	
 				isOver(A, B, HP1, HP2, SG1, SG2, REG1, REG2, Potion1Amount, Potion2Amount, Gadget1Amount, Gadget2Amount, STATICON1, STATICON2, Name1, Name2, icons, hpbar1, hpbar2, scbar1, scbar2, buttons);	
 				superChargeCheck(A, Super1, B, Super2);
 				if(A.stat == Status.Stunned || B.stat == Status.Stunned)
 					enableOrDisable(B, A, P2buttons, P1buttons, "ALL");
+				updateEnhancedNormal(A, B, Attack1, Attack2);
 			}
 		});
 		SpellPanel1.add(Spell1); SpellPanel2.add(Spell2);
@@ -2178,10 +1274,10 @@ public class Game {
 				Super2.setBackground(new Color(66, 66, 66));
 				Super1.setForeground(Color.white);
 				Super2.setForeground(Color.white);	
-				Potion1Amount.setText(A.potionCount + "/" + A.newInstance().potionCount);
-				Potion2Amount.setText(B.potionCount + "/" + B.newInstance().potionCount);
-				Gadget1Amount.setText(A.gadgetCount + "/" + A.newInstance().gadgetCount);
-				Gadget2Amount.setText(B.gadgetCount + "/" + B.newInstance().gadgetCount);
+				Potion1Amount.setText(A.potionCount+"");
+				Potion2Amount.setText(B.potionCount+"");
+				Gadget1Amount.setText(A.gadgetCount+"");
+				Gadget2Amount.setText(B.gadgetCount+"");
 				hpbar1.updateHealth(A);
 				hpbar2.updateHealth(B);
 				scbar1.updateCharge(A);
@@ -2206,7 +1302,7 @@ public class Game {
 				    Spell1.setEnabled(false);
 				}
 				
-				update(A, B, HP1, HP2, SG1, SG2, REG1, REG2, Potion1Amount, Potion2Amount, Gadget1Amount, Gadget2Amount, cd1,cd2, STATICON1, STATICON2, icons, hpbar1, hpbar2, shbar1, shbar2, scbar1, scbar2,  hcbar1, hcbar2,TM, turn ,Name1, Name2,abilityNamesArray, brawlerLabels, gamemode);
+				update(A, B, HP1, HP2, SG1, SG2, REG1, REG2, Potion1Amount, Potion2Amount, Gadget1Amount, Gadget2Amount, cd1,cd2, STATICON1, STATICON2, icons, hpbar1, hpbar2, shbar1, shbar2, scbar1, scbar2,  hcbar1, hcbar2,TM, turn ,Name1, Name2,abilityNamesArray, fighterLabels, gamemode);
 				
 				
 			}
@@ -2238,13 +1334,13 @@ public class Game {
 		window.setVisible(true);
 		
 
-		update(A, B, HP1, HP2, SG1, SG2, REG1, REG2, Potion1Amount, Potion2Amount, Gadget1Amount, Gadget2Amount, cd1,cd2,STATICON1, STATICON2, icons, hpbar1, hpbar2,shbar1, shbar2,scbar1, scbar2,  hcbar1, hcbar2,TM, turn, Name1, Name2,abilityNamesArray, brawlerLabels, gamemode);
+		update(A, B, HP1, HP2, SG1, SG2, REG1, REG2, Potion1Amount, Potion2Amount, Gadget1Amount, Gadget2Amount, cd1,cd2,STATICON1, STATICON2, icons, hpbar1, hpbar2,shbar1, shbar2,scbar1, scbar2,  hcbar1, hcbar2,TM, turn, Name1, Name2,abilityNamesArray, fighterLabels, gamemode);
 		enableOrDisable(A, B, P1buttons, P2buttons, "ALL");
 		enableOrDisable(B, A, P2buttons, P1buttons, "ALL");
 		
 	}	
 	 
-	public static void attack(Brawler attacker, Brawler attacked) {	
+	public static void attack(Fighter attacker, Fighter attacked) {	
 		
 		//Confused
 		if (attacker.stat == Status.Confused) {
@@ -2273,7 +1369,7 @@ public class Game {
 		
 		}
 	
-	public static boolean superAbility(Brawler attacker, Brawler attacked, JButton Super1, JButton Super2, TurnManager TM) {
+	public static boolean superAbility(Fighter attacker, Fighter attacked, JButton Super1, JButton Super2, TurnManager TM) {
 
 
 	    if (attacker.SuperCharge >= 100) {
@@ -2284,7 +1380,7 @@ public class Game {
 	        attacker.superAbility(attacked);
 	        attacker.changeCHARGE(-100);
 
-	        // Calculate the final state of the attacked Brawler
+	        // Calculate the final state of the attacked Fighter
 	        int enemyHPnext = attacked.shield + attacked.HP;
 
 	        // If they attacked the enemy and the super ability dealt damage
@@ -2303,7 +1399,7 @@ public class Game {
 	    }
 	}
 		
-	public static void superChargeCheck(Brawler A, JButton asuper, Brawler B, JButton bsuper) {
+	public static void superChargeCheck(Fighter A, JButton asuper, Fighter B, JButton bsuper) {
 
 		//If Super is charged show
 		if (A.SuperCharge >= 100) {
@@ -2333,14 +1429,14 @@ public class Game {
 		}
 	}
 	
-	public static void regenerate(Brawler A, Brawler B) {
+	public static void regenerate(Fighter A, Fighter B) {
 		if(A.stat != Status.Stunned && (A.stat != Status.Frosty || A.regen < 0) )
 			A.regenerate();
 		if(B.stat != Status.Stunned && (B.stat != Status.Frosty || B.regen < 0))
 			B.regenerate();
 	}
 	
-	public static void eachTurnPassives(Brawler A, Brawler B) {
+	public static void eachTurnPassives(Fighter A, Fighter B) {
 		
 		
 		//Hypercharge
@@ -2439,8 +1535,8 @@ public class Game {
 	//end of eachturnpassives function		
 	}
 
-	public static void update(Brawler A, 
-							  Brawler B, 
+	public static void update(Fighter A, 
+							  Fighter B, 
 							  JLabel HP1, 
 							  JLabel HP2 ,
 							  JLabel SG1, 
@@ -2469,7 +1565,7 @@ public class Game {
 							  JLabel Name1, 
 							  JLabel Name2,
 							  JLabel[] abilityNames,
-							  JLabel[] brawlerLabels,
+							  JLabel[] fighterLabels,
 							  String gamemode) {
 		
 		
@@ -2516,8 +1612,8 @@ public class Game {
 		//Each Turn Passive
 		eachTurnPassives(A, B);
 		
-		//brawler specific things
-		updateBrawlerSpecific(abilityNames, brawlerLabels, A, B);
+		//fighter specific things
+		updateFighterSpecific(abilityNames, fighterLabels, A, B);
 					
 		//Updates
 		hpbar1.updateHealth(A);
@@ -2534,10 +1630,10 @@ public class Game {
 		SG2.setText(B.SuperCharge + "/100");
 		REG1.setText("Regen: " + A.regen);
 		REG2.setText("Regen: " + B.regen);
-		Potion1Amount.setText(A.potionCount + "/" + A.newInstance().potionCount);
-		Potion2Amount.setText(B.potionCount + "/" + B.newInstance().potionCount);
-		Gadget1Amount.setText(A.gadgetCount + "/" + A.newInstance().gadgetCount);
-		Gadget2Amount.setText(B.gadgetCount + "/" + B.newInstance().gadgetCount);
+		Potion1Amount.setText(A.potionCount+"");
+		Potion2Amount.setText(B.potionCount+"");
+		Gadget1Amount.setText(A.gadgetCount+"");
+		Gadget2Amount.setText(B.gadgetCount+"");
 		cooldown1.setText(A.spell.currentCooldown+"");
 		cooldown2.setText(B.spell.currentCooldown+"");
 				
@@ -2560,6 +1656,8 @@ public class Game {
 			STATICON1.setIcon(icons[8]);
 		else if (A.stat == Status.Intoxicated)
 			STATICON1.setIcon(icons[10]);
+		else if (A.stat == Status.Poisoned)
+			STATICON1.setIcon(icons[11]);
 		else {
 			STATICON1.setIcon(icons[0]);
 			Name1.setForeground(Color.black);
@@ -2590,6 +1688,8 @@ public class Game {
 			STATICON2.setIcon(icons[8]);
 		else if (B.stat == Status.Intoxicated)
 			STATICON2.setIcon(icons[10]);
+		else if (B.stat == Status.Poisoned)
+			STATICON2.setIcon(icons[11]);
 		else {
 			STATICON2.setIcon(icons[0]);
 			Name2.setForeground(Color.black);
@@ -2602,24 +1702,23 @@ public class Game {
 		}
 		
 		//Color
-		if(A.name.equals("Ritz")) {
-			Ritz temp = (Ritz) A;
+		if(A.name.equals("Rits")) {
+			Rits temp = (Rits) A;
 			if(temp.passive > 0)
 				Name1.setForeground(Color.red);
-		}
-				
-		if(B.name.equals("Ritz")) {
-			Ritz temp = (Ritz) B;
+		}				
+		if(B.name.equals("Rits")) {
+			Rits temp = (Rits) B;
 			if(temp.passive > 0)
 				Name2.setForeground(Color.red);
-		}		
+		}
 		
 	}
 	
-	public static void updateBrawlerSpecific(JLabel[] abilityNames,
-			  								 JLabel[] brawlerLabels,
-			  								 Brawler A, 
-			  							     Brawler B) {
+	public static void updateFighterSpecific(JLabel[] abilityNames,
+			  								 JLabel[] fighterLabels,
+			  								 Fighter A, 
+			  							     Fighter B) {
 		
 		ImageIcon stackIcon = new ImageIcon("res/images/stack_count.png");
 		
@@ -2628,30 +1727,30 @@ public class Game {
 				if(A.hyperchargeTurn != -1) {
 					A.isHypercharged = true;
 					A.hyperchargeTurn--;
-					brawlerLabels[1].setText((A.hyperchargeTurn+1)+"");
-					brawlerLabels[1].setVisible(true);
-					brawlerLabels[1].setFont(new Font("Times New Roman", Font.BOLD, 20));
-					brawlerLabels[1].setHorizontalTextPosition(JLabel.CENTER);
-					brawlerLabels[1].setVerticalTextPosition(JLabel.CENTER);
+					fighterLabels[1].setText((A.hyperchargeTurn+1)+"");
+					fighterLabels[1].setVisible(true);
+					fighterLabels[1].setFont(new Font("Times New Roman", Font.BOLD, 20));
+					fighterLabels[1].setHorizontalTextPosition(JLabel.CENTER);
+					fighterLabels[1].setVerticalTextPosition(JLabel.CENTER);
 					
 				}else {
 					A.isHypercharged = false;
-					brawlerLabels[0].setVisible(false);
-					brawlerLabels[1].setVisible(false);
+					fighterLabels[0].setVisible(false);
+					fighterLabels[1].setVisible(false);
 				}
 				
 				if(B.hyperchargeTurn != -1) {
 					B.isHypercharged = true;
 					B.hyperchargeTurn--;
-					brawlerLabels[3].setText((B.hyperchargeTurn+1)+"");
-					brawlerLabels[3].setVisible(true);
-					brawlerLabels[3].setFont(new Font("Times New Roman", Font.BOLD, 20));
-					brawlerLabels[3].setHorizontalTextPosition(JLabel.CENTER);
-					brawlerLabels[3].setVerticalTextPosition(JLabel.CENTER);
+					fighterLabels[3].setText((B.hyperchargeTurn+1)+"");
+					fighterLabels[3].setVisible(true);
+					fighterLabels[3].setFont(new Font("Times New Roman", Font.BOLD, 20));
+					fighterLabels[3].setHorizontalTextPosition(JLabel.CENTER);
+					fighterLabels[3].setVerticalTextPosition(JLabel.CENTER);
 				}else {
 					B.isHypercharged = false;
-					brawlerLabels[2].setVisible(false);
-					brawlerLabels[3].setVisible(false);
+					fighterLabels[2].setVisible(false);
+					fighterLabels[3].setVisible(false);
 				}
 		
 		//Passives
@@ -2660,152 +1759,179 @@ public class Game {
 				if(A.name.equals("Timmy")) {
 					Timmy temp = (Timmy) A;
 					if (temp.HP < (int) (temp.newInstance().HP * 0.30))
-						brawlerLabels[4].setIcon(temp.timmy_dragon);
+						fighterLabels[4].setIcon(temp.timmy_dragon);
 					else
-						brawlerLabels[4].setIcon(null);
+						fighterLabels[4].setIcon(null);
 				}
 				
 				if(B.name.equals("Timmy")) {
 					Timmy temp = (Timmy) B;
 					if (temp.HP < (int) (temp.newInstance().HP * 0.30))
-						brawlerLabels[5].setIcon(temp.timmy_dragon);
+						fighterLabels[5].setIcon(temp.timmy_dragon);
 					else
-						brawlerLabels[5].setIcon(null);
+						fighterLabels[5].setIcon(null);
 				}
 				
 				//Itan
 				if(A.name.equals("Itan")) {				
 					Itan temp = (Itan) A;
 					if (temp.BeurcHP > 0) {
-						brawlerLabels[4].setText(temp.BeurcHP+"");
-						brawlerLabels[4].setVisible(true);
-						brawlerLabels[4].setFont(new Font("Times New Roman", Font.BOLD, 20));
-						brawlerLabels[4].setHorizontalTextPosition(JLabel.CENTER);
-						brawlerLabels[4].setVerticalTextPosition(JLabel.CENTER);
+						fighterLabels[4].setText(temp.BeurcHP+"");
+						fighterLabels[4].setVisible(true);
+						fighterLabels[4].setFont(new Font("Times New Roman", Font.BOLD, 20));
+						fighterLabels[4].setHorizontalTextPosition(JLabel.CENTER);
+						fighterLabels[4].setVerticalTextPosition(JLabel.CENTER);
 					}					
 					else
-						brawlerLabels[4].setText("");
+						fighterLabels[4].setText("");
 				}
 				
 				if(B.name.equals("Itan")) {				
 					Itan temp = (Itan) B;
 					if (temp.BeurcHP > 0) {
-						brawlerLabels[5].setText(temp.BeurcHP+"");
-						brawlerLabels[5].setVisible(true);
-						brawlerLabels[5].setFont(new Font("Times New Roman", Font.BOLD, 20));
-						brawlerLabels[5].setHorizontalTextPosition(JLabel.CENTER);
-						brawlerLabels[5].setVerticalTextPosition(JLabel.CENTER);
+						fighterLabels[5].setText(temp.BeurcHP+"");
+						fighterLabels[5].setVisible(true);
+						fighterLabels[5].setFont(new Font("Times New Roman", Font.BOLD, 20));
+						fighterLabels[5].setHorizontalTextPosition(JLabel.CENTER);
+						fighterLabels[5].setVerticalTextPosition(JLabel.CENTER);
 					}					
 					else
-						brawlerLabels[5].setText("");
+						fighterLabels[5].setText("");
+				}
+				
+				//Felix
+				if(A.name.equals("Felix")) {				
+					Felix temp = (Felix) A;
+					if (temp.AttackDamage > 0) {
+						fighterLabels[4].setText(temp.AttackDamage+"");
+						fighterLabels[4].setVisible(true);
+						fighterLabels[4].setFont(new Font("Times New Roman", Font.BOLD, 20));
+						fighterLabels[4].setHorizontalTextPosition(JLabel.CENTER);
+						fighterLabels[4].setVerticalTextPosition(JLabel.CENTER);
+					}					
+					else
+						fighterLabels[4].setText("");
+				}
+				
+				if(B.name.equals("Felix")) {				
+					Felix temp = (Felix) B;
+					if (temp.AttackDamage > 0) {
+						fighterLabels[5].setText(temp.AttackDamage+"");
+						fighterLabels[5].setVisible(true);
+						fighterLabels[5].setFont(new Font("Times New Roman", Font.BOLD, 20));
+						fighterLabels[5].setHorizontalTextPosition(JLabel.CENTER);
+						fighterLabels[5].setVerticalTextPosition(JLabel.CENTER);
+					}					
+					else
+						fighterLabels[5].setText("");
 				}
 				
 				//Todd
 				if(A.name.equals("Todd")) {				
 					Todd temp = (Todd) A;
 					if (temp.superTurns >= 0) {
-						brawlerLabels[4].setText(temp.superTurns+"");
-						brawlerLabels[4].setVisible(true);
-						brawlerLabels[4].setFont(new Font("Times New Roman", Font.BOLD, 20));
-						brawlerLabels[4].setHorizontalTextPosition(JLabel.CENTER);
-						brawlerLabels[4].setVerticalTextPosition(JLabel.CENTER);
+						fighterLabels[4].setText(temp.superTurns+"");
+						fighterLabels[4].setVisible(true);
+						fighterLabels[4].setFont(new Font("Times New Roman", Font.BOLD, 20));
+						fighterLabels[4].setHorizontalTextPosition(JLabel.CENTER);
+						fighterLabels[4].setVerticalTextPosition(JLabel.CENTER);
 					}					
 					else
-						brawlerLabels[4].setText("");
+						fighterLabels[4].setText("");
 				}
 				
 				if(B.name.equals("Todd")) {				
 					Todd temp = (Todd) B;
 					if (temp.superTurns >= 0) {
-						brawlerLabels[5].setText(temp.superTurns+"");
-						brawlerLabels[5].setVisible(true);
-						brawlerLabels[5].setFont(new Font("Times New Roman", Font.BOLD, 20));
-						brawlerLabels[5].setHorizontalTextPosition(JLabel.CENTER);
-						brawlerLabels[5].setVerticalTextPosition(JLabel.CENTER);
+						fighterLabels[5].setText(temp.superTurns+"");
+						fighterLabels[5].setVisible(true);
+						fighterLabels[5].setFont(new Font("Times New Roman", Font.BOLD, 20));
+						fighterLabels[5].setHorizontalTextPosition(JLabel.CENTER);
+						fighterLabels[5].setVerticalTextPosition(JLabel.CENTER);
 					}					
 					else
-						brawlerLabels[5].setText("");
+						fighterLabels[5].setText("");
 				}
 				
 				//Light
 				if(A.name.equals("Light")) {				
 					Light temp = (Light) A;
 					if (temp.lightInt > 0) {
-						brawlerLabels[4].setText(temp.lightInt+"");
-						brawlerLabels[4].setVisible(true);
-						brawlerLabels[4].setFont(new Font("Times New Roman", Font.BOLD, 20));
-						brawlerLabels[4].setHorizontalTextPosition(JLabel.CENTER);
-						brawlerLabels[4].setVerticalTextPosition(JLabel.CENTER);
+						fighterLabels[4].setText(temp.lightInt+"");
+						fighterLabels[4].setVisible(true);
+						fighterLabels[4].setFont(new Font("Times New Roman", Font.BOLD, 20));
+						fighterLabels[4].setHorizontalTextPosition(JLabel.CENTER);
+						fighterLabels[4].setVerticalTextPosition(JLabel.CENTER);
 					}					
 					else
-						brawlerLabels[4].setText("");
+						fighterLabels[4].setText("");
 				}
 				
 				if(B.name.equals("Light")) {				
 					Light temp = (Light) B;
 					if (temp.lightInt > 0) {
-						brawlerLabels[5].setText(temp.lightInt+"");
-						brawlerLabels[5].setVisible(true);
-						brawlerLabels[5].setFont(new Font("Times New Roman", Font.BOLD, 20));
-						brawlerLabels[5].setHorizontalTextPosition(JLabel.CENTER);
-						brawlerLabels[5].setVerticalTextPosition(JLabel.CENTER);
+						fighterLabels[5].setText(temp.lightInt+"");
+						fighterLabels[5].setVisible(true);
+						fighterLabels[5].setFont(new Font("Times New Roman", Font.BOLD, 20));
+						fighterLabels[5].setHorizontalTextPosition(JLabel.CENTER);
+						fighterLabels[5].setVerticalTextPosition(JLabel.CENTER);
 					}					
 					else
-						brawlerLabels[5].setText("");
+						fighterLabels[5].setText("");
 				}
 				
 				//Louis
 				if(A.name.equals("Louis")) {				
 					Louis temp = (Louis) A;
 					if (temp.passiveTurns >= 0) {
-						brawlerLabels[4].setText(temp.passiveTurns+"");
-						brawlerLabels[4].setVisible(true);
-						brawlerLabels[4].setFont(new Font("Times New Roman", Font.BOLD, 20));
-						brawlerLabels[4].setHorizontalTextPosition(JLabel.CENTER);
-						brawlerLabels[4].setVerticalTextPosition(JLabel.CENTER);
+						fighterLabels[4].setText(temp.passiveTurns+"");
+						fighterLabels[4].setVisible(true);
+						fighterLabels[4].setFont(new Font("Times New Roman", Font.BOLD, 20));
+						fighterLabels[4].setHorizontalTextPosition(JLabel.CENTER);
+						fighterLabels[4].setVerticalTextPosition(JLabel.CENTER);
 					}					
 					else
-						brawlerLabels[4].setText("");
+						fighterLabels[4].setText("");
 				}
 				
 				if(B.name.equals("Louis")) {				
 					Louis temp = (Louis) B;
 					if (temp.passiveTurns >= 0) {
-						brawlerLabels[5].setText(temp.passiveTurns+"");
-						brawlerLabels[5].setVisible(true);
-						brawlerLabels[5].setFont(new Font("Times New Roman", Font.BOLD, 20));
-						brawlerLabels[5].setHorizontalTextPosition(JLabel.CENTER);
-						brawlerLabels[5].setVerticalTextPosition(JLabel.CENTER);
+						fighterLabels[5].setText(temp.passiveTurns+"");
+						fighterLabels[5].setVisible(true);
+						fighterLabels[5].setFont(new Font("Times New Roman", Font.BOLD, 20));
+						fighterLabels[5].setHorizontalTextPosition(JLabel.CENTER);
+						fighterLabels[5].setVerticalTextPosition(JLabel.CENTER);
 					}					
 					else
-						brawlerLabels[5].setText("");
+						fighterLabels[5].setText("");
 				}
 				
-				//Ritz
-				if(A.name.equals("Ritz")) {				
-					Ritz temp = (Ritz) A;
+				//Rits
+				if(A.name.equals("Rits")) {				
+					Rits temp = (Rits) A;
 					if (temp.passive > 0) {
-						brawlerLabels[4].setText(temp.passive+"");
-						brawlerLabels[4].setVisible(true);
-						brawlerLabels[4].setFont(new Font("Times New Roman", Font.BOLD, 20));
-						brawlerLabels[4].setHorizontalTextPosition(JLabel.CENTER);
-						brawlerLabels[4].setVerticalTextPosition(JLabel.CENTER);
+						fighterLabels[4].setText(temp.passive+"");
+						fighterLabels[4].setVisible(true);
+						fighterLabels[4].setFont(new Font("Times New Roman", Font.BOLD, 20));
+						fighterLabels[4].setHorizontalTextPosition(JLabel.CENTER);
+						fighterLabels[4].setVerticalTextPosition(JLabel.CENTER);
 					}					
 					else
-						brawlerLabels[4].setText("");
+						fighterLabels[4].setText("");
 				}
 				
-				if(B.name.equals("Ritz")) {				
-					Ritz temp = (Ritz) B;
+				if(B.name.equals("Rits")) {				
+					Rits temp = (Rits) B;
 					if (temp.passive > 0) {
-						brawlerLabels[5].setText(temp.passive+"");
-						brawlerLabels[5].setVisible(true);
-						brawlerLabels[5].setFont(new Font("Times New Roman", Font.BOLD, 20));
-						brawlerLabels[5].setHorizontalTextPosition(JLabel.CENTER);
-						brawlerLabels[5].setVerticalTextPosition(JLabel.CENTER);
+						fighterLabels[5].setText(temp.passive+"");
+						fighterLabels[5].setVisible(true);
+						fighterLabels[5].setFont(new Font("Times New Roman", Font.BOLD, 20));
+						fighterLabels[5].setHorizontalTextPosition(JLabel.CENTER);
+						fighterLabels[5].setVerticalTextPosition(JLabel.CENTER);
 					}					
 					else
-						brawlerLabels[5].setText("");
+						fighterLabels[5].setText("");
 				}
 		
 		//Stacks:
@@ -2813,172 +1939,229 @@ public class Game {
 				//Jester
 				if(A.name.equals("Jester")) {
 					Jester temp = (Jester) A;
-					brawlerLabels[4].setIcon(stackIcon);
-					brawlerLabels[4].setText(temp.normalAttackCounter+"");
-					brawlerLabels[4].setFont(new Font("Times New Roman", Font.BOLD, 20));
-					brawlerLabels[4].setHorizontalTextPosition(JLabel.CENTER);
-					brawlerLabels[4].setVerticalTextPosition(JLabel.CENTER);
+					fighterLabels[4].setIcon(stackIcon);
+					fighterLabels[4].setText(temp.normalAttackCounter+"");
+					fighterLabels[4].setFont(new Font("Times New Roman", Font.BOLD, 20));
+					fighterLabels[4].setHorizontalTextPosition(JLabel.CENTER);
+					fighterLabels[4].setVerticalTextPosition(JLabel.CENTER);
 				}
 				
 				if(B.name.equals("Jester")) {
 					Jester temp = (Jester) B;
-					brawlerLabels[5].setIcon(stackIcon);
-					brawlerLabels[5].setText(temp.normalAttackCounter+"");
-					brawlerLabels[5].setFont(new Font("Times New Roman", Font.BOLD, 20));
-					brawlerLabels[5].setHorizontalTextPosition(JLabel.CENTER);
-					brawlerLabels[5].setVerticalTextPosition(JLabel.CENTER);
+					fighterLabels[5].setIcon(stackIcon);
+					fighterLabels[5].setText(temp.normalAttackCounter+"");
+					fighterLabels[5].setFont(new Font("Times New Roman", Font.BOLD, 20));
+					fighterLabels[5].setHorizontalTextPosition(JLabel.CENTER);
+					fighterLabels[5].setVerticalTextPosition(JLabel.CENTER);
 				}
 				
 				//Gash
 				if(A.name.equals("Gash")) {
 					Gash temp = (Gash) A;
-					brawlerLabels[4].setIcon(stackIcon);
-					brawlerLabels[4].setText(temp.poisons.size()+"");
-					brawlerLabels[4].setFont(new Font("Times New Roman", Font.BOLD, 20));
-					brawlerLabels[4].setHorizontalTextPosition(JLabel.CENTER);
-					brawlerLabels[4].setVerticalTextPosition(JLabel.CENTER);
+					fighterLabels[4].setIcon(stackIcon);
+					fighterLabels[4].setText(temp.poisons.size()+"");
+					fighterLabels[4].setFont(new Font("Times New Roman", Font.BOLD, 20));
+					fighterLabels[4].setHorizontalTextPosition(JLabel.CENTER);
+					fighterLabels[4].setVerticalTextPosition(JLabel.CENTER);
 				}
 				
 				if(B.name.equals("Gash")) {
 					Gash temp = (Gash) B;
-					brawlerLabels[5].setIcon(stackIcon);
-					brawlerLabels[5].setText(temp.poisons.size()+"");
-					brawlerLabels[5].setFont(new Font("Times New Roman", Font.BOLD, 20));
-					brawlerLabels[5].setHorizontalTextPosition(JLabel.CENTER);
-					brawlerLabels[5].setVerticalTextPosition(JLabel.CENTER);
+					fighterLabels[5].setIcon(stackIcon);
+					fighterLabels[5].setText(temp.poisons.size()+"");
+					fighterLabels[5].setFont(new Font("Times New Roman", Font.BOLD, 20));
+					fighterLabels[5].setHorizontalTextPosition(JLabel.CENTER);
+					fighterLabels[5].setVerticalTextPosition(JLabel.CENTER);
 				}
 				
 				//Olea
 				if(A.name.equals("Olea")) {
 					Olea temp = (Olea) A;
-					brawlerLabels[4].setIcon(stackIcon);
-					brawlerLabels[4].setText(temp.superTurns+"");
-					brawlerLabels[4].setFont(new Font("Times New Roman", Font.BOLD, 20));
-					brawlerLabels[4].setHorizontalTextPosition(JLabel.CENTER);
-					brawlerLabels[4].setVerticalTextPosition(JLabel.CENTER);
+					fighterLabels[4].setIcon(stackIcon);
+					fighterLabels[4].setText(temp.superTurns+"");
+					fighterLabels[4].setFont(new Font("Times New Roman", Font.BOLD, 20));
+					fighterLabels[4].setHorizontalTextPosition(JLabel.CENTER);
+					fighterLabels[4].setVerticalTextPosition(JLabel.CENTER);
 				}
 				
 				if(B.name.equals("Olea")) {
 					Olea temp = (Olea) B;
-					brawlerLabels[5].setIcon(stackIcon);
-					brawlerLabels[5].setText(temp.superTurns+"");
-					brawlerLabels[5].setFont(new Font("Times New Roman", Font.BOLD, 20));
-					brawlerLabels[5].setHorizontalTextPosition(JLabel.CENTER);
-					brawlerLabels[5].setVerticalTextPosition(JLabel.CENTER);
+					fighterLabels[5].setIcon(stackIcon);
+					fighterLabels[5].setText(temp.superTurns+"");
+					fighterLabels[5].setFont(new Font("Times New Roman", Font.BOLD, 20));
+					fighterLabels[5].setHorizontalTextPosition(JLabel.CENTER);
+					fighterLabels[5].setVerticalTextPosition(JLabel.CENTER);
 				}
 				
 				//Vollie
 				if(A.name.equals("Vollie")) {
 					Vollie temp = (Vollie) A;
-					brawlerLabels[4].setIcon(stackIcon);
-					brawlerLabels[4].setText(temp.runicStacks+"");
-					brawlerLabels[4].setFont(new Font("Times New Roman", Font.BOLD, 20));
-					brawlerLabels[4].setHorizontalTextPosition(JLabel.CENTER);
-					brawlerLabels[4].setVerticalTextPosition(JLabel.CENTER);
+					fighterLabels[4].setIcon(stackIcon);
+					fighterLabels[4].setText(temp.runicStacks+"");
+					fighterLabels[4].setFont(new Font("Times New Roman", Font.BOLD, 20));
+					fighterLabels[4].setHorizontalTextPosition(JLabel.CENTER);
+					fighterLabels[4].setVerticalTextPosition(JLabel.CENTER);
 				}
 				
 				if(B.name.equals("Vollie")) {
 					Vollie temp = (Vollie) B;
-					brawlerLabels[5].setIcon(stackIcon);
-					brawlerLabels[5].setText(temp.runicStacks+"");
-					brawlerLabels[5].setFont(new Font("Times New Roman", Font.BOLD, 20));
-					brawlerLabels[5].setHorizontalTextPosition(JLabel.CENTER);
-					brawlerLabels[5].setVerticalTextPosition(JLabel.CENTER);
+					fighterLabels[5].setIcon(stackIcon);
+					fighterLabels[5].setText(temp.runicStacks+"");
+					fighterLabels[5].setFont(new Font("Times New Roman", Font.BOLD, 20));
+					fighterLabels[5].setHorizontalTextPosition(JLabel.CENTER);
+					fighterLabels[5].setVerticalTextPosition(JLabel.CENTER);
+				}
+				
+				//June
+				if(A.name.equals("June")) {
+					June temp = (June) A;
+					fighterLabels[4].setIcon(stackIcon);
+					fighterLabels[4].setText(temp.normalStack+"");
+					fighterLabels[4].setFont(new Font("Times New Roman", Font.BOLD, 20));
+					fighterLabels[4].setHorizontalTextPosition(JLabel.CENTER);
+					fighterLabels[4].setVerticalTextPosition(JLabel.CENTER);
+				}
+				
+				if(B.name.equals("June")) {
+					June temp = (June) B;
+					fighterLabels[5].setIcon(stackIcon);
+					fighterLabels[5].setText(temp.normalStack+"");
+					fighterLabels[5].setFont(new Font("Times New Roman", Font.BOLD, 20));
+					fighterLabels[5].setHorizontalTextPosition(JLabel.CENTER);
+					fighterLabels[5].setVerticalTextPosition(JLabel.CENTER);
 				}
 				
 				//Pine
 				if(A.name.equals("Pine")) {
 					Pine temp = (Pine) A;
-					brawlerLabels[4].setIcon(stackIcon);
-					brawlerLabels[4].setText(temp.stacks+"");
-					brawlerLabels[4].setFont(new Font("Times New Roman", Font.BOLD, 20));
-					brawlerLabels[4].setHorizontalTextPosition(JLabel.CENTER);
-					brawlerLabels[4].setVerticalTextPosition(JLabel.CENTER);
+					fighterLabels[4].setIcon(stackIcon);
+					fighterLabels[4].setText(temp.stacks+"");
+					fighterLabels[4].setFont(new Font("Times New Roman", Font.BOLD, 20));
+					fighterLabels[4].setHorizontalTextPosition(JLabel.CENTER);
+					fighterLabels[4].setVerticalTextPosition(JLabel.CENTER);
 				}
 				
 				if(B.name.equals("Pine")) {
 					Pine temp = (Pine) B;
-					brawlerLabels[5].setIcon(stackIcon);
-					brawlerLabels[5].setText(temp.stacks+"");
-					brawlerLabels[5].setFont(new Font("Times New Roman", Font.BOLD, 20));
-					brawlerLabels[5].setHorizontalTextPosition(JLabel.CENTER);
-					brawlerLabels[5].setVerticalTextPosition(JLabel.CENTER);
+					fighterLabels[5].setIcon(stackIcon);
+					fighterLabels[5].setText(temp.stacks+"");
+					fighterLabels[5].setFont(new Font("Times New Roman", Font.BOLD, 20));
+					fighterLabels[5].setHorizontalTextPosition(JLabel.CENTER);
+					fighterLabels[5].setVerticalTextPosition(JLabel.CENTER);
 				}
 				
 				//John
 				if(A.name.equals("John")) {
 					John temp = (John) A;
-					brawlerLabels[4].setIcon(stackIcon);
-					brawlerLabels[4].setText(temp.bulletCount+"");
-					brawlerLabels[4].setFont(new Font("Times New Roman", Font.BOLD, 20));
-					brawlerLabels[4].setHorizontalTextPosition(JLabel.CENTER);
-					brawlerLabels[4].setVerticalTextPosition(JLabel.CENTER);
+					fighterLabels[4].setIcon(stackIcon);
+					fighterLabels[4].setText(temp.bulletCount+"");
+					fighterLabels[4].setFont(new Font("Times New Roman", Font.BOLD, 20));
+					fighterLabels[4].setHorizontalTextPosition(JLabel.CENTER);
+					fighterLabels[4].setVerticalTextPosition(JLabel.CENTER);
 				}
 				
 				if(B.name.equals("John")) {
 					John temp = (John) B;
-					brawlerLabels[5].setIcon(stackIcon);
-					brawlerLabels[5].setText(temp.bulletCount+"");
-					brawlerLabels[5].setFont(new Font("Times New Roman", Font.BOLD, 20));
-					brawlerLabels[5].setHorizontalTextPosition(JLabel.CENTER);
-					brawlerLabels[5].setVerticalTextPosition(JLabel.CENTER);
+					fighterLabels[5].setIcon(stackIcon);
+					fighterLabels[5].setText(temp.bulletCount+"");
+					fighterLabels[5].setFont(new Font("Times New Roman", Font.BOLD, 20));
+					fighterLabels[5].setHorizontalTextPosition(JLabel.CENTER);
+					fighterLabels[5].setVerticalTextPosition(JLabel.CENTER);
+				}
+				
+				//Aboa
+				if(A.name.equals("Aboa")) {
+					Aboa temp = (Aboa) A;
+					fighterLabels[4].setIcon(stackIcon);
+					fighterLabels[4].setText(temp.fairyCount+"");
+					fighterLabels[4].setFont(new Font("Times New Roman", Font.BOLD, 20));
+					fighterLabels[4].setHorizontalTextPosition(JLabel.CENTER);
+					fighterLabels[4].setVerticalTextPosition(JLabel.CENTER);
+				}
+				
+				if(B.name.equals("Aboa")) {
+					Aboa temp = (Aboa) B;
+					fighterLabels[5].setIcon(stackIcon);
+					fighterLabels[5].setText(temp.fairyCount+"");
+					fighterLabels[5].setFont(new Font("Times New Roman", Font.BOLD, 20));
+					fighterLabels[5].setHorizontalTextPosition(JLabel.CENTER);
+					fighterLabels[5].setVerticalTextPosition(JLabel.CENTER);
+				}
+				
+				//Kasse
+				if(A.name.equals("Kasse")) {
+					Kasse temp = (Kasse) A;
+					fighterLabels[4].setIcon(stackIcon);
+					fighterLabels[4].setText(temp.superCount+"");
+					fighterLabels[4].setFont(new Font("Times New Roman", Font.BOLD, 20));
+					fighterLabels[4].setHorizontalTextPosition(JLabel.CENTER);
+					fighterLabels[4].setVerticalTextPosition(JLabel.CENTER);
+				}
+				
+				if(B.name.equals("Kasse")) {
+					Kasse temp = (Kasse) B;
+					fighterLabels[5].setIcon(stackIcon);
+					fighterLabels[5].setText(temp.superCount+"");
+					fighterLabels[5].setFont(new Font("Times New Roman", Font.BOLD, 20));
+					fighterLabels[5].setHorizontalTextPosition(JLabel.CENTER);
+					fighterLabels[5].setVerticalTextPosition(JLabel.CENTER);
 				}
 				
 				//Giran
 				if(A.name.equals("Giran")) {
 					Giran temp = (Giran) A;
-					brawlerLabels[4].setIcon(stackIcon);
-					brawlerLabels[4].setText(temp.superstack+"");
-					brawlerLabels[4].setFont(new Font("Times New Roman", Font.BOLD, 20));
-					brawlerLabels[4].setHorizontalTextPosition(JLabel.CENTER);
-					brawlerLabels[4].setVerticalTextPosition(JLabel.CENTER);
+					fighterLabels[4].setIcon(stackIcon);
+					fighterLabels[4].setText(temp.superstack+"");
+					fighterLabels[4].setFont(new Font("Times New Roman", Font.BOLD, 20));
+					fighterLabels[4].setHorizontalTextPosition(JLabel.CENTER);
+					fighterLabels[4].setVerticalTextPosition(JLabel.CENTER);
 				}
 				
 				if(B.name.equals("Giran")) {
 					Giran temp = (Giran) B;
-					brawlerLabels[5].setIcon(stackIcon);
-					brawlerLabels[5].setText(temp.superstack+"");
-					brawlerLabels[5].setFont(new Font("Times New Roman", Font.BOLD, 20));
-					brawlerLabels[5].setHorizontalTextPosition(JLabel.CENTER);
-					brawlerLabels[5].setVerticalTextPosition(JLabel.CENTER);
+					fighterLabels[5].setIcon(stackIcon);
+					fighterLabels[5].setText(temp.superstack+"");
+					fighterLabels[5].setFont(new Font("Times New Roman", Font.BOLD, 20));
+					fighterLabels[5].setHorizontalTextPosition(JLabel.CENTER);
+					fighterLabels[5].setVerticalTextPosition(JLabel.CENTER);
 				}
 				
 				//Betty
 				if(A.name.equals("Betty")) {
 					Betty temp = (Betty) A;
-					brawlerLabels[4].setIcon(stackIcon);
-					brawlerLabels[4].setText(temp.cloneCount+"");
-					brawlerLabels[4].setFont(new Font("Times New Roman", Font.BOLD, 20));
-					brawlerLabels[4].setHorizontalTextPosition(JLabel.CENTER);
-					brawlerLabels[4].setVerticalTextPosition(JLabel.CENTER);
+					fighterLabels[4].setIcon(stackIcon);
+					fighterLabels[4].setText(temp.cloneCount+"");
+					fighterLabels[4].setFont(new Font("Times New Roman", Font.BOLD, 20));
+					fighterLabels[4].setHorizontalTextPosition(JLabel.CENTER);
+					fighterLabels[4].setVerticalTextPosition(JLabel.CENTER);
 				}
 				
 				if(B.name.equals("Betty")) {
 					Betty temp = (Betty) B;
-					brawlerLabels[5].setIcon(stackIcon);
-					brawlerLabels[5].setText(temp.cloneCount+"");
-					brawlerLabels[5].setFont(new Font("Times New Roman", Font.BOLD, 20));
-					brawlerLabels[5].setHorizontalTextPosition(JLabel.CENTER);
-					brawlerLabels[5].setVerticalTextPosition(JLabel.CENTER);
+					fighterLabels[5].setIcon(stackIcon);
+					fighterLabels[5].setText(temp.cloneCount+"");
+					fighterLabels[5].setFont(new Font("Times New Roman", Font.BOLD, 20));
+					fighterLabels[5].setHorizontalTextPosition(JLabel.CENTER);
+					fighterLabels[5].setVerticalTextPosition(JLabel.CENTER);
 				}
 				
 				//Jack
 				if(A.name.equals("Jack")) {
 					Jack temp = (Jack) A;
-					brawlerLabels[4].setIcon(stackIcon);
-					brawlerLabels[4].setText(temp.passive+"");
-					brawlerLabels[4].setFont(new Font("Times New Roman", Font.BOLD, 20));
-					brawlerLabels[4].setHorizontalTextPosition(JLabel.CENTER);
-					brawlerLabels[4].setVerticalTextPosition(JLabel.CENTER);
+					fighterLabels[4].setIcon(stackIcon);
+					fighterLabels[4].setText(temp.passive+"");
+					fighterLabels[4].setFont(new Font("Times New Roman", Font.BOLD, 20));
+					fighterLabels[4].setHorizontalTextPosition(JLabel.CENTER);
+					fighterLabels[4].setVerticalTextPosition(JLabel.CENTER);
 				}
 				
 				if(B.name.equals("Jack")) {
 					Jack temp = (Jack) B;
-					brawlerLabels[5].setIcon(stackIcon);
-					brawlerLabels[5].setText(temp.passive+"");
-					brawlerLabels[5].setFont(new Font("Times New Roman", Font.BOLD, 20));
-					brawlerLabels[5].setHorizontalTextPosition(JLabel.CENTER);
-					brawlerLabels[5].setVerticalTextPosition(JLabel.CENTER);
+					fighterLabels[5].setIcon(stackIcon);
+					fighterLabels[5].setText(temp.passive+"");
+					fighterLabels[5].setFont(new Font("Times New Roman", Font.BOLD, 20));
+					fighterLabels[5].setHorizontalTextPosition(JLabel.CENTER);
+					fighterLabels[5].setVerticalTextPosition(JLabel.CENTER);
 				}
 				
 		//Name Updates
@@ -2987,13 +2170,13 @@ public class Game {
 				if(A.name.equals("Clyde")) {
 					Clyde temp = (Clyde) A;
 					if(temp.isCannon != true) {
-						brawlerLabels[4].setIcon(temp.clyde_solo);
+						fighterLabels[4].setIcon(temp.clyde_solo);
 						abilityNames[0].setText("Fireworking"); 
 						abilityNames[1].setText("Hop On Back!"); 
 						abilityNames[2].setText(A.build.gadgetChoise == "FIRST" ? "Headbutt!" : "Fully Charged"); 		
 					}
 					else {
-						brawlerLabels[4].setIcon(temp.clyde_cannon);
+						fighterLabels[4].setIcon(temp.clyde_cannon);
 						abilityNames[0].setText("Cannon Attack!"); 
 						abilityNames[1].setText("Wooohooo!"); 
 						abilityNames[2].setText(A.build.gadgetChoise == "FIRST" ? "Shield Conversion" : "Steady Charge"); 
@@ -3003,13 +2186,13 @@ public class Game {
 				if(B.name.equals("Clyde")) {
 					Clyde temp = (Clyde) B;
 					if(temp.isCannon != true) {
-						brawlerLabels[5].setIcon(temp.clyde_solo);
+						fighterLabels[5].setIcon(temp.clyde_solo);
 						abilityNames[3].setText("Fireworking"); 
 						abilityNames[4].setText("Hop On Back!"); 
 						abilityNames[5].setText(B.build.gadgetChoise == "FIRST" ? "Headbutt!" : "Fully Charged"); 		
 					}
 					else {
-						brawlerLabels[5].setIcon(temp.clyde_cannon);
+						fighterLabels[5].setIcon(temp.clyde_cannon);
 						abilityNames[3].setText("Cannon Attack!"); 
 						abilityNames[4].setText("Wooohooo!"); 
 						abilityNames[5].setText(B.build.gadgetChoise == "FIRST" ? "Shield Conversion" : "Steady Charge"); 
@@ -3021,22 +2204,22 @@ public class Game {
 					Amber temp = (Amber) A;			
 					switch (temp.currentWeapon) {
 						case 1:
-							brawlerLabels[4].setIcon(temp.amber_gun1);
+							fighterLabels[4].setIcon(temp.amber_gun1);
 							abilityNames[0].setText("Rapidfire");
 							abilityNames[1].setText("Fiercefire");
 							break;
 						case 2:
-							brawlerLabels[4].setIcon(temp.amber_gun2);
+							fighterLabels[4].setIcon(temp.amber_gun2);
 							abilityNames[0].setText("Clencher");
 							abilityNames[1].setText("Double Squeeze");
 							break;
 						case 3:
-							brawlerLabels[4].setIcon(temp.amber_gun3);
+							fighterLabels[4].setIcon(temp.amber_gun3);
 							abilityNames[0].setText("Harsh Pierce");
 							abilityNames[1].setText("Gashopener");
 							break;
 						case 4:
-							brawlerLabels[4].setIcon(temp.amber_gun4);
+							fighterLabels[4].setIcon(temp.amber_gun4);
 							abilityNames[0].setText("Soulfire");
 							abilityNames[1].setText("Soulless Strike");
 							break;
@@ -3047,22 +2230,22 @@ public class Game {
 					Amber temp = (Amber) B;			
 					switch (temp.currentWeapon) {
 						case 1:
-							brawlerLabels[5].setIcon(temp.amber_gun1);
+							fighterLabels[5].setIcon(temp.amber_gun1);
 							abilityNames[3].setText("Rapidfire");
 							abilityNames[4].setText("Fiercefire");
 							break;
 						case 2:
-							brawlerLabels[5].setIcon(temp.amber_gun2);
+							fighterLabels[5].setIcon(temp.amber_gun2);
 							abilityNames[3].setText("Clencher");
 							abilityNames[4].setText("Double Squeeze");
 							break;
 						case 3:
-							brawlerLabels[5].setIcon(temp.amber_gun3);
+							fighterLabels[5].setIcon(temp.amber_gun3);
 							abilityNames[3].setText("Harsh Pierce");
 							abilityNames[4].setText("Gashopener");
 							break;
 						case 4:
-							brawlerLabels[5].setIcon(temp.amber_gun4);
+							fighterLabels[5].setIcon(temp.amber_gun4);
 							abilityNames[3].setText("Soulfire");
 							abilityNames[4].setText("Soulless Strike");
 							break;
@@ -3077,14 +2260,12 @@ public class Game {
 					case 0:
 						abilityNames[0].setText("Selfless Attack");
 						abilityNames[1].setText("Breeze of Heart");
-						abilityNames[2].setText("Anger");
-						brawlerLabels[4].setIcon(temp.anton_calm);
+						fighterLabels[4].setIcon(temp.anton_calm);
 						break;
 					case 1:
 						abilityNames[0].setText("Selfish Strike");
 						abilityNames[1].setText("Heat of Heart");
-						abilityNames[2].setText("Calm");
-						brawlerLabels[4].setIcon(temp.anton_angry);
+						fighterLabels[4].setIcon(temp.anton_angry);
 						break;	
 					}	
 				}
@@ -3096,14 +2277,12 @@ public class Game {
 					case 0:
 						abilityNames[3].setText("Selfless Attack");
 						abilityNames[4].setText("Breeze of Heart");
-						abilityNames[5].setText("Anger");
-						brawlerLabels[5].setIcon(temp.anton_calm);
+						fighterLabels[5].setIcon(temp.anton_calm);
 						break;
 					case 1:
 						abilityNames[3].setText("Selfish Strike");
 						abilityNames[4].setText("Heat of Heart");
-						abilityNames[5].setText("Calm");
-						brawlerLabels[5].setIcon(temp.anton_angry);
+						fighterLabels[5].setIcon(temp.anton_angry);
 						break;	
 					}	
 				}
@@ -3115,16 +2294,16 @@ public class Game {
 					
 					switch(temp.passive) {
 					case 0:
-						brawlerLabels[4].setIcon(temp.qirale_water);
+						fighterLabels[4].setIcon(temp.qirale_water);
 						break;
 					case 1:
-						brawlerLabels[4].setIcon(temp.qirale_fire);
+						fighterLabels[4].setIcon(temp.qirale_fire);
 						break;
 					case 2:
-						brawlerLabels[4].setIcon(temp.qirale_earth);
+						fighterLabels[4].setIcon(temp.qirale_earth);
 						break;
 					case 3:
-						brawlerLabels[4].setIcon(temp.qirale_air);
+						fighterLabels[4].setIcon(temp.qirale_air);
 						break;
 					}	
 				}
@@ -3134,16 +2313,16 @@ public class Game {
 					
 					switch(temp.passive) {
 					case 0:
-						brawlerLabels[5].setIcon(temp.qirale_water);
+						fighterLabels[5].setIcon(temp.qirale_water);
 						break;
 					case 1:
-						brawlerLabels[5].setIcon(temp.qirale_fire);
+						fighterLabels[5].setIcon(temp.qirale_fire);
 						break;
 					case 2:
-						brawlerLabels[5].setIcon(temp.qirale_earth);
+						fighterLabels[5].setIcon(temp.qirale_earth);
 						break;
 					case 3:
-						brawlerLabels[5].setIcon(temp.qirale_air);
+						fighterLabels[5].setIcon(temp.qirale_air);
 						break;
 					}	
 				}
@@ -3151,8 +2330,28 @@ public class Game {
 		
 	}
 	
-	public static void enableOrDisable(Brawler attacker, 
-								       Brawler attacked, 
+	public static void updateEnhancedNormal(Fighter A, Fighter B, JButton Attack1, JButton Attack2) {
+		
+		if(A.isNormalModified) {
+			Attack1.setBackground(Color.white);
+			Attack1.setForeground(Color.black);
+		} else {
+			Attack1.setForeground(Color.white);
+			Attack1.setBackground(Color.darkGray);
+		}
+		
+		if(B.isNormalModified) {
+			Attack2.setBackground(Color.white);
+			Attack2.setForeground(Color.black);
+		} else {
+			Attack2.setForeground(Color.white);
+			Attack2.setBackground(Color.darkGray);
+		}
+		
+	}
+	
+	public static void enableOrDisable(Fighter attacker, 
+								       Fighter attacked, 
 								       ArrayList<JButton> attackerButtons,
 								       ArrayList<JButton> attackedButtons,
 								       String what
@@ -3195,12 +2394,12 @@ public class Game {
 			if (attacked.hak == -1) attackedButtons.get(6).setEnabled(false);
 			
 		}
-		
+				
  		 
 	}
 
-	public static void isOver(Brawler A, 
-			  Brawler B, 
+	public static void isOver(Fighter A, 
+			  Fighter B, 
 			  JLabel HP1, 
 			  JLabel HP2 ,
 			  JLabel SG1, 
@@ -3273,7 +2472,7 @@ public class Game {
 		}
 	}
 	
-	public static void gadget(Brawler attacker, Brawler attacked) {
+	public static void gadget(Fighter attacker, Fighter attacked) {
 		
 	    if(attacker.gadgetCount > 0) {
 	        // Save the current enemy HP and status before using the gadget
@@ -3296,7 +2495,7 @@ public class Game {
 	    }
 	}
 	
-	public static void potion(Brawler user, Brawler enemy, String potion, JButton Potion1, JButton Super1) {
+	public static void potion(Fighter user, Fighter enemy, String potion, JButton Potion1, JButton Super1) {
 		
 		
 			int initcharge = user.SuperCharge;
@@ -3414,7 +2613,7 @@ public class Game {
 		
 	}
 
-	public static void spell(Brawler user, Brawler enemy, Spell spell) {
+	public static void spell(Fighter user, Fighter enemy, Spell spell) {
 		
 	    int enemyHPbeforeSpell = enemy.shield + enemy.HP;
 	    Status enemyStatBeforeSpell = enemy.stat;
@@ -3435,741 +2634,10 @@ public class Game {
 		
 	}
 	
-	public static void cooldownCheck(Brawler A, JButton spell){
+	public static void cooldownCheck(Fighter A, JButton spell){
 		if (A.spell.currentCooldown == 0)
 			spell.setEnabled(true);	
 	}
-	
-	public static void helpScreen(Brawler[] bs, String[] bsName) {
-
-		
-		ArrayList<String> konusList = new ArrayList<String>();
-		for(String konu : bsName)
-			konusList.add(konu);
-		konusList.add("Potions");
-		konusList.add("Statuses");
-		konusList.add("Gears");
-		konusList.add("Spells");
-		konusList.add("Abilities");
-		konusList.add("Hypercharge");
-		String[] konus = konusList.toArray(new String[0]);
-		 
-		JFrame window = new JFrame("Turn by Turn - Help");
-		window.setSize(1000,800);
-		window.setResizable(false);
-		window.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		window.getContentPane().setBackground(Color.lightGray);
-		window.setIconImage(new ImageIcon("res/images/turnbyturn.png").getImage());
-		window.setLayout(null);
-		Container con = window.getContentPane();
-		
-		JPanel quitPanel,
-			   comboBoxPanel,
-			   lookPanel,
-			   descriptionPanel;
-		
-		JButton quitButton, lookButton;
-		JComboBox<String> combo = new JComboBox<String>(konus);
-		((JLabel)combo.getRenderer()).setHorizontalAlignment(SwingConstants.CENTER);
-		JLabel description = new JLabel("Choose a topic to get help with!");
-		
-		//quit
-		quitPanel = new JPanel();
-		quitPanel.setBounds(30,700,100,80);
-		quitPanel.setBackground(Color.lightGray);
-		quitPanel.setVisible(true);
-		quitButton = new JButton("QUIT");
-		quitButton.setVisible(true);
-		quitButton.setForeground(Color.white);
-		quitButton.setBackground(Color.black);
-		quitButton.setFont(new Font("Times New Roman", Font.ITALIC, 25 ));
-		quitButton.setFocusPainted(false);
-		quitButton.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				window.dispose();
-				
-			}
-		});
-		quitPanel.add(quitButton);
-		con.add(quitPanel);
-		
-		//look
-		lookPanel = new JPanel();
-		lookPanel.setBounds(30,10,100,40);
-		lookPanel.setBackground(Color.lightGray);
-		lookPanel.setVisible(true);
-		lookButton = new JButton("LOOK");
-		lookButton.setVisible(true);
-		lookButton.setForeground(Color.white);
-		lookButton.setBackground(Color.black);
-		lookButton.setFont(new Font("Times New Roman", Font.ITALIC, 25 ));
-		lookButton.setFocusPainted(false);
-		lookButton.addActionListener(new ActionListener() {
-	
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				
-				String FROSTY = new String("<font color=\"blue\">FROSTY</font>");
-				String SHIELD = new String("<font color=\"gray\">SHIELD</font>");
-				String STUNS = new String("<font color=\"yellow\">STUNS</font>");
-				String STUNNED = new String("<font color=\"yellow\">STUNNED</font>");
-				String WEAKENED = new String("<font color=\"#0000cc\">WEAKENED</font>");
-				String SCARRED = new String("<font color=\"red\">SCARRED</font>");
-				String ENRAGED = new String("<font color=\"red\">ENRAGED</font>");
-				String GUARDED = new String("<font color=\"gray\">GUARDED</font>");
-				String STRENGTHENED = new String("<font color=\"red\">STRENGTHENED</font>");
-				String HYPERCHARGE = new String("<font color=\"purple\">HYPERCHARGE</font>");
-				String INTOXICATED = new String("<font color=\"#964b00\">INTOXICATED</font>");
-				
-				Brawler brawler = new Todd(new Build(new Random()));
-				String brawlerST = (String) combo.getSelectedItem();
-				for (Brawler i : bs)
-					if (i.name == brawlerST)
-						brawler = i.newInstance();
-				
-				int atk = brawler.AttackDamage;
-				int sup = brawler.SuperDamage;
-				
-				switch(brawlerST) {
-				case "Todd":
-					description.setText("<html><p style=\"width:600px\">"
-							+ brawler.name.toUpperCase(Locale.US) + " " + brawler.title.toUpperCase(Locale.US)+
-							"<br/>HP: " + brawler.HP + "<br/>REGENERATION: " + brawler.regen
-							+ "<br/><br/>ATTACK: Todd swings his sword to the ground and deals " + atk + " damage"
-							+ "<br/><br/>SUPER: Todd raises his shield and takes/deals %50 less damage for 5 turns, then he charges forth to deal " + sup + " damage and make the enemy " + STUNNED
-							+ " (" + HYPERCHARGE + ") Todd's super last a little longer; doesn't reduce his damage and further decreases the damage he takes"
-							+ "<br/><br/>GADGETS: "
-							+ "<br/>First Gadget: Todd drinks some regional beer to get some Regeneration"
-							+ "<br/>Second Gadget: Todd remembers his fallen comrades and increases his ATK and becomes " + ENRAGED
-							+ "<br/><br/>PASSIVE (ALWAYS READY): Todd starts the match with some shield"
-							);
-							break;
-				case "Zach":
-					description.setText("<html><p style=\"width:600px\">"
-							+ brawler.name.toUpperCase(Locale.US) + " " + brawler.title.toUpperCase(Locale.US)+
-							"<br/>HP: " + brawler.HP + "<br/>REGENERATION: " + brawler.regen
-							+ "<br/><br/>ATTACK: Zach throws a piece of his body at the enemy! It hurts him as much as the enemy though."
-							+ "<br/><br/>SUPER: Zach regenerates his missing pieces."
-							+ "<br/><br/>GADGETS: "
-							+ "<br/>First Gadget: Zach sets a piece of him aside for harsh days, He increases his REGEN but decreases his HP"
-							+ "<br/>Second Gadget: In a last ditch attempt he collects his scattered body from around and heals in proportion to his missing HP"
-							+ "<br/><br/>PASSIVE (STRANGE MATTER): Zach has a small chance to absorb any type of damage he's taking and heal from it"
-							);
-							break; 
-				case "Raven":
-					description.setText("<html><p style=\"width:600px\">"
-							+ brawler.name.toUpperCase(Locale.US) + " " + brawler.title.toUpperCase(Locale.US)+
-							"<br/>HP: " + brawler.HP + "<br/>REGENERATION: " + brawler.regen
-							+ "<br/><br/>ATTACK: Raven throws a knife dipped in toxic chemicals. It deals " + atk + " damage and decreases the enemy's Regeneration by 2"
-							+ "<br/><br/>SUPER: Raven flies to the sky and hastily throws 4 stronger knives. (" + HYPERCHARGE + ") Throws an additional knife."
-							+ "<br/><br/>GADGETS: "
-							+ "<br/>First Gadget: Enemy's regeneration decreases by a flat amount"
-							+ "<br/>Second Gadget: Enemy's regeneration decreases by a percentage"
-							+ "<br/><br/>PASSIVE (TOXIC MOTIVATION): Raven's super charge charges in opposition to the enemy's Regeneration"
-							);
-							break; 
-				case "Simon":
-					description.setText("<html><p style=\"width:600px\">"
-							+ brawler.name.toUpperCase(Locale.US) + " " + brawler.title.toUpperCase(Locale.US)+
-							"<br/>HP: " + brawler.HP + "<br/>REGENERATION: " + brawler.regen
-							+ "<br/><br/>ATTACK: Simon makes a random spell that deals damage between 15 and 35. For each 5 damage interval, there is a catch:"
-							+ " (15-20): He gets regeneration in proportion to the damage, (21-25): Simon gets double super charge from this attack, "
-							+ " (26-30): The enemy's super charge is decreased in proportion to the damage, (31-35): Simon heals the damage he deals"
-							+ "<br/><br/>SUPER: Simon throws a ice spell that " + STUNS + "the enemy and deals " + sup + " damage"
-							+ "<br/><br/>GADGETS: "
-							+ "<br/>First Gadget: Simon restockes his potion stash and gets 1 more potion count"
-							+ "<br/>Second Gadget: Simon throws a fire spell that deals damage and decreases the REGEN of the enemy"
-							+ "<br/><br/>PASSIVE (MAGICAL RESISTANCE): Simon can not get a Soft-Negative Status effect "
-							);
-					break;
-				case "Susan":
-					description.setText("<html><p style=\"width:600px\">"
-							+ brawler.name.toUpperCase(Locale.US) + " " + brawler.title.toUpperCase(Locale.US)+
-							"<br/>HP: " + brawler.HP + "<br/>REGENERATION: " + brawler.regen
-							+ "<br/><br/>ATTACK: Susan kicks the enemy and deals " + atk + " damage"
-							+ "<br/><br/>SUPER: Susan uses all her force to blow a kick that " + STUNS + " and deals " + sup + " damage ( " + HYPERCHARGE + " ) Susan kicks twice."
-							+ "<br/><br/>GADGETS: "
-							+ "<br/>First Gadget: Susan meditates and rests her legs. She heals a little"
-							+ "<br/>Second Gadget: Susan blows 2 kicks back to back and deals some damage"
-							+ "<br/><br/>PASSIVE (BELLOW THE WAIST): Susan deals more damage to the enemy if they have a negative status effect"
-							);
-							break; 
-				case "Mark":
-					description.setText("<html><p style=\"width:600px\">"
-							+ brawler.name.toUpperCase(Locale.US) + " " + brawler.title.toUpperCase(Locale.US)+
-							"<br/>HP: " + brawler.HP + "<br/>REGENERATION: " + brawler.regen
-							+ "<br/><br/>ATTACK: Mark claws the enemy and deals " + (atk) + " damage. If the enemy was " + SCARRED + " deals more damage." 
-							+ "<br/><br/>SUPER: Mark bites the enemy's neck, dealing " + (sup) + " damage, increasing his ATK ans SUP damage. Also makes the enemy"
-							+ " " + SCARRED
-							+ "<br/><br/>GADGETS: "
-							+ "<br/>First Gadget: Mark bites itself and heals a little, but he bleeds too."
-							+ "<br/>Second Gadget: Mark bites the enemy's gut, dealing damage and bleeding them by decreasing their regeneration. It also makes them " + SCARRED
-							+ "<br/><br/>PASSIVE (VAMPIRE KING): Mark heals as much as he deals damage. This heal increases if the enemy is " + SCARRED + ". "
-							+ "Mark can not have positive regeneration. "
-							+ "All regen increase, increases his damage instead. Also, he loses 1 regeneration every turn, and losing regeneration"
-							+ " increases his damage too."
-							);
-							break; 	
-				case "Lisa":
-					description.setText("<html><p style=\"width:600px\">"
-							+ brawler.name.toUpperCase(Locale.US) + " " + brawler.title.toUpperCase(Locale.US)+
-							"<br/>HP: " + brawler.HP + "<br/>REGENERATION: " + brawler.regen
-							+ "<br/><br/>ATTACK: Lisa brings the fire of justice from herself and deals " + atk + " damage"
-							+ "<br/><br/>SUPER: In a fit of perseverence, Lisa almost doubles her ATK and REGEN. (" + HYPERCHARGE+") Lisa doubles her ATK and REGEN"
-							+ "<br/><br/>GADGETS: "
-							+ "<br/>First Gadget: Lisa prays for a help from the heavens and gets super charge"
-							+ "<br/>Second Gadget: Lisa makes a deal with the gods, with a portion of her HP gone, she gets some super charge"
-							+ "<br/><br/>PASSIVE (FALLEN ANGEL): If Lisa's super is charged, She reduces any damage coming to her"
-							);
-							break; 	
-				case "Jester":
-					description.setText("<html><p style=\"width:600px\">"
-							+ brawler.name.toUpperCase(Locale.US) + " " + brawler.title.toUpperCase(Locale.US)+
-							"<br/>HP: " + brawler.HP + "<br/>REGENERATION: " + "(-5, 10)"
-							+ "<br/><br/>ATTACK: Jester throws his bells in a pattern of " + atk + " x1 -> x2 -> x3 -> x4 -> x1 ..."
-							+ "<br/><br/>SUPER: Jester opens his mystery box! There is 5 possible outcomes! "
-							+ "1-) Jester Heals. 2-) Jester deals a massive damage to the enemy 3-) Jester stuns the enemy 4-) Jester weakenes, deals damage and decreases the enemy's regen "
-							+ "5-) Jester uses a random spell."
-							+ "<br/><br/>GADGETS: "
-							+ "<br/>First Gadget: Jester randomly changes his HP and Regeneration"
-							+ "<br/>Second Gadget: Jester randomly increases his Super Charge"
-							+ "<br/><br/>PASSIVE (SURVIVALIST UNPREDICTABILITY): If Jester is bellow %30 HP his attacks become unpredictable!"
-							);
-							break; 	
-				case "Finn":
-					description.setText("<html><p style=\"width:600px\">"
-							+ brawler.name.toUpperCase(Locale.US) + " " + brawler.title.toUpperCase(Locale.US)+
-							"<br/>HP: " + brawler.HP + "<br/>REGENERATION: " + brawler.regen
-							+ "<br/><br/>ATTACK: Finn fires a ghouly shot from the locket on his neck and deals " + atk + " damage"
-							+ "<br/><br/>SUPER: Finn steals a portion of the enemy's soul! Well, more like their attack damage and regeneration... Basically the same thing!"
-							+ "<br/><br/>GADGETS: "
-							+ "<br/>First Gadget: Finn steals a part of the enemy's health"
-							+ "<br/>Second Gadget: Finn steals a part of the enemy's super charge"
-							+ "<br/><br/>PASSIVE (SOUL TREAT): After attacking 3 times Finn devours a soul on his locket and heals himself for a treat!"
-							);
-							break; 	
-				case "Timmy":
-					description.setText("<html><p style=\"width:600px\">"
-							+ brawler.name.toUpperCase(Locale.US) + " " + brawler.title.toUpperCase(Locale.US)+
-							"<br/>HP: " + brawler.HP + "<br/>REGENERATION: " + brawler.regen
-							+ "<br/><br/>ATTACK: Timmy fires his gun, dealing " + atk + " damage plus a portion of the enemy's current HP" 
-							+ "<br/><br/>SUPER: Timmy's trusty Dragonic pet fires an enchanting flame, dealing " + sup +  " damage and instantly deleting "
-							+ "a portion of the enemy's HP (" + HYPERCHARGE+ ") Timmy's pet attacks once again after the super"
-							+ "<br/><br/>GADGETS: "
-							+ "<br/>First Gadget: Timmy's pet latches on the enemy and " + STUNS + " them"
-							+ "<br/>Second Gadget: Timmy heals in proportion to the enemy's missing HP"
-							+ "<br/><br/>PASSIVE (DRAGON MASTER): If Timmy has less then %30 of his HP, his pet starts attacking with him, dealing extra guaranteed damage"
-							);
-							break; 	
-				case "Kasse":
-					description.setText("<html><p style=\"width:600px\">"
-							+ brawler.name.toUpperCase(Locale.US) + " " + brawler.title.toUpperCase(Locale.US)+
-							"<br/>HP: " + brawler.HP + "<br/>REGENERATION: " + brawler.regen
-							+ "<br/><br/>ATTACK: Kasse sends a cosmic butterfly to an enemy. It deals " + atk + " damage"
-							+ "<br/><br/>SUPER: The enemy's time on this universe is over. Kasse executes the enemy."
-							+ "<br/><br/>GADGETS: "
-							+ "<br/>First Gadget: Kasse gets 10 super charge and makes the enemy " + WEAKENED 
-							+ "<br/>Second Gadget: Kasse gets 15 super charge and makes himself " + WEAKENED
-							+ "<br/><br/>PASSIVE (COSMIC CALL): For each 100 HP missing from him, Kasse's attacks deal 1 more damage"
-							);
-							break; 
-				case "John":
-					description.setText("<html><p style=\"width:600px\">"
-							+ brawler.name.toUpperCase(Locale.US) + " " + brawler.title.toUpperCase(Locale.US)+
-							"<br/>HP: " + brawler.HP + "<br/>REGENERATION: " + brawler.regen
-							+ "<br/><br/>ATTACK: John's shotgun has 5 bullets that deal " + atk + " damage! If he runs out of bullets he uses his"
-									+ " small gun to deal 10 damage."
-							+ "<br/><br/>SUPER: John starts raining all remaining bullets in his shotgun to the enemy! They deal more damage than normal"
-							+ " ( "  + HYPERCHARGE +" ) John fires one more bullet."
-							+ "<br/><br/>GADGETS: "
-							+ "<br/>First Gadget: John takes out a bullet from his gun and bites it to get some shield!"
-							+ "<br/>Second Gadget: John reloads 1 bullet to his shotgun"
-							+ "<br/><br/>PASSIVE (LAST BREATH): When John dies, he uses his normal attack one last time..."
-							+ "<br><br>SPECIFIC: John reloads his shotgun and gets 5 bullets"
-							);
-							break;
-				case "Light":
-					description.setText("<html><p style=\"width:600px\">"
-							+ brawler.name.toUpperCase(Locale.US) + " " + brawler.title.toUpperCase(Locale.US)+
-							"<br/>HP: " + brawler.HP + "<br/>REGENERATION: " + brawler.regen
-							+ "<br/><br/>ATTACK: Light punches the enemy and deals " + atk + " damage"
-							+ "<br/><br/>SUPER: Light does something... We don't know what he does but the enemy dies 25 turns later."
-							+ "<br/><br/>GADGETS: "
-							+ "<br/>First Gadget: Light somehow increases his health"
-							+ "<br/>Second Gadget: Light somehow decreases his enemy's health"
-							+ "<br/><br/>PASSIVE (IMPATIENCE): Attacking the enemy gives Light a gadget charge."
-							);
-							break;
-				case "Felix":
-					description.setText("<html><p style=\"width:600px\">"
-							+ brawler.name.toUpperCase(Locale.US) + " " + brawler.title.toUpperCase(Locale.US)+
-							"<br/>HP: " + brawler.HP + "<br/>REGENERATION: " + brawler.regen
-							+ "<br/><br/>ATTACK: Felix swings their sword and deals " + atk + " damage"
-							+ "<br/><br/>SUPER: Felix stands still and spears their sword, breaking any " + SHIELD + " from the enemy and " + STUNS + " them if "
-							+ "either Felix or the Enemy is not on the Normal status"
-							+ "<br/><br/>GADGETS: "
-							+ "<br/>First Gadget: Felix becomes " + GUARDED
-							+ "<br/>Second Gadget: The enemy of Felix becomes " + ENRAGED
-							+ "<br/><br/>PASSIVE (ROYAL DANCE): Attacking an enemy increases his Attack Damage by 1"
-							);
-							break; 
-				case "Missy":
-					description.setText("<html><p style=\"width:600px\">"
-							+ brawler.name.toUpperCase(Locale.US) + " " + brawler.title.toUpperCase(Locale.US)+
-							"<br/>HP: " + brawler.HP + "<br/>REGENERATION: " + brawler.regen
-							+ "<br/><br/>ATTACK: Missy throws a kiss! That stings!? It deals " + atk + " damage"
-							+ "<br/><br/>SUPER: Missy focuses on self-care and increases her Regeneration. She also increases her Attack Damage in proportion to her regeneration. "
-							+ "(" + HYPERCHARGE + ") Regeneration and Attack damage increase, increases by %25!"
-							+ "<br/><br/>GADGETS: "
-							+ "<br/>First Gadget: Missy increases her regen"
-							+ "<br/>Second Gadget: Missy deals damage to the enemy in proportion to her regen"
-							+ "<br/><br/>PASSIVE (REGENLIOUS): If Missy's Regeneration goes bellow 0, She starts to regain regeneration slowly."
-							);
-							break; 
-				case "Imelda":
-					description.setText("<html><p style=\"width:600px\">"
-							+ brawler.name.toUpperCase(Locale.US) + " " + brawler.title.toUpperCase(Locale.US)+
-							"<br/>HP: " + brawler.HP + "<br/>REGENERATION: " + brawler.regen
-							+ "<br/><br/>ATTACK: Imelda swings her fist and deals " + atk + " damage"
-							+ "<br/><br/>SUPER: Imelda filles herself with fury and decreases her HP but increases her Attack damage"
-							+ "<br/><br/>GADGETS: "
-							+ "<br/>First Gadget: Imelda decreases her HP but increases her Attack damage"
-							+ "<br/>Second Gadget: Imelda decreases her HP but increases her Regeneration"
-							+ "<br/><br/>PASSIVE (FURIOUS FISTS): Imelda permanantly becomes " + ENRAGED + " if she's bellow %50 HP"
-							);
-							break; 	
-				case "Betty":
-					description.setText("<html><p style=\"width:600px\">"
-							+ brawler.name.toUpperCase(Locale.US) + " " + brawler.title.toUpperCase(Locale.US)+
-							"<br/>HP: " + brawler.HP + "<br/>REGENERATION: " + brawler.regen
-							+ "<br/><br/>ATTACK: Betty throws some glitter(?) to the enemy and deals " + atk + " damage"
-							+ "<br/><br/>SUPER: Betty creates a clone that mimics her enemy and uses their super ability! All by herself! With each use,"
-							+ " Betty creates one more clone! They turn into dust that deal " + atk + " damage before they vanish! (" + HYPERCHARGE + ") The clones are hypercharged too!"
-							+ "<br/><br/>GADGETS: <br/>First Gadget: Betty forces the enemy to attack theirselves! "
-							+ "<br/>Second Gadget: Betty creates a stronger copy of the enemy's potion and uses it!"
-							+ "<br/><br/>PASSIVE (MAGICAL RESISTANCE): Betty can not get a Soft-Negative Status effect"
-							);
-							break;
-				case "Nanni":
-					description.setText("<html><p style=\"width:600px\">"
-							+ brawler.name.toUpperCase(Locale.US) + " " + brawler.title.toUpperCase(Locale.US)+
-							"<br/>HP: " + brawler.HP + "<br/>REGENERATION: " + brawler.regen
-							+ "<br/><br/>ATTACK: Nanni charges her pulsaters and shoots them. Each has a 1/3 chance to attack and deals " + atk + " damage! But at least one always hits."
-							+ "<br/><br/>SUPER: Nanni charges her laser and deals " + sup + " damage! (" + HYPERCHARGE + ") The laser deals %50 more damage"
-							+ "<br/><br/>GADGETS: <br/>First Gadget: Nanni gets " + ENRAGED + "! Out of fear, the enemy becomes " + WEAKENED +  ". "
-							+ "<br/>Second Gadget: Nanni overcharges and " + STUNS + " the enemy."
-							+ "<br/><br/>PASSIVE (ENERGY CONVERSION): If Nanni gets " + STUNNED + ", she gets some shield."
-							);
-				 break;
-				case "Hassan":
-					description.setText("<html><p style=\"width:600px\">"
-							+ brawler.name.toUpperCase(Locale.US) + " " + brawler.title.toUpperCase(Locale.US)+
-							"<br/>HP: " + brawler.HP + "<br/>REGENERATION: " + brawler.regen
-							+ "<br/><br/>ATTACK: Hassan's weapon is loose today! First strike deals " + atk + " damage "
-							+ "and the second strike deals damage in proportion to the enemy's missing HP"
-							+ "<br/><br/>SUPER: With just a look, the enemy's chunk of health is gone! Wait... What's that on his forehead?"
-							+ "<br/><br/>GADGETS: <br/>First Gadget: Hassan starves his enemy and decreases their regeneration "
-							+ "substantially <br/>Second Gadget: Hassan throws a big feast and increases his regeneration substantially"
-							+ "<br/><br/>PASSIVE (ROYAL PROTECTION): Hassan gets some shield in proportion to his second strike in his attack."
-							); 	
-					break;
-				case "Ignace":
-					description.setText("<html><p style=\"width:600px\">"
-							+ brawler.name.toUpperCase(Locale.US) + " " + brawler.title.toUpperCase(Locale.US)+
-							"<br/>HP: " + brawler.HP + "<br/>REGENERATION: " + brawler.regen
-							+ "<br/><br/>ATTACK: Ignace brings the passion out of the enemy and deals " + atk + " damage"
-							+ "<br/><br/>SUPER: Ignace ignites the enemy on fire and deals " + sup + " damage, He also "
-							+ "lowers their regeneration"
-							+ "<br/><br/>GADGETS: <br/>First Gadget: Deals a little damage to the enemy, if the enemy is " + WEAKENED + " "
-							+ "deals more damage and " + STUNS + " the enemy. <br/>Second Gadget: Decreases the enemy's regen a little, "
-							+ "if the enemy is " + WEAKENED + " decreases the regen further and " + STUNS + " the enemy."
-							+ "<br/><br/>PASSIVE (EXHAUSTING): Ignace's attacks makes the enemy " + WEAKENED
-							);
-					break;
-				case "Gusty":
-					description.setText("<html><p style=\"width:600px\">"
-							+ brawler.name.toUpperCase(Locale.US) + " " + brawler.title.toUpperCase(Locale.US)+
-							"<br/>HP: " + brawler.HP + "<br/>REGENERATION: " + brawler.regen
-							+ "<br/><br/>ATTACK: Gusty throws his trusty balloon friend that deals " + atk + " damage."
-							+ "<br/><br/>SUPER: Gusty wraps himself with some elastic balloon  that give him some " + SHIELD + " (" + HYPERCHARGE + ") "
-									+ " Gives %20 more shield!"
-							+ "<br/><br/>GADGETS: <br/>First Gadget: Gusty's balloon is filled with rage! It deals damage in proportion to "
-							+ "Gusty's missing HP. <br/>Second Gadget: Gusty deals damage to the enemy in proportion to his current shield"
-							+ "<br/><br/>PASSIVE (SHIELD BASH): Gusty's attacks deal more damage if he has " + SHIELD
-							);
-					break;
-				case "Anvaa":
-					description.setText("<html><p style=\"width:600px\">"
-							+ brawler.name.toUpperCase(Locale.US) + " " + brawler.title.toUpperCase(Locale.US) +
-							"<br/>HP: " + brawler.HP + "<br/>REGENERATION: " + brawler.regen
-							+ "<br/><br/>ATTACK: Anvaa throws an ice piece at the enemies that deals " + atk + " damage. "
-							+ "If the enemy is " + FROSTY + " it deals more damage and heals herself."
-							+ "<br/><br/>SUPER: Anvaa creates a snow storm and deals " + sup + " damage to the enemy and "
-							+ "changes their status to " + FROSTY + " If the enemy is already " + FROSTY + " deals more damage."
-							+ "<br/><br/>GADGETS: <br/>First Gadget: If the enemy is " + FROSTY + " she " + STUNS + " them and deals damage. <br/>Second Gadget: "
-							+ "Anvaa becomes " + FROSTY + " and heals some HP"
-							+ "<br/><br/>PASSIVE (IMMORTALITY): If Anvaa dies, She gets reborned, she gets " + STUNNED + " but also gets some " + SHIELD
-							+ " She can get reborn only once per game"
-							);
-					break;
-				case "Vollie":
-					description.setText("<html><p style=\"width:600px\">"
-							+ brawler.name.toUpperCase(Locale.US) + " " + brawler.title.toUpperCase(Locale.US)+
-							"<br/>HP: " + brawler.HP + "<br/>REGENERATION: " + brawler.regen
-							+ "<br/><br/>ATTACK: Vollie claws his enemy and deals " + atk + " damage. The more he attacks the more he gets "
-						    + "his runic stacks. The more runic stacks he has, the more damage he deals! If he gets stunned he loses all his stacks!"
-							+ "<br/><br/>SUPER: Vollie bites the enemy and deals " + sup + " damage and makes the enemy " + SCARRED + " if "
-						    + "the enemy was already " + SCARRED + " He heals instead, the damage and heal increases with the runic stacks"
-							+ "<br/><br/>GADGETS: <br/>First Gadget: Vollie deals some damage to the enemy and makes them " + SCARRED + " <br/>Second Gadget: "
-							+ "Vollie throws himself to an enemy and deals a big damage!"
-							+ "<br/><br/>PASSIVE (FAUX FUR): Vollie gets a shield in proportion to the damage he took and the amount of runic stacks he has."
-							); 	
-					break;
-				case "Giran":
-					description.setText("<html><p style=\"width:600px\">"
-							+ brawler.name.toUpperCase(Locale.US) + " " + brawler.title.toUpperCase(Locale.US)+
-							"<br/>HP: " + brawler.HP + "<br/>REGENERATION: " + brawler.regen
-							+ "<br/><br/>ATTACK: Giran waves his stick to the enemy and deals " + atk + " damage. Each third attack, Giran attacks 3 times back to back "
-							+ "<br/><br/>SUPER: Giran drops a bunch of explosives on top of the enemy and deals " + sup + " damage, the damage increases each use. (" + HYPERCHARGE +") "
-									+ "Bombs deals extra damage and extra damage increases each bomb"
-							+ "<br/><br/>GADGETS: "
-							+ "<br/>First Gadget: Giran commits cannibalism and eats some fried chicken, healing himself."
-							+ "<br/>Second Gadget: Giran swiftly uses his main attack 2 times"
-							+ "<br/><br/>PASSIVE (ADRENALINE): There's a %50 chance Giran gets double charge from his attacks"
-							);
-							break;
-				case "Clyde":
-					description.setText("<html><p style=\"width:600px\">"
-							+ brawler.name.toUpperCase(Locale.US) + " " + brawler.title.toUpperCase(Locale.US)+
-							"<br/>HP: " + brawler.HP + "<br/>REGENERATION: " + brawler.regen
-							+ "<br/><br/>ATTACK: (CANNON) Clyde fires her cannon and deals " + atk + " damage. (SOLO) Clyde fires 3 fireworks to the enemy dealing " + (atk*1.5) + " damage"
-							+ "<br/><br/>SUPER: (CANNON) Clyde shoots herself from her cannon, dealing " + sup + " damage and " + STUNS +" the enemy. She loses her cannon protection and becomes SOLO!"
-								+ " (SOLO) Clyde hops back on her cannon, getting her sheld back."
-							+ "<br/><br/>GADGETS: "
-							+ "<br/>First Gadget: (CANNON) Clyde converts her cannon's shield to HP. (SOLO) Clyde heatbutts the enemy with her helmet and " + STUNS + " them."
-							+ "<br/>Second Gadget: (CANNON) Clyde charges some super charge. (SOLO) Clyde fully charges her super."
-							+ "<br/><br/>PASSIVE (RECKLESS STUNTS): Hopping in and out of the Cannon makes Clyde " + ENRAGED
-							);
-							break;
-				
-				case "Amber":
-					description.setText("<html><p style=\"width:600px\">"
-							+ brawler.name.toUpperCase(Locale.US) + " " + brawler.title.toUpperCase(Locale.US)+
-							"<br/>HP: " + brawler.HP + "<br/>REGENERATION: " + brawler.regen
-							+ "<br/><br/>ATTACK: Amber has many weapons on her arsenal that she uses in a cycle 1-) Amber shoots her pistol one at a time, it has an ever decreasing chance to shoot 1 more weaker bullet "
-							+ "2-) Amber throws a weakening net that stuns the enemy if already weakened. 3-) Amber brings out her shotgun to deal a massive damage. If the enemy is low on health, she shoots again for good measure! "
-							+ "4-) Stolen from Finn, this weapon steals the enemy's HP and gives it to Amber!"
-							+ "<br/><br/>SUPER: Amber overcharges her current weapon and uses them in a stronger manner!"
-							+ "<br/><br/>GADGETS: "
-							+ "<br/>First Gadget: Amber uses the weapon on her hand but doesn't switch it."
-							+ "<br/>Second Gadget: Amber changes her weapon to the next in cycle and uses it."
-							+ "<br/><br/>PASSIVE (FAST HANDS): Each time Amber switches weapons she gets a little shield"
-							);
-							break; 
-							
-				case "Anton":
-					description.setText("<html><p style=\"width:600px\">"
-							+ brawler.name.toUpperCase(Locale.US) + " " + brawler.title.toUpperCase(Locale.US)+
-							"<br/>HP: " + brawler.HP + "<br/>REGENERATION: " + brawler.regen
-							+ "<br/><br/>ATTACK: Anton deals some damage to an enemy with a magical attack."
-							+ "<br/><br/>SUPER: Anton's staff sends a big wave of magic."
-							+ "<br/><br/>GADGETS: "
-							+ "<br/>First Gadget: Anton becomes Furious"
-							+ "<br/>Second Gadget: Anton becomes Balanced"
-							+ "<br/><br/>PASSIVE (BALANCED): Anton has 2 forms: Balanced and Furious! Balanced form deals less damage but heals him more while Furious form deals a lot more damage! Going from balanced to furious"
-							+ " makes Anton " + ENRAGED + ". While going from Furious to Balanced heals him."
-							);
-							break;
-				case "Qirale":
-					description.setText("<html><p style=\"width:600px\">"
-							+ brawler.name.toUpperCase(Locale.US) + " " + brawler.title.toUpperCase(Locale.US)+
-							"<br/>HP: " + brawler.HP + "<br/>REGENERATION: " + brawler.regen
-							+ "<br/><br/>ATTACK: Qirale throws a chunk of whatever element she has been using. Air can recursively attack, Water makes the enemy "+WEAKENED+", "
-									+ "Earth gets twice the super charge and Fire decreases the enemy's regen"
-							+ "<br/><br/>SUPER: Qirale focuses and sends a big shockwave of the element she was holding. Water heals her, Fire burns the enemy, Earth gives her some shield, "
-							+ "Air makes the enemy confused!"
-							+ "<br/><br/>GADGETS: "
-							+ "<br/>First Gadget: Qirale randomly takes on another element"
-							+ "<br/>Second Gadget: Qirale uses the element she's holding to help her in this fight!"
-							+ "<br/><br/>PASSIVE (GRANDMAGE): Qirale can have 4 elemental modes to choose from! From less damage to most; Air, Water, Earth and Fire! Each"
-							+ " with its own unique normal and super attacks!"
-							+ "<br><br>SPECIFIC: Qirale takes on a random element she found. (5 uses per match)"
-							);
-							break;
-				case "Olea":
-					description.setText("<html><p style=\"width:600px\">"
-							+ brawler.name.toUpperCase(Locale.US) + " " + brawler.title.toUpperCase(Locale.US)+
-							"<br/>HP: " + brawler.HP + "<br/>REGENERATION: " + brawler.regen
-							+ "<br/><br/>ATTACK: Olea shoots an arrow from his FABOLOUS bow and deals " + atk + " damage. If he is " + INTOXICATED + " he deals more "
-							+ "damage and decreases the enemy's regeneration"
-							+ "<br/><br/>SUPER: Olea makes himself and the enemy " + INTOXICATED + " for some turns! (" + HYPERCHARGE + ") 1 more turn is added to the super!"
-							+ "<br/><br/>GADGETS: "
-							+ "<br/>First Gadget: Olea heals himself. If he is " +INTOXICATED+ " he heals more."
-							+ "<br/>Second Gadget: Olea makes himself and the enemy " + INTOXICATED+ " for a few turns"
-							+ "<br/><br/>PASSIVE (DRAMA QUEEN!): Olea is immune from taking damage from being "+INTOXICATED+""
-							);
-							break;
-				case "Itan":
-					description.setText("<html><p style=\"width:600px\">"
-							+ brawler.name.toUpperCase(Locale.US) + " " + brawler.title.toUpperCase(Locale.US)+
-							"<br/>HP: " + brawler.HP + "<br/>REGENERATION: " + brawler.regen
-							+ "<br/><br/>ATTACK: Itan creates an annoying quake that deals " + atk + " damage"
-							+ "<br/><br/>SUPER: Itan summons his best friend, Beurc! Beurc deals " + sup + " damage each turn and tanks damage for Itan."
-							+ "<br/><br/>GADGETS: "
-							+ "<br/>First Gadget: Itan makes the enemy " + WEAKENED + ". If Beurc was summoned, they make the enemy " + STUNNED + " instead."
-							+ "<br/>Second Gadget: Itan heals a little. If Beurc was summoned They're both healed a lot more."
-							+ "<br/><br/>PASSIVE (UNBEARABLE): Hitting an enemy with a quake heals Beurc a little. Beurc hitting the enemy heals Itan a little."
-							);
-							break; 	
-				case "Louis":
-					description.setText("<html><p style=\"width:600px\">"
-							+ brawler.name.toUpperCase(Locale.US) + " " + brawler.title.toUpperCase(Locale.US)+
-							"<br/>HP: " + brawler.HP + "<br/>REGENERATION: " + brawler.regen
-							+ "<br/><br/>ATTACK: Louis shoots his trusty electrical gun and deals " + atk + " damage"
-							+ "<br/><br/>SUPER: Louis surrounds himself in a electric field that absorbs all damage coming to him for a few turns, at the end, the"
-							+ " field explodes, dealing all the damage back to the enemy, It also heals him a little."
-							+ "<br/><br/>GADGETS: "
-							+ "<br/>First Gadget: Louis stabs himself and makes himself " + ENRAGED
-							+ "<br/>Second Gadget: Louis stabs himself and the enemy"
-							+ "<br/><br/>PASSIVE (CLUMSY): Louis' gun has a small chance too overcharge and hurt Louis too. That chance is MUCH bigger if his super is active"
-							+ " and hitting himself charges his super too!"
-							);
-							break; 		
-				case "Pine":
-					description.setText("<html><p style=\"width:600px\">"
-							+ brawler.name.toUpperCase(Locale.US) + " " + brawler.title.toUpperCase(Locale.US)+
-							"<br/>HP: " + brawler.HP + "<br/>REGENERATION: " + brawler.regen
-							+ "<br/><br/>ATTACK: Pine uses his nasty whip to deal " + atk + " damage"
-							+ "<br/><br/>SUPER: Pine forces the enemy to attack themselves 3 times! Each use increases the attack count! After that,"
-								+ " Pine brings their super and hypercharge back to its original state. (" + HYPERCHARGE + ") The enemy uses their attack one more"
-									+ " time"
-							+ "<br/><br/>GADGETS: "
-							+ "<br/>First Gadget: Pine trades his super charge with the enemy"
-							+ "<br/>Second Gadget: Pine's next super also forces the enemy to use their super on themselves if they have enough charges!"
-							+ "<br/><br/>PASSIVE (SADIST): Every time Pine sees the enemy hurting, he heals by 10, excluding spells and regeneration."
-							);
-							break; 	
-				case "Ritz":
-					description.setText("<html><p style=\"width:600px\">"
-							+ brawler.name.toUpperCase(Locale.US) + " " + brawler.title.toUpperCase(Locale.US)+
-							"<br/>HP: " + brawler.HP + "<br/>REGENERATION: " + brawler.regen
-							+ "<br/><br/>ATTACK: Ritz throws his punches that hit like bear claws! It deals " + atk + " damage."
-							+ "<br/><br/>SUPER: Ritz becomes uncontrollable for some turns! He's immune to weak negatives effects, deals twice as much damage"
-							+ " and gets hurt half! (" + HYPERCHARGE + ") The super lasts %50 more turns!"
-							+ "<br/><br/>GADGETS: "
-							+ "<br/>First Gadget: Ritz adds 3 more turns to his super"
-							+ "<br/>Second Gadget: Ritz becomes " + ENRAGED
-							+ "<br/><br/>PASSIVE (PAPA BEAR): Ritz have a chance to become " + ENRAGED + " each normal attack"
-							);
-							break; 		
-				case "Gash":
-					description.setText("<html><p style=\"width:600px\">"
-							+ brawler.name.toUpperCase(Locale.US) + " " + brawler.title.toUpperCase(Locale.US)+
-							"<br/>HP: " + brawler.HP + "<br/>REGENERATION: " + brawler.regen
-							+ "<br/><br/>ATTACK: Gash poisons the enemy with some darts... It deals " + atk + " damage every turn for 10 turns, it can stack!"
-							+ "<br/><br/>SUPER: Gash heals himself and deals damage to the enemy for " + sup + ". (" + HYPERCHARGE + ") Gash makes himself " + STRENGTHENED + " and the enemy " + WEAKENED
-							+ "<br/><br/>GADGETS: "
-							+ "<br/>First Gadget: Gash increases existing poisons' duration by 3 turns"
-							+ "<br/>Second Gadget: Gash's next attack sticks around for 20 turns"
-							+ "<br/><br/>PASSIVE (POISON BOMB): When Gash dies, all poison darts explode and deal 20 damage"
-							);
-							break;
-				case "Jack":
-					description.setText("<html><p style=\"width:600px\">"
-							+ brawler.name.toUpperCase(Locale.US) + " " + brawler.title.toUpperCase(Locale.US)+
-							"<br/>HP: " + brawler.HP + "<br/>REGENERATION: " + brawler.regen
-							+ "<br/><br/>ATTACK: jack slaps the enemy and deals " + atk + " damage"
-							+ "<br/><br/>SUPER: jack sharpenes his stingers. " + HYPERCHARGE + ": jack throws 2 stingers"
-							+ "<br/><br/>GADGETS: "
-							+ "<br/>First Gadget: jack throws a stinger"
-							+ "<br/>Second Gadget: jack eats and weakenes his stingers to heal"
-							+ "<br/><br/>PASSIVE (defense): when jack gets hurt, he releases a stinger and gets some super charge"
-							);
-							break; 	
-					
-					/*
-					description.setText("<html><p style=\"width:600px\">"
-							+ brawler.name.toUpperCase(Locale.US) + " " + brawler.title.toUpperCase(Locale.US)+
-							"<br/>HP: " + brawler.HP + "<br/>REGENERATION: " + brawler.regen
-							+ "<br/><br/>ATTACK: "
-							+ "<br/><br/>SUPER: "
-							+ "<br/><br/>GADGETS: "
-							+ "<br/>First Gadget: "
-							+ "<br/>Second Gadget:"
-							+ "<br/><br/>PASSIVE: "
-							);
-							break; 		 
-					*/
-					
-				default:
-					description.setText("<html>" + brawler.title.toUpperCase() +
-							 			"<br/>HP: " + brawler.HP +
-										"<br/>Attack DMG: " + brawler.AttackDamage +
-										"<br/>Regeneration: " + brawler.regen +
-										"<br/>Super DMG: " + brawler.SuperDamage + "<html>");
-					break;
-				case "Potions":
-					description.setText("<html><p style=\"width:600px\">"
-									  + "Potions are given to each brawler at the start of the match. They are not brawler specific so each potion is the same for every brawler."
-									  + "<br/>Currently there are 3 kinds of potions:"
-									  + "<br/>Red: Gives HP"
-									  + "<br/>Yellow: Gives Super charge"
-									  + "<br/>Light Purple: Gives Regeneration"
-									  + "<br/>Dark red: Gives Strength to user, %35 more damage."
-									  + "<br/>Dark blue: Gives Weakness to enemy, %35 less damage."
-									  + "<br/>Green: Gives Confusion to enemy, They attack themselves."
-									  + "<br/>Gray: Cleanses and heals the user."
-									  + "<br/>Dark Gray: Gives Shield"
-									  + "<br>Brown: Deals damage to enemy"
-									  + "<br>Dark Purple: Gives Hyper charge");
-					break;
-				case "Statuses":
-					description.setText("<html><p style=\\\"width:600px\\\">"
-							+ "Status effects indicate what the brawler can/will do."
-							+ "<br/>Normal: Normal, nothing will happen."
-							+ "<br/>Stunned: The brawler can't do anything, until the enemy breakes the "
-							+ "<br/>stun by hitting them. (H-)" 
-							+ "<br/>Weakened: The brawler will deal less damage (S-)" 
-							+ "<br/>Strengthened: The brawler will deal more damage (S+)" 
-							+ "<br/>Confused: The brawler will deal less damage but to theirself (S-)"
-							+ "<br/>Guarded: The brawler won't get effected by anything from the enemy "
-							+ "<br/>for a round. (H+)"
-							+ "<br/>Enraged: The brawler will deal %100 more damage (S+)"
-							+ "<br/>Frosty: The brawler can not regenerate (if the regen is positive) (S-)"
-							+ "<br/>Scarred: The enemy loses %1 of their HP each turn (S-)"
-							+ "<br/>Intoxicated: The brawler loses %5 of its maximum HP each turn (H-)");
-					break;
-				case "Gears":
-					description.setText("<html><p style=\"width:600px\">Gears are buffs available for every brawler! You just have to choose one:"
-							+ "<br/>Health Gear: Increases the Brawler's HP"
-							+ "<br/>Potion Gear: Increases the Brawler's potion count by one"
-							+ "<br/>Gadget Gear: Increases the Brawler's gadget count by one"
-							+ "<br/>Heal Gear: Increases the Brawler's all incoming heals"
-							+ "<br/>Cooldown Gear: Decreases spell cooldown"
-							+ "<br>Regen Gear: Increases Regeneration"
-							+ "<br>Hypercharge Gear: Increases passive hypercharging");
-					break;
-				case "Spells":
-					description.setText("<html><p style=\"width:600px\">Spells are abilities available for every brawler! You just have to choose: "
-							+ "<br/>Static Shock: Use all your super charge for damage, " + STUNS + " the enemy if it's used with more than or equal to 100 super charge."
-							+ "<br/>Redemption: Heals the user, Deals damage to the enemy."
-							+ "<br/>Heart of Steel: Deals damage to the enemy according to the user's current health"
-							+ "<br/>Glacial Gale: A strong wind that has a chance to stun and deal more damage!"
-							+ "<br/>Electric Storm: A storm that hits harder but rarer each strike."
-							+ "<br/>Guardian: Gives the user some " + SHIELD
-							+ "<br/>Prixie: Summon Prixie to heal and " + SHIELD + " yourself or attack the enemy and make them " + WEAKENED
-							+ "<br/>Last Strike: After a quick charge, quickly throws many small pellets at the enemy!"
-							+ "<br/>Demonic Cuteness: Curses an enemy for 5 turns. It deals damage each cursed turn"
-							+ "<br/>Mirror: Uses the same spell as the enemy but the cooldown stays the same!"
-							+ "<br>Meditation Medication: After 5 turns, heals."
-							);
-					break;
-				case "Abilities":
-					description.setText("<html><p style=\"width:600px\">"
-							+ "There are 3 main abilities each brawler has that's unique to them and their playstyle!"
-							+ "<br/>Normal Attacks: Normally, weak attacks that brawler can use freely that costs nothing. It skips the turn to the enemy, "
-							+ "or breaks any stuns they might have. It also charges the super the same as the damage it deals."
-							+ "<br/><br/>Super Ability: Strong abilities that can be only used if the brawler has more than 100 super charge. It also consumes all the charge."
-							+ "<br/><br/>Gadgets: Small abilities that can be used without the turn going back to the enemy. Varying brawlers have varying amout of charges."
-							);
-					break;
-				case "Hypercharge":
-					description.setText("<html><p style=\"width:600px\">"
-							+ "Charging your super ability, regenerating, using your super, or just existing in the first place, charges your " + HYPERCHARGE + "! If you have enough hypercharge you automatically "
-							+ "activate it to hypercharge your brawler for 15 turns! A hypercharged brawler takes less damage, deals more damage and their super ability becomes much more powerful! Instead of changing the status, "
-							+ "it is its own thing!"
-							);
-					break;
-					
-				}
-				
-			}
-		});
-		lookPanel.add(lookButton);
-		con.add(lookPanel);
-		
-		comboBoxPanel = new JPanel();
-		comboBoxPanel.setBounds(15, 70, 140, 50);
-		comboBoxPanel.setBackground(Color.lightGray);
-		combo.setBackground(new Color(217, 180, 212));
-		combo.setFont(new Font("Times New Roman", Font.BOLD ,20));
-		combo.setMaximumRowCount(22);
-		comboBoxPanel.add(combo);
-		con.add(comboBoxPanel);
-		
-		
-		descriptionPanel = new JPanel((LayoutManager) new FlowLayout(FlowLayout.LEADING,10, 15));
-		descriptionPanel.setBackground(Color.white);
-		descriptionPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 6));
-		descriptionPanel.setBounds(170, 15, 800,730);
-		description.setFont(new Font("Calibri", Font.PLAIN, 25));
-		
-		descriptionPanel.add(description);
-		con.add(descriptionPanel);
-		
-		
-		window.setLocationRelativeTo(null);
-		window.setVisible(true);
-				
-	}
-
-	public static void patchNotes(String patch) {
-	
-		JFrame window = new JFrame("Turn by Turn - " + patch);
-        window.setSize(850, 800);
-        window.setResizable(false);
-        window.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        window.getContentPane().setBackground(Color.darkGray);
-        window.setLayout(null);
-        window.setIconImage(new ImageIcon("res/images/turnbyturn.png").getImage());
-        Container con = window.getContentPane();
-
-        JLabel title = new JLabel(patch, SwingConstants.CENTER);
-        title.setBounds(0, 0, 830, 45);
-        title.setForeground(Color.white);
-        title.setFont(new Font("Arial", Font.BOLD, 30));
-        con.add(title);
-
-        JPanel notesPanel = new JPanel(new FlowLayout(FlowLayout.LEADING, 7, 10));
-        notesPanel.setBounds(24, 40, 790, 710);
-        notesPanel.setBackground(Color.LIGHT_GRAY);
-        notesPanel.setBorder(BorderFactory.createLineBorder(Color.black, 6));
-
-        JLabel notes = new JLabel("");
-        notes.setForeground(Color.black);
-        notes.setFont(new Font("Bahnschrift", Font.PLAIN, 17));
-        
-        StringBuilder patchNotesContent = new StringBuilder();
-
-        try (BufferedReader reader = new BufferedReader(new FileReader("src/GUI/patchnotes.txt"))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                patchNotesContent.append(line);
-            }
-        } catch (IOException e) {
-            System.err.println("Error reading patchnotes.txt: " + e.getMessage());
-        }
-
-        notes.setText(patchNotesContent.toString());
-
-        notesPanel.add(notes);
-
-        // Wrap notesPanel in a JScrollPane
-        JScrollPane scrollPane = new JScrollPane(notesPanel);
-        scrollPane.setBounds(24, 40, 790, 710);
-        scrollPane.setBackground(Color.darkGray);
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-
-        con.add(scrollPane);
-        window.setLocationRelativeTo(null);
-        window.setVisible(true);
-    
-	
-}
 
 	
-
-//End of main class
 }
